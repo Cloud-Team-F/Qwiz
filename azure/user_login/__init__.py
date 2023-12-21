@@ -1,0 +1,53 @@
+import json
+import logging
+
+from azure.functions import HttpRequest, HttpResponse
+from models.user import User
+from utils import create_error_response, get_user_container
+
+# Proxy to CosmosDB
+UserContainerProxy = get_user_container()
+
+
+def main(req: HttpRequest) -> HttpResponse:
+    logging.info("Processing user login request.")
+
+    try:
+        req_body = req.get_json()
+    except ValueError:
+        return create_error_response("Request body must be JSON.", 400)
+
+    try:
+        username = req_body["username"]
+        password = req_body["password"]
+
+        # check if user exists
+        user = list(
+            UserContainerProxy.query_items(
+                query="SELECT * FROM c WHERE c.username = @username",
+                parameters=[
+                    {"name": "@username", "value": username},
+                ],
+                enable_cross_partition_query=True,
+            )
+        )
+
+        # if no user found
+        if len(user) == 0:
+            return create_error_response("User not found.", 404)
+
+        # if user found, check password matches
+        user = User.from_dict(user[0])
+        if user.check_password(password):
+            return HttpResponse(
+                body=json.dumps(user.to_dict()),
+                status_code=200,
+                mimetype="application/json",
+            )
+        return create_error_response("Incorrect password.", 401)
+
+    except KeyError:
+        return create_error_response("Missing field(s).", 400)
+    except Exception as e:
+        logging.error("Login error: ", e)
+        return create_error_response("An error occurred.", 500)
