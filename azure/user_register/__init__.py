@@ -48,7 +48,12 @@ def main(req: HttpRequest) -> HttpResponse:
 
         # http success response
         return HttpResponse(
-            body=json.dumps(created_user),
+            body=json.dumps(
+                {
+                    "id": created_user["id"],
+                    "username": created_user["username"],
+                }
+            ),
             status_code=201,
             mimetype="application/json",
         )

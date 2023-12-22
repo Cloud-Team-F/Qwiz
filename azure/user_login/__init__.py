@@ -22,7 +22,7 @@ def main(req: HttpRequest) -> HttpResponse:
         password = req_body["password"]
 
         # check if user exists
-        user = list(
+        users = list(
             UserContainerProxy.query_items(
                 query="SELECT * FROM c WHERE c.username = @username",
                 parameters=[
@@ -33,14 +33,19 @@ def main(req: HttpRequest) -> HttpResponse:
         )
 
         # if no user found
-        if len(user) == 0:
+        if len(users) == 0:
             return create_error_response("User not found.", 404)
 
         # if user found, check password matches
-        user = User.from_dict(user[0])
+        user = User.from_dict(users[0])
         if user.check_password(password):
             return HttpResponse(
-                body=json.dumps(user.to_dict()),
+                body=json.dumps(
+                    {
+                        "id": user.id,
+                        "username": user.username,
+                    }
+                ),
                 status_code=200,
                 mimetype="application/json",
             )
