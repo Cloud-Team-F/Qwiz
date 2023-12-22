@@ -1,4 +1,4 @@
-import { userLogin, userRegister } from "../utils/azure.js";
+import { userGet, userLogin, userRegister } from "../utils/azure.js";
 
 import createHttpError from "http-errors";
 import env from "../utils/validateEnv.js";
@@ -36,12 +36,7 @@ router.post("/login", (req, res, next) => {
             res.cookie("token", signJwt(response.id), jwtCookieOptions);
 
             // send user data
-            res.status(200).json({
-                user: {
-                    id: response.id,
-                    username: response.username,
-                },
-            });
+            res.status(200).json(response);
         })
         .catch((error) => {
             console.log(error);
@@ -75,12 +70,7 @@ router.post("/register", (req, res, next) => {
             res.cookie("token", signJwt(response.id), jwtCookieOptions);
 
             // send user data
-            res.status(200).json({
-                user: {
-                    id: response.id,
-                    username: response.username,
-                },
-            });
+            res.status(200).json(response);
         })
         .catch((error) => {
             console.log(error);
@@ -101,6 +91,23 @@ router.get("/authenticated", requiresAuth, (req, res, next) => {
     res.send({
         message: "Authenticated! User id:" + req.user.id,
     });
+});
+
+router.get("/profile/:id", (req, res, next) => {
+    userGet(req.params.id)
+        .then((response) => {
+            console.log(response);
+            res.status(200).json(response);
+        })
+        .catch((error) => {
+            console.log(error);
+            // check unauthorized
+            if (error.response.status === 404) {
+                next(createHttpError(404, "User not found"));
+            } else {
+                next(createHttpError(500, "An unknown error occurred"));
+            }
+        });
 });
 
 router.post("/logout", (req, res, next) => {
