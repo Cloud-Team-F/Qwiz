@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('header'); -%>
+
+    <div id="app">
+        <div class="navbar">Navbar</div>
+
+        <!-- ALerts -->
+        <div v-if="errorMessage" class="alert alert-danger">
+            <strong>Error: </strong> {{ errorMessage }}
+        </div>
+        <div v-if="successMessage" class="alert alert-success">
+            <strong>Success: </strong> {{ successMessage }}
+        </div>
+
+        <div v-if="!user"><%- include('stages/login'); -%></div>
+        <div v-else>
+            <p>Welcome, {{ user.username }}!</p>
+            <button @click="logout()">Logout</button>
+        </div>
+    </div>
+    <%- include('footer'); -%>
+</html>
