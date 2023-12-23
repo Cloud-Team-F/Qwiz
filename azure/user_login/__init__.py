@@ -2,7 +2,7 @@ import json
 import logging
 
 from azure.functions import HttpRequest, HttpResponse
-from models.user import User
+from models.user import InvalidField, MissingField, User
 from utils import create_error_response, get_user_container
 
 # Proxy to CosmosDB
@@ -18,8 +18,11 @@ def main(req: HttpRequest) -> HttpResponse:
         return create_error_response("Request body must be JSON.", 400)
 
     try:
-        username = req_body["username"]
-        password = req_body["password"]
+        username = req_body["username"].strip().lower()
+        password = req_body["password"].strip()
+
+        # validate username and password
+        User.is_valid(username, password)
 
         # check if user exists
         users = list(
@@ -53,6 +56,10 @@ def main(req: HttpRequest) -> HttpResponse:
 
     except KeyError:
         return create_error_response("Missing field(s).", 400)
+    except MissingField as e:
+        return create_error_response(str(e), 400)
+    except InvalidField as e:
+        return create_error_response(str(e), 400)
     except Exception as e:
         logging.error("Login error: ", e)
         return create_error_response("An error occurred.", 500)

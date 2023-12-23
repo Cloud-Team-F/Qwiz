@@ -45,7 +45,7 @@ router.post("/login", (req, res, next) => {
             } else if (error.response.status === 404) {
                 next(createHttpError(404, "Username not found"));
             } else if (error.response.status === 400) {
-                next(createHttpError(400, "Missing username or password"));
+                next(createHttpError(400, error.response.data.error));
             } else {
                 next(createHttpError(500, "An unknown error occurred"));
             }
@@ -74,9 +74,7 @@ router.post("/register", (req, res, next) => {
         .catch((error) => {
             // check unauthorized
             if (error.response.status === 400) {
-                next(
-                    createHttpError(400, "Missing/invalid username or password")
-                );
+                next(createHttpError(400, error.response.data.error));
             } else if (error.response.status === 409) {
                 next(createHttpError(409, "Username already exists"));
             } else {
