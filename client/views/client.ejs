@@ -3,20 +3,30 @@
     <%- include('header'); -%>
 
     <div id="app">
-        <div class="navbar">Navbar</div>
-
-        <!-- ALerts -->
-        <div v-if="errorMessage" class="alert alert-danger">
-            <strong>Error: </strong> {{ errorMessage }}
-        </div>
-        <div v-if="successMessage" class="alert alert-success">
-            <strong>Success: </strong> {{ successMessage }}
+        <%- include('components/navbar'); -%>
+        <div v-if="loadingScreen" class="loading-screen">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading...</p>
         </div>
 
-        <div v-if="!user"><%- include('stages/login'); -%></div>
         <div v-else>
-            <p>Welcome, {{ user.username }}!</p>
-            <button @click="logout()">Logout</button>
+            <!-- ALerts -->
+            <div v-if="errorMessage" class="container alert alert-danger">
+                <strong>Error: </strong> {{ errorMessage }}
+            </div>
+            <div v-if="successMessage" class="container alert alert-success">
+                <strong>Success: </strong> {{ successMessage }}
+            </div>
+
+            <!-- Login page -->
+            <div v-if="!user"><%- include('stages/login'); -%></div>
+
+            <!-- Main page -->
+            <div v-else class="container">
+                <p>Welcome, {{ user.username }}!</p>
+            </div>
         </div>
     </div>
     <%- include('footer'); -%>

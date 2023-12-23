@@ -38,10 +38,10 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 app.use((req, res, next) => {
-    next(createHttpError(404, "Endpoint not found"));
+    res.render("404");
 });
 
 app.use((error, req, res, next) => {
