@@ -2,6 +2,7 @@ anyio==4.2.0
 azure-core==1.29.6
 azure-cosmos==4.5.1
 azure-functions==1.17.0
+bcrypt==4.1.2
 certifi==2023.11.17
 charset-normalizer==3.3.2
 idna==3.6
