@@ -36,9 +36,7 @@ jobs:
       # Optional: Add step to run tests here
 
       - name: Zip artifact for deployment
-        run: |
-          cd azure
-          zip -r ../release.zip .
+        run: zip -r release.zip azure
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
