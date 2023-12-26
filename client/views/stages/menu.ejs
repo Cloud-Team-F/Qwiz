@@ -1,3 +1,23 @@
 <div class="main-menu">
-    <p>Welcome, {{ user.username }}!</p>
+    <div class="menu-col-1">
+        <div class="create-quiz-container">
+            <img src="/static/create-doc.png" alt="logout"> 
+            <p class="basic-text">Add text and files to generate a personalised quiz!</p>
+            <button class="main-btn">
+                Create a quiz
+            </button>
+        </div>
+        <div class="create-quiz-container">
+            <img src="/static/student.png" alt="logout"> 
+            <p class="basic-text">Join a friend's personalised quiz and compete!</p>
+            <input
+                type="text"
+                placeholder="Enter invite code →"
+                v-model="inputs.inviteCode"
+                class="basic-input"
+            />
+        </div>
+    </div>
+    <div class="menu-col-2"></div>
+    <div class="menu-col-3"></div>
 </div>

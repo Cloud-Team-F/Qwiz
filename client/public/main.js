@@ -5,6 +5,7 @@ var app = new Vue({
         inputs: {
             username: "",
             password: "",
+            inviteCode: ""
         },
         errorMessage: null,
         successMessage: null,

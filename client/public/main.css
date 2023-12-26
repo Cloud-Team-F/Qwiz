@@ -43,6 +43,7 @@ body {
     /* Additional vertical centering can be done using top and transform properties */
     top: 50%;
     transform: translate(-50%, -50%);
+    text-align: center;
 }
 
 .navbar-right {
@@ -56,6 +57,7 @@ body {
     font-size: 50px;
     color: #DAADE7;
     margin-bottom: -10px;
+    text-align: center;
 }
 
 .login-subtitle {
@@ -66,6 +68,7 @@ body {
     font-size: 13px;
     color: #DAADE7;
     margin-bottom: 2rem;
+    text-align: center;
 }
 
 .subtitle-image {
@@ -104,6 +107,23 @@ body {
 }
 
 .btn-primary:hover {
+    background: #7B1FA2; /* Darker purple background on hover */
+}
+
+.main-btn {
+    border-radius: 40px;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-weight: 300; /* Make the text bold */
+    background: #540479; /* Purple background */
+    border: none; /* Remove border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    color: white;
+}
+
+.main-btn:hover {
     background: #7B1FA2; /* Darker purple background on hover */
 }
 
@@ -160,12 +180,53 @@ body {
 
 .main-menu {
     background-color: #E9BBFF;
-    height: 100vh; /* This sets the height to be 100% of the viewport height */
+    height: 90vh; /* This sets the height to be 100% of the viewport height */
     width: 100%; /* This ensures it takes the full width; adjust as necessary */
     display: flex;
     flex-direction: column;
     justify-content: center; /* This will vertically center the content */
     align-items: center; /* This will horizontally center the content */
+}
+
+.menu-col-1 {
+    width: 33%;
+    padding: 10px;
+    height: 90vh;
+    display: flex; /* Make it a flex container */
+    align-items: center; /* Center items vertically */
+    flex-direction: column; /* Stack items vertically */
+    gap: 2rem; /* Spacing between each item */
+}
+
+.create-quiz-container {
+    background-color: white;
+    border-radius: 40px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    display: flex; /* Make it a flex container */
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    flex-direction: column; /* Stack items vertically */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    gap: 15px; /* Spacing between each item */
+}
+
+.basic-text {
+    color: black;
+    font-weight: 500;
+    font-size: 16px;
+    text-align: center;
+}
+
+.basic-input {
+    border-radius: 40px;
+    border-width: 3px;
+    border-color: #D5D5D5;
+    padding: 1rem; /* Add padding */
+    margin: 0.5rem 0;
+    text-align: center;
 }
 
 .error-popup-container {
@@ -219,4 +280,6 @@ body {
 .error-message {
     color: #333;
     font-size: 16px; /* Adjust if needed */
+    text-align: center;
 }
+
