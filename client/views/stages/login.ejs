@@ -1,24 +1,29 @@
 <div class="d-flex flex-column align-items-center">
-    <div
-        class="d-flex flex-column gap-3 align-items-center"
-        style="width: 25rem"
-    >
-        <input
-            type="text"
-            placeholder="Username"
-            v-model="inputs.username"
-            class="form-control"
-        />
-        <input
-            type="password"
-            placeholder="Password"
-            v-model="inputs.password"
-            class="form-control"
-        />
-        <div>
-            <button @click="login()" class="btn btn-primary">Login</button>
-            <button @click="register()" class="btn btn-primary">
-                Register
+    <div class="d-flex flex-column gap-3 align-items-center" style="width: 35%">
+        <h2 class="login-title">Revise with ease.</h2>
+        <div class="login-subtitle">
+            <img src="/static/Multiple stars.png" alt="Stars" class="subtitle-image">
+            <span>Equipped with GPT-4</span>
+        </div>
+        <div class="auth-container">
+            <div class="toggle-buttons">
+                <button @click="toggleMode('login')" :class="{'active': mode === 'login'}">Login</button>
+                <button @click="toggleMode('signup')" :class="{'active': mode === 'signup'}">Sign up</button>
+            </div>
+            <input
+                type="text"
+                placeholder="Username"
+                v-model="inputs.username"
+                class="form-control"
+            />
+            <input
+                type="password"
+                placeholder="Password"
+                v-model="inputs.password"
+                class="form-control"
+            />
+            <button @click="mode === 'login' ? login() : register()" class="btn btn-primary">
+                {{ mode === 'login' ? 'Login' : 'Register' }}
             </button>
         </div>
     </div>

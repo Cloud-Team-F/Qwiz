@@ -10,6 +10,7 @@ var app = new Vue({
         successMessage: null,
         loadingScreen: false,
         loading: false,
+        mode: 'login'
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -17,6 +18,9 @@ var app = new Vue({
     },
     methods: {
         advance() {},
+        toggleMode(newMode) {
+            this.mode = newMode;
+        },
         clearLoginInputs() {
             this.inputs.username = "";
             this.inputs.password = "";
@@ -85,6 +89,32 @@ var app = new Vue({
             setTimeout(() => {
                 this.successMessage = null;
             }, 3000);
+        },
+        sendFile(formData) {
+            sendRequest(
+                "POST",
+                "/api/upload",
+                formData,
+                (res) => {
+                    // Handle a successful file upload response from the server
+                    console.log(res.data.message);
+                },
+                (err) => {
+                    // Handle errors, such as file size limits, if necessary
+                    console.error(err.response.data.error);
+                },
+                false // Set loadingScreen to false to prevent showing a loading screen
+            );
+        },
+        uploadFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append("file", file);
+    
+                // Send the file to the server using an API endpoint
+                this.sendFile(formData);
+            }
         },
     },
 });
