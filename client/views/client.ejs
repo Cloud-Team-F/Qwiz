@@ -2,7 +2,7 @@
 <html lang="en">
     <%- include('header'); -%>
 
-    <div id="app">
+    <div id="app" :class="{'logged-in': user}">
         <%- include('components/navbar'); -%>
         <div v-if="loadingScreen" class="loading-screen">
             <div class="spinner-border" role="status">
@@ -25,8 +25,9 @@
 
             <!-- Main page -->
             <div v-else class="container">
-                <p>Welcome, {{ user.username }}!</p>
+                <!-- <p>Welcome, {{ user.username }}!</p> -->
                 <!-- <input type="file" id="fileInput" @change="uploadFile"> -->
+                <%- include('stages/menu'); -%>
             </div>
         </div>
     </div>

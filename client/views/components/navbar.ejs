@@ -1,8 +1,9 @@
 <div class="navbar">
-    <p></p>
+    <h3 class="navbar-title" v-if="user">Qwiz</h3>
     <div class="navbar-right">
-        <button @click="logout()" class="btn btn-primary" v-if="user">
-            Logout
+        <button @click="logout()" class="logout-btn" v-if="user">
+            <span class="logout-btn-text">{{ user.username }}</span>
+            <img src="/static/logout-icon.png" alt="logout">
         </button>
     </div>
 </div>

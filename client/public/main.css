@@ -23,9 +23,32 @@ body {
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.05);
     padding: 1rem 4rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* This will place the title and the button at the extremes */
     align-items: center;
     margin-bottom: 2rem;
+    background-color: #33014B;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: relative; /* Needed for absolute positioning of the title */
+}
+
+.navbar-title {
+    font-weight: 500;
+    font-size: 24px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0; /* Remove default margin */
+    line-height: 1; /* Adjust line height as necessary */
+    /* Additional vertical centering can be done using top and transform properties */
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.navbar-right {
+    display: flex;
+    justify-content: flex-end; /* Align button to the right */
+    width: 100%; /* Take full width to push the button to the right */
 }
 
 .login-title {
@@ -84,6 +107,25 @@ body {
     background: #7B1FA2; /* Darker purple background on hover */
 }
 
+.logout-btn {
+    border-radius: 40px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-weight: 400; /* Make the text bold */
+    background: transparent; /* Purple background */
+    border-color: white;
+    border-width: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    color: white;
+    font-size: 14px;
+}
+
+.logout-btn:hover {
+    background: #7B1FA2; /* Darker purple background on hover */
+}
+
 .toggle-buttons {
     display: flex;
     gap: 10px; /* Space between toggle buttons */
@@ -110,6 +152,20 @@ body {
 .toggle-buttons button.active {
     background-color: #CC63FF;
     color: white;
+}
+
+.logged-in {
+    background-color: #E9BBFF !important;
+}
+
+.main-menu {
+    background-color: #E9BBFF;
+    height: 100vh; /* This sets the height to be 100% of the viewport height */
+    width: 100%; /* This ensures it takes the full width; adjust as necessary */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* This will vertically center the content */
+    align-items: center; /* This will horizontally center the content */
 }
 
 .error-popup-container {
