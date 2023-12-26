@@ -77,7 +77,6 @@ var app = new Vue({
                 }
             );
         },
-
         fail(message) {
             this.errorMessage = message;
             setTimeout(() => {

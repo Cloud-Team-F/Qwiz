@@ -13,11 +13,11 @@
 
         <div v-else>
             <!-- ALerts -->
-            <div v-if="errorMessage" class="container alert alert-danger">
-                <strong>Error: </strong> {{ errorMessage }}
+            <div v-if="errorMessage">
+                <%- include('components/error-popup'); -%>
             </div>
-            <div v-if="successMessage" class="container alert alert-success">
-                <strong>Success: </strong> {{ successMessage }}
+            <div v-if="successMessage">
+                <%- include('components/success-popup'); -%>
             </div>
 
             <!-- Login page -->
