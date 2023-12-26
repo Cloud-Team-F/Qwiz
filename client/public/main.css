@@ -40,7 +40,6 @@ body {
     transform: translateX(-50%);
     margin: 0; /* Remove default margin */
     line-height: 1; /* Adjust line height as necessary */
-    /* Additional vertical centering can be done using top and transform properties */
     top: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
@@ -140,6 +139,7 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
     color: white;
     font-size: 14px;
+    
 }
 
 .logout-btn:hover {
@@ -183,9 +183,9 @@ body {
     height: 90vh; /* This sets the height to be 100% of the viewport height */
     width: 100%; /* This ensures it takes the full width; adjust as necessary */
     display: flex;
-    flex-direction: column;
     justify-content: center; /* This will vertically center the content */
-    align-items: center; /* This will horizontally center the content */
+    align-items: start; /* This will horizontally center the content */
+    gap: 5rem;
 }
 
 .menu-col-1 {
@@ -193,12 +193,22 @@ body {
     padding: 10px;
     height: 90vh;
     display: flex; /* Make it a flex container */
-    align-items: center; /* Center items vertically */
+    align-items: start; /* Center items vertically */
     flex-direction: column; /* Stack items vertically */
     gap: 2rem; /* Spacing between each item */
 }
 
-.create-quiz-container {
+.menu-col-2 {
+    width: 33%;
+    padding: 10px;
+    height: 90vh;
+    display: flex; /* Make it a flex container */
+    align-items: start; /* Center items vertically */
+    flex-direction: column; /* Stack items vertically */
+    gap: 1rem; /* Spacing between each item */
+}
+
+.menu-container {
     background-color: white;
     border-radius: 40px;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
@@ -213,6 +223,45 @@ body {
     gap: 15px; /* Spacing between each item */
 }
 
+.create-quiz-container {
+    background-color: white;
+    border-radius: 40px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    display: flex; /* Make it a flex container */
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    flex-direction: column; /* Stack items vertically */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    gap: 15px; /* Spacing between each item */
+    width: 75%;
+    position: relative;
+}
+
+.quiz-input {
+    width: 90%;
+    display: flex; /* Make it a flex container */
+    justify-content: start; /* Center items horizontally */
+    align-items: start; /* Center items vertically */
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px;
+}
+
+.container-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align content to the start (left) */
+    width: 100%;
+    padding-bottom: 15px; /* Optional: space below the header */
+}
+
+.container-header img {
+    margin-left: auto; /* Center the image */
+    margin-right: auto;
+}
+
 .basic-text {
     color: black;
     font-weight: 500;
@@ -220,13 +269,85 @@ body {
     text-align: center;
 }
 
+.col-titles {
+    color: black;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.back-button {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    background-color: white;
+    border-radius: 50%; /* Makes it circular */
+    border: 3px solid #540479;
+    height: 40px; /* Specific height for a perfect circle */
+    width: 40px; /* Specific width for a perfect circle */
+    display: flex;
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+    padding: 0; /* Remove any default padding */
+}
+
+.back-button img {
+    height: 80%; /* Adjust the size of the image */
+    width: 80%; /* Adjust the size of the image */
+}
+
+.basic-input-center {
+    border-radius: 40px;
+    border-width: 3px;
+    border-color: #D5D5D5;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    text-align: center;
+}
+
 .basic-input {
     border-radius: 40px;
     border-width: 3px;
     border-color: #D5D5D5;
-    padding: 1rem; /* Add padding */
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     margin: 0.5rem 0;
-    text-align: center;
+    font-size: 16px;
+    width: 50%;
+}
+
+.quiz-text-input {
+    border-radius: 40px;
+    border: 3px solid #D5D5D5;
+    padding: 1rem 1.5rem;
+    margin: 0.5rem 0;
+    font-size: 16px;
+    width: 50%; /* Adjust width as needed */
+    height: 200px; /* Set a fixed height or use min-height */
+    resize: vertical; /* Allow resizing vertically */
+    overflow: hidden; /* Add scroll bar when content overflows */
+}
+
+
+.date {
+    gap: 8px;
+}
+
+.date span {
+    font-weight: 300;
+    font-size: 14px;
+    color: black;
+}
+
+.input-title {
+    gap: 8px;
+}
+
+.input-title span {
+    color: black;
+    font-weight: 300;
+    font-size: 14px;
 }
 
 .error-popup-container {

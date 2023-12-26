@@ -5,13 +5,16 @@ var app = new Vue({
         inputs: {
             username: "",
             password: "",
-            inviteCode: ""
+            inviteCode: "",
+            quizName: "",
+            quizText: ""
         },
         errorMessage: null,
         successMessage: null,
         loadingScreen: false,
         loading: false,
-        mode: 'login'
+        mode: 'login',
+        creatingQuiz: false
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -116,6 +119,12 @@ var app = new Vue({
                 this.sendFile(formData);
             }
         },
+        createQuiz() {
+            this.creatingQuiz = true;
+        },
+        closeCreateQuiz() {
+            this.creatingQuiz = false;
+        }
     },
 });
 

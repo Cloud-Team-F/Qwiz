@@ -1,23 +1,39 @@
 <div class="main-menu">
     <div class="menu-col-1">
-        <div class="create-quiz-container">
-            <img src="/static/create-doc.png" alt="logout"> 
+        <div class="menu-container">
+            <img src="/static/create-doc.png" alt="create"> 
             <p class="basic-text">Add text and files to generate a personalised quiz!</p>
-            <button class="main-btn">
+            <button @click="createQuiz()" class="main-btn">
                 Create a quiz
             </button>
         </div>
-        <div class="create-quiz-container">
-            <img src="/static/student.png" alt="logout"> 
+        <div class="menu-container">
+            <img src="/static/student.png" alt="student"> 
             <p class="basic-text">Join a friend's personalised quiz and compete!</p>
             <input
                 type="text"
                 placeholder="Enter invite code →"
                 v-model="inputs.inviteCode"
-                class="basic-input"
+                class="basic-input-center"
             />
         </div>
     </div>
-    <div class="menu-col-2"></div>
-    <div class="menu-col-3"></div>
+    <div class="menu-col-2">
+        <p class="col-titles">
+            My quizzes
+        </p>
+        <!-- <div class="date">
+            <img src="/static/calendar.png" alt="calendar"> 
+            <span>December 2023</span>
+        </div> -->
+    </div>
+    <div class="menu-col-2">
+        <p class="col-titles">
+            Shared quizzes
+        </p>
+        <!-- <div class="date">
+            <img src="/static/calendar.png" alt="calendar"> 
+            <span>January 2024</span>
+        </div> -->
+    </div>
 </div>
