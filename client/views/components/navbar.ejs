@@ -1,7 +1,7 @@
 <div class="navbar">
-    <div class="navbar-logo">
+    <div class="navbar-logo" v-if="user">
         <img src="/static/star.png" alt="star">
-        <h3 class="navbar-title" v-if="user">Qwiz</h3>
+        <h3 class="navbar-title">Qwiz</h3>
     </div>
     <div class="navbar-right">
         <button @click="logout()" class="logout-btn" v-if="user">
