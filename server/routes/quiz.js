@@ -1,8 +1,11 @@
+import FormData from "form-data";
 import { WebPubSubEventHandler } from "@azure/web-pubsub-express";
 import { WebPubSubServiceClient } from "@azure/web-pubsub";
 import createHttpError from "http-errors";
 import env from "../utils/validateEnv.js";
 import express from "express";
+import multer from "multer";
+import { quizCreate } from "../utils/azure.js";
 import { requiresAuth } from "../middleware/requiresAuth.js";
 
 const router = express.Router();
@@ -36,6 +39,10 @@ router.get("/negotiate", requiresAuth, async (req, res) => {
     res.status(200).json({
         url: token.url,
     });
+});
+
+router.post("/create", requiresAuth, async (req, res, next) => {
+    res.status(200).json({ message: "Quiz not created :]" });
 });
 
 export default router;

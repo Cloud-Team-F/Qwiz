@@ -53,6 +53,8 @@ app.use((error, req, res, next) => {
     if (error instanceof createHttpError.HttpError) {
         statusCode = error.status;
         errorMessage = error.message;
+    } else {
+        console.log(error);
     }
     res.status(statusCode).json({ error: errorMessage });
 });

@@ -1,7 +1,13 @@
 import axios from "axios";
 import env from "./validateEnv.js";
 
-function fetchHelper(endpoint, method, body = null, queryParams = {}) {
+function fetchHelper(
+    endpoint,
+    method,
+    body = null,
+    queryParams = {},
+    headers = { "Content-Type": "application/json" }
+) {
     const queryString = new URLSearchParams(queryParams).toString();
     const url =
         env.AZURE_FUNCTION_URL +
@@ -14,7 +20,7 @@ function fetchHelper(endpoint, method, body = null, queryParams = {}) {
         method: method,
         url: url,
         data: body,
-        headers: { "Content-Type": "application/json" },
+        headers: headers,
     }).then((response) => response.data);
 }
 
@@ -28,4 +34,8 @@ export function userRegister(username, password) {
 
 export function userGet(id) {
     return fetchHelper("/user_get", "GET", null, { id });
+}
+
+export function quizCreate(formData) {
+    return fetchHelper("/upload_documents", "POST", formData, {}, headers);
 }

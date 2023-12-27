@@ -58,6 +58,7 @@ def main(req: HttpRequest) -> HttpResponse:
 
     # Check missing form data
     if not quiz_name or not user_id:
+        logging.error(f"Form data: {req.form}")
         return create_error_response("Missing quiz name or user id", 400)
     if not files:
         return create_error_response("No files uploaded", 400)
