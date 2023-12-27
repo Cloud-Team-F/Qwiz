@@ -24,11 +24,39 @@
                 <img src="/static/document.png" alt="name"> 
                 <span>Add text and/or files</span>
             </div>
-            <textarea
-                placeholder="Enter text here (max 4000 characters)"
-                v-model="inputs.quizText"
-                class="quiz-text-input"
-            ></textarea>
+            <div class="large-inputs">
+                <textarea
+                    placeholder="Enter text here (max 4000 characters)"
+                    v-model="inputs.quizText"
+                    class="quiz-text-input"
+                ></textarea>
+                <div class="file-upload">
+                    <div class="file-upload-container">
+                        <input
+                            type="file"
+                            id="fileInput"
+                            class="file-input"
+                            @change="uploadFile"
+                            accept=".pdf,.pptx,.doc,.docx"
+                        />
+                        <label for="fileInput" class="file-label">
+                            <img src="/static/upload.png" alt="upload">
+                            <span>Upload or drop files</span>
+                            <div class="info-text">
+                                <img src="/static/info.png" alt="info">
+                                <span>Supported types: PDF, PPTX, DOCX, DOC</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="date">
+                        <img src="/static/folder.png" alt="folder"> 
+                        <span>{{ filesUploaded.length }} files uploaded:</span>
+                        <span v-for="(file, index) in filesUploaded" :key="index" class="file-name">
+                            {{ file }}<span v-if="index < filesUploaded.length - 1" class="file-name">, </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <button @click="" class="main-btn">
