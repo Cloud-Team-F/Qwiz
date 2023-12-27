@@ -3,10 +3,13 @@ import json
 import logging
 
 from azure.functions import QueueMessage
-from utils import get_quizzes_container
+from utils import get_quizzes_container, get_pubsub_client
 
 # Proxy to CosmosDB
 QuizContainerProxy = get_quizzes_container()
+
+# PubSub client
+pubsub = get_pubsub_client()
 
 
 def main(msg: QueueMessage) -> None:
@@ -80,4 +83,11 @@ def main(msg: QueueMessage) -> None:
         body=quiz,
     )
 
-    # todo:: notify user
+    # Notify user that quiz has been processed
+    pubsub.send_to_user(
+        user_id=user_id,
+        message={
+            "type": "quiz_processed",
+            "quiz_id": quiz_id,
+        },
+    )

@@ -10,6 +10,7 @@ import express from "express";
 import { fileURLToPath } from "url";
 import morgan from "morgan";
 import multer from "multer";
+import quizRoutes from "./routes/quiz.js";
 
 const port = env.PORT;
 
@@ -40,6 +41,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/quiz", quizRoutes);
 
 app.use((req, res, next) => {
     res.render("404");

@@ -1,3 +1,5 @@
+let ws = null;
+
 var app = new Vue({
     el: "#app",
     data: {
@@ -7,15 +9,15 @@ var app = new Vue({
             password: "",
             inviteCode: "",
             quizName: "",
-            quizText: ""
+            quizText: "",
         },
         errorMessage: null,
         successMessage: null,
         loadingScreen: false,
         loading: false,
-        mode: 'login',
+        mode: "login",
         creatingQuiz: false,
-        filesUploaded: []
+        filesUploaded: [],
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -111,21 +113,21 @@ var app = new Vue({
             );
         },
         uploadFile(event) {
-            console.log('Uploading file...');
+            console.log("Uploading file...");
             const file = event.target.files[0];
 
             if (this.filesUploaded.length < 5) {
                 console.log(file);
-                this.filesUploaded.push(file.name)
+                this.filesUploaded.push(file.name);
                 if (file) {
                     const formData = new FormData();
                     formData.append("file", file);
-        
+
                     // Send the file to the server using an API endpoint
                     this.sendFile(formData);
                 }
             } else {
-                this.fail('Maximum 5 files allowed');
+                this.fail("Maximum 5 files allowed");
             }
         },
         createQuiz() {
@@ -133,16 +135,47 @@ var app = new Vue({
         },
         closeCreateQuiz() {
             this.creatingQuiz = false;
-        }
+        },
     },
 });
 
 function connect() {
+    // Check if user is logged in
     axios
         .get("/api/auth/me")
         .then((res) => {
             console.log(res.data);
             app.user = res.data;
+
+            // Connect to Web PubSub
+            axios
+                .get("/api/quiz/negotiate")
+                .then((res) => {
+                    ws = new WebSocket(res.data.url, "json.webpubsub.azure.v1");
+                    ws.onopen = () => console.log("connected");
+
+                    ws.onmessage = (event) => {
+                        // convert to JSON
+                        try {
+                            event_data = JSON.parse(event.data);
+                        } catch (e) {
+                            console.log(e);
+                        }
+                        if (
+                            event_data.data &&
+                            event_data.data.type &&
+                            event_data.data.type === "quiz_processed"
+                        ) {
+                            app.success("Your quiz has been created!");
+                        }
+                        console.log(event_data);
+                    };
+
+                    ws.onclose = () => console.log("disconnected");
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         })
         .catch((err) => {
             console.log("User not logged in");
