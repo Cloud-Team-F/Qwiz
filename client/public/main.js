@@ -14,7 +14,8 @@ var app = new Vue({
         loadingScreen: false,
         loading: false,
         mode: 'login',
-        creatingQuiz: false
+        creatingQuiz: false,
+        filesUploaded: []
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -110,13 +111,21 @@ var app = new Vue({
             );
         },
         uploadFile(event) {
+            console.log('Uploading file...');
             const file = event.target.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append("file", file);
-    
-                // Send the file to the server using an API endpoint
-                this.sendFile(formData);
+
+            if (this.filesUploaded.length < 5) {
+                console.log(file);
+                this.filesUploaded.push(file.name)
+                if (file) {
+                    const formData = new FormData();
+                    formData.append("file", file);
+        
+                    // Send the file to the server using an API endpoint
+                    this.sendFile(formData);
+                }
+            } else {
+                this.fail('Maximum 5 files allowed');
             }
         },
         createQuiz() {

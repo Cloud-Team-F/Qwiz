@@ -25,10 +25,8 @@
 
             <!-- Main page -->
             <div v-else class="container">
-                <!-- <p>Welcome, {{ user.username }}!</p> -->
-                <!-- <input type="file" id="fileInput" @change="uploadFile"> -->
-                <div v-if="!creatingQuiz"><%- include('stages/menu'); -%></div>
-                <div v-else><%- include('stages/create-quiz'); -%></div>
+                <div v-if="creatingQuiz"><%- include('stages/create-quiz'); -%></div>
+                <div v-else><%- include('stages/menu'); -%></div>
             </div>
         </div>
     </div>
