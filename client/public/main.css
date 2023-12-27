@@ -236,7 +236,7 @@ body {
     padding-left: 2rem;
     padding-right: 2rem;
     gap: 15px; /* Spacing between each item */
-    width: 75%;
+    width: 100%;
     position: relative;
 }
 
