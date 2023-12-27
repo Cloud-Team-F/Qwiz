@@ -43,6 +43,7 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
                     this.user = res.data;
+                    connectPubSub();
                     this.clearLoginInputs();
                 },
                 (err) => {
@@ -61,6 +62,7 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
                     this.user = res.data;
+                    connectPubSub();
                     this.clearLoginInputs();
                     this.success("Successfully registered!");
                 },
@@ -78,6 +80,7 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
                     this.user = null;
+                    disconnectPubSub();
                 },
                 (err) => {
                     this.fail(err.response.data.error);
@@ -147,35 +150,8 @@ function connect() {
             console.log(res.data);
             app.user = res.data;
 
-            // Connect to Web PubSub
-            axios
-                .get("/api/quiz/negotiate")
-                .then((res) => {
-                    ws = new WebSocket(res.data.url, "json.webpubsub.azure.v1");
-                    ws.onopen = () => console.log("connected");
-
-                    ws.onmessage = (event) => {
-                        // convert to JSON
-                        try {
-                            event_data = JSON.parse(event.data);
-                        } catch (e) {
-                            console.log(e);
-                        }
-                        if (
-                            event_data.data &&
-                            event_data.data.type &&
-                            event_data.data.type === "quiz_processed"
-                        ) {
-                            app.success("Your quiz has been created!");
-                        }
-                        console.log(event_data);
-                    };
-
-                    ws.onclose = () => console.log("disconnected");
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            // Connect to pubsub
+            connectPubSub();
         })
         .catch((err) => {
             console.log("User not logged in");
@@ -183,6 +159,44 @@ function connect() {
         .finally(() => {
             app.loadingScreen = false;
         });
+}
+
+function connectPubSub() {
+    // Connect to Web PubSub
+    axios
+        .get("/api/quiz/negotiate")
+        .then((res) => {
+            ws = new WebSocket(res.data.url, "json.webpubsub.azure.v1");
+            ws.onopen = () => console.log("connected");
+
+            ws.onmessage = (event) => {
+                // convert to JSON
+                try {
+                    event_data = JSON.parse(event.data);
+                } catch (e) {
+                    console.log(e);
+                }
+                if (
+                    event_data.data &&
+                    event_data.data.type &&
+                    event_data.data.type === "quiz_processed"
+                ) {
+                    app.success("Your quiz has been created!");
+                }
+                console.log(event_data);
+            };
+
+            ws.onclose = () => console.log("disconnected");
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+function disconnectPubSub() {
+    if (ws) {
+        ws.close();
+    }
 }
 
 function sendRequest(
