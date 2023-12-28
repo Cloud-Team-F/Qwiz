@@ -1,13 +1,13 @@
 <div class="main-menu">
     <div class="create-quiz-container">
         <button class="back-button" @click="closeCreateQuiz()">
-            <img src="/static/left.png" alt="back"> 
+            <img src="/static/left.png" alt="back" />
         </button>
-        <img src="/static/create-doc.png" alt="create"> 
-        
+        <img src="/static/create-doc.png" alt="create" />
+
         <div class="quiz-input">
             <div class="date">
-                <img src="/static/name.png" alt="name"> 
+                <img src="/static/name.png" alt="name" />
                 <span>Quiz name</span>
             </div>
             <input
@@ -17,11 +17,10 @@
                 class="basic-input"
             />
         </div>
-        
-        
+
         <div class="quiz-input">
             <div class="date">
-                <img src="/static/document.png" alt="name"> 
+                <img src="/static/document.png" alt="name" />
                 <span>Add text and/or files</span>
             </div>
             <div class="large-inputs">
@@ -40,27 +39,36 @@
                             accept=".pdf,.pptx,.doc,.docx"
                         />
                         <label for="fileInput" class="file-label">
-                            <img src="/static/upload.png" alt="upload">
+                            <img src="/static/upload.png" alt="upload" />
                             <span>Upload or drop files</span>
                             <div class="info-text">
-                                <img src="/static/info.png" alt="info">
-                                <span>Supported types: PDF, PPTX, DOCX, DOC</span>
+                                <img src="/static/info.png" alt="info" />
+                                <span
+                                    >Supported types: PDF, PPTX, DOCX, DOC</span
+                                >
                             </div>
                         </label>
                     </div>
                     <div class="date">
-                        <img src="/static/folder.png" alt="folder"> 
+                        <img src="/static/folder.png" alt="folder" />
                         <span>{{ filesUploaded.length }} files uploaded:</span>
-                        <span v-for="(file, index) in filesUploaded" :key="index" class="file-name">
-                            {{ file }}<span v-if="index < filesUploaded.length - 1" class="file-name">, </span>
+                        <span
+                            v-for="(file, index) in filesUploaded"
+                            :key="index"
+                            class="file-name"
+                        >
+                            {{ file.name
+                            }}<span
+                                v-if="index < filesUploaded.length - 1"
+                                class="file-name"
+                                >,
+                            </span>
                         </span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <button @click="" class="main-btn">
-            Continue
-        </button>
+        <button @click="uploadQuiz()" class="main-btn">Continue</button>
     </div>
 </div>

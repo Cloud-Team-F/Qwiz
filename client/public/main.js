@@ -3,6 +3,10 @@ let ws = null;
 var app = new Vue({
     el: "#app",
     data: {
+        // Loading states
+        loadingScreen: false,
+        loading: false,
+
         user: null,
         inputs: {
             username: "",
@@ -13,8 +17,6 @@ var app = new Vue({
         },
         errorMessage: null,
         successMessage: null,
-        loadingScreen: false,
-        loading: false,
         mode: "login",
         creatingQuiz: false,
         filesUploaded: [],
@@ -31,6 +33,11 @@ var app = new Vue({
         clearLoginInputs() {
             this.inputs.username = "";
             this.inputs.password = "";
+        },
+        clearQuizInputs() {
+            this.inputs.quizName = "";
+            this.inputs.quizText = "";
+            this.filesUploaded = [];
         },
         login() {
             sendRequest(
@@ -99,39 +106,47 @@ var app = new Vue({
                 this.successMessage = null;
             }, 3000);
         },
-        sendFile(formData) {
-            sendRequest(
-                "POST",
-                "/api/upload",
-                formData,
-                (res) => {
-                    // Handle a successful file upload response from the server
-                    console.log(res.data.message);
-                },
-                (err) => {
-                    // Handle errors, such as file size limits, if necessary
-                    console.error(err.response.data.error);
-                },
-                false // Set loadingScreen to false to prevent showing a loading screen
-            );
-        },
         uploadFile(event) {
             console.log("Uploading file...");
             const file = event.target.files[0];
 
             if (this.filesUploaded.length < 5) {
                 console.log(file);
-                this.filesUploaded.push(file.name);
-                if (file) {
-                    const formData = new FormData();
-                    formData.append("file", file);
-
-                    // Send the file to the server using an API endpoint
-                    this.sendFile(formData);
-                }
+                this.filesUploaded.push(file);
             } else {
                 this.fail("Maximum 5 files allowed");
             }
+        },
+        uploadQuiz() {
+            console.log("Uploading quiz...");
+
+            // Create a new FormData instance
+            const formData = new FormData();
+
+            // Append text fields
+            formData.append("quiz_name", this.inputs.quizName);
+            formData.append("quiz_text", this.inputs.quizText);
+
+            // Append files
+            for (const file of this.filesUploaded) {
+                formData.append("files[]", file);
+            }
+
+            // Ssend request to server
+            sendFormData(
+                "POST",
+                "/api/quiz/create",
+                formData,
+                (res) => {
+                    console.log(res);
+                    this.success("Your quiz is being processed!");
+                    this.clearQuizInputs();
+                    this.closeCreateQuiz();
+                },
+                (err) => {
+                    this.fail(err.response.data.error);
+                }
+            );
         },
         createQuiz() {
             this.creatingQuiz = true;
@@ -197,6 +212,35 @@ function disconnectPubSub() {
     if (ws) {
         ws.close();
     }
+}
+
+function sendFormData(method, url, formData, callback, callbackError) {
+    app.loading = true;
+    app.loadingScreen = true;
+
+    axios({
+        method: method,
+        url: url,
+        data: formData,
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
+        .then((res) => {
+            console.log(res);
+            callback(res);
+        })
+        .catch((err) => {
+            if (err.code === "ERR_NETWORK") {
+                app.fail("Unable to connect to server");
+                return;
+            }
+            callbackError(err);
+        })
+        .finally(() => {
+            app.loading = false;
+            app.loadingScreen = false;
+        });
 }
 
 function sendRequest(

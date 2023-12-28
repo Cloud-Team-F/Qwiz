@@ -9,7 +9,6 @@ import env from "./utils/validateEnv.js";
 import express from "express";
 import { fileURLToPath } from "url";
 import morgan from "morgan";
-import multer from "multer";
 import quizRoutes from "./routes/quiz.js";
 
 const port = env.PORT;
@@ -61,24 +60,4 @@ app.use((error, req, res, next) => {
 
 app.listen(port, () => {
     console.log("Server running on port: " + port);
-});
-
-// Create a multer instance for file uploads
-const upload = multer({ dest: "uploads/" }); // Define the destination folder for uploaded files
-
-// Create an API endpoint for file uploads
-app.post("/api/upload", upload.single("file"), (req, res) => {
-    // Access the uploaded file through req.file
-    const uploadedFile = req.file;
-    if (!uploadedFile) {
-        console.log("Error - no file uploaded");
-        return res.status(400).json({ error: "No file uploaded" });
-    }
-
-    // Process the uploaded file (e.g., store it, use it for OpenAI prompt, etc.)
-    // Implement the necessary logic here based on your requirements.
-
-    // Send a response to the client
-    console.log("File uploaded successfully");
-    res.json({ message: "File uploaded successfully" });
 });

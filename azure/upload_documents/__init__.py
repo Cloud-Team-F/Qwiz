@@ -62,6 +62,8 @@ def main(req: HttpRequest) -> HttpResponse:
         return create_error_response("Missing quiz name or user id", 400)
     if not files:
         return create_error_response("No files uploaded", 400)
+    if len(files) > 5:
+        return create_error_response("Max 5 files", 400)
     logging.info(f"Received {len(files)} files")
 
     # Validate quiz_name
@@ -80,18 +82,18 @@ def main(req: HttpRequest) -> HttpResponse:
         if not file:
             return create_error_response("No files uploaded", 400)
         if file.mimetype not in supported_filetypes:
-            return create_error_response(f"Unsupported file type: {file.mimetype}", 400)
+            return create_error_response(f"Unsupported file type: {file.mimetype}", 415)
 
         # Ensure file binary is a pdf (magic number check)
         try:
             file_type = filetype.guess(file.read())
         except Exception as e:
             logging.error("Error guessing filetype: ", e)
-            return create_error_response("Error guessing filetype", 500)
+            return create_error_response("Error guessing filetype", 415)
 
         if file_type.mime != "application/pdf":
             return create_error_response(
-                f"Unsupported file type: {file_type.mime}", 400
+                f"Unsupported file type: {file_type.mime}", 415
             )
 
         # Ensure file size is not too large
