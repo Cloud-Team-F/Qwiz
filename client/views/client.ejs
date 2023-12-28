@@ -24,7 +24,7 @@
             <div v-if="!user"><%- include('stages/login'); -%></div>
 
             <!-- Main page -->
-            <div v-else class="container">
+            <div v-else>
                 <div v-if="creatingQuiz"><%- include('stages/create-quiz'); -%></div>
                 <div v-else><%- include('stages/menu'); -%></div>
             </div>

@@ -33,7 +33,21 @@
             v-for="quiz in ownQuizzes"
             class="quiz-container"
         >
-            <div class="menu-container basic-text">
+            <div class="quiz-item">
+                <div class="quiz-details">
+                    <div class="quiz-question-count">
+                        <div class="circle"></div>
+                        <p class="basic-text">{{ quiz.question_count }} questions</p>
+                    </div>
+                    <p class="quiz-name">{{ quiz.name }}</p>
+                </div>
+
+                <button @click="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
+                    <img src="/static/play.png" alt="start" />
+                    <span>Start</span>
+                </button>
+            </div>
+            <!-- <div class="menu-container basic-text">
                 <p>{{ quiz.question_count }} Questions</p>
                 <p>{{ quiz.name }}</p>
                 <p v-if="!quiz.processed">Currently being processed!</p>
@@ -44,13 +58,16 @@
                 >
                     Start
                 </button>
-            </div>
+            </div> -->
         </div>
         <div v-if="loadingQuizList" v-for="index in 3" :key="index">
             <div class="menu-container basic-text placeholder placeholder-glow">
                 <span class="placeholder col-7 rounded"></span>
                 <span class="placeholder col-12 rounded"></span>
-                <button class="main-btn disabled placeholder">Start</button>
+                <button class="small-btn disabled placeholder">
+                    <img src="/static/play.png" alt="start" />
+                    <span>Start</span>
+                </button>
             </div>
         </div>
     </div>
@@ -65,11 +82,18 @@
             v-for="quiz in sharedQuizzes"
             class="quiz-container"
         >
-            <div class="menu-container basic-text">
-                <p>{{ quiz.question_count }} Questions</p>
-                <p>{{ quiz.name }}</p>
-                <button @click="startQuiz(quiz.id)" class="main-btn">
-                    Start
+            <div class="quiz-item">
+                <div class="quiz-details">
+                    <div class="quiz-question-count">
+                        <div class="circle"></div>
+                        <p class="basic-text">{{ quiz.question_count }} questions</p>
+                    </div>
+                    <p class="quiz-name">{{ quiz.name }}</p>
+                </div>
+
+                <button @click="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
+                    <img src="/static/play.png" alt="start" />
+                    <span>Start</span>
                 </button>
             </div>
         </div>
@@ -77,7 +101,10 @@
             <div class="menu-container basic-text placeholder placeholder-glow">
                 <span class="placeholder col-7 rounded"></span>
                 <span class="placeholder col-12 rounded"></span>
-                <button class="main-btn disabled placeholder">Start</button>
+                <button class="small-btn disabled placeholder">
+                    <img src="/static/play.png" alt="start" />
+                    <span>Start</span>
+                </button>
             </div>
         </div>
     </div>

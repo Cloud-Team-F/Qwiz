@@ -124,9 +124,29 @@ body {
     border: none; /* Remove border */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
     color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .main-btn:hover {
+    background: #7B1FA2; /* Darker purple background on hover */
+}
+
+.small-btn {
+    border-radius: 40px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 300; /* Make the text bold */
+    background: #540479; /* Purple background */
+    border: none; /* Remove border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.small-btn:hover {
     background: #7B1FA2; /* Darker purple background on hover */
 }
 
@@ -189,6 +209,8 @@ body {
     justify-content: center; /* This will vertically center the content */
     align-items: start; /* This will horizontally center the content */
     gap: 5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 .menu-col-1 {
@@ -196,7 +218,7 @@ body {
     padding: 10px;
     height: 90vh;
     display: flex; /* Make it a flex container */
-    align-items: start; /* Center items vertically */
+    align-items: center; /* Center items vertically */
     flex-direction: column; /* Stack items vertically */
     gap: 2rem; /* Spacing between each item */
 }
@@ -221,6 +243,7 @@ body {
     flex-direction: column; /* Stack items vertically */
     padding: 2rem 4rem;
     gap: 15px; /* Spacing between each item */
+    width: 100%;
 }
 
 .create-quiz-container {
@@ -231,10 +254,8 @@ body {
     justify-content: center; /* Center items horizontally */
     align-items: center; /* Center items vertically */
     flex-direction: column; /* Stack items vertically */
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding: 2rem;
+    margin: 0 12rem;
     gap: 15px; /* Spacing between each item */
     width: 100%;
     position: relative;
@@ -474,4 +495,55 @@ body {
 .date .file-name {
     color: #E2E2E2;
     white-space: nowrap; /* Prevent individual filenames from wrapping */
+}
+
+.quiz-container {
+    width: 100%;
+}
+
+.quiz-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background-color: white;
+    border-radius: 40px;
+    width: 100%;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    gap: 2rem;
+}
+
+.quiz-details {
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.quiz-question-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.circle {
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
+    background-color: #5869FF;
+}
+
+.quiz-name {
+    font-weight: 400;
+    font-size: 18px;
+    color: black;
+}
+
+.loading-container {
+    padding: 1rem 2rem;
+    background-color: white;
+    border-radius: 40px;
+    width: 100%;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
 }
