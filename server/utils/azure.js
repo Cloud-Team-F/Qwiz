@@ -50,3 +50,10 @@ export function quizGet(quiz_id, user_id) {
         user_id: user_id,
     });
 }
+
+export function quizDelete(quiz_id, user_id) {
+    return fetchHelper("/quiz_delete", "POST", {
+        quiz_id,
+        user_id,
+    });
+}

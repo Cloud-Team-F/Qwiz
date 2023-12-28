@@ -1,4 +1,4 @@
-import { quizCreate, quizGet, quizGetAll } from "../utils/azure.js";
+import { quizCreate, quizDelete, quizGet, quizGetAll } from "../utils/azure.js";
 
 import FormData from "form-data";
 import { WebPubSubEventHandler } from "@azure/web-pubsub-express";
@@ -144,6 +144,30 @@ router.get("/:id", requiresAuth, (req, res, next) => {
     quizGet(req.params.id, req.user.id)
         .then((response) => {
             res.status(200).json(response);
+        })
+        .catch((error) => {
+            console.log(error);
+
+            if (!error.response) {
+                next(createHttpError(500, "An unknown error occurred"));
+            } else if (error.response.status === 400) {
+                next(createHttpError(400, "Missing parameters"));
+            } else if (error.response.status === 403) {
+                next(
+                    createHttpError(403, "You do not have access to this quiz")
+                );
+            } else if (error.response.status === 404) {
+                next(createHttpError(404, "Quiz not found"));
+            } else {
+                next(createHttpError(500, "An unknown error occurred"));
+            }
+        });
+});
+
+router.delete("/:id", requiresAuth, (req, res, next) => {
+    quizDelete(req.params.id, req.user.id)
+        .then((response) => {
+            res.status(204).send();
         })
         .catch((error) => {
             console.log(error);
