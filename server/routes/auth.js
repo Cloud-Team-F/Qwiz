@@ -13,7 +13,7 @@ const jwtCookieOptions = {
     sameSite: "strict",
     httpOnly: true,
     signed: true,
-    maxAge: 31536000000, // 1 year
+    maxAge: 86400000, // 1 day
 };
 
 const signJwt = (id) => {

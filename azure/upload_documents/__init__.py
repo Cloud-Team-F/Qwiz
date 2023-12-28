@@ -2,6 +2,7 @@ import asyncio
 import base64
 import json
 import logging
+import secrets
 
 import filetype
 from azure.functions import HttpRequest, HttpResponse
@@ -124,6 +125,7 @@ def main(req: HttpRequest) -> HttpResponse:
         "name": quiz_name,
         "files": file_contents,
         "processed": False,
+        "invite_code": secrets.token_hex(6),
     }
     try:
         created_quiz = QuizContainerProxy.create_item(

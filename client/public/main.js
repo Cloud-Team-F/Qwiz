@@ -206,13 +206,7 @@ function connect() {
             connectPubSub();
 
             // Update quiz list
-            // app.updateQuizList();
-
-            // todo:: remove this, and use the one above
-            // To test loading of quizzes:
-            setTimeout(() => {
-                app.updateQuizList();
-            }, 1000);
+            app.updateQuizList();
         })
         .catch((err) => {
             console.log("User not logged in");

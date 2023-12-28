@@ -43,3 +43,10 @@ export function quizCreate(formData, headers) {
 export function quizGetAll(id) {
     return fetchHelper("/quiz_get_all", "GET", null, { id });
 }
+
+export function quizGet(quiz_id, user_id) {
+    return fetchHelper("/quiz_get", "GET", null, {
+        quiz_id: quiz_id,
+        user_id: user_id,
+    });
+}
