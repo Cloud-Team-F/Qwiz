@@ -5,7 +5,7 @@
             "name": "msg",
             "type": "queueTrigger",
             "direction": "in",
-            "queueName": "document-process-queue",
+            "queueName": "%DocumentQueue%",
             "connection": "AzureStorageConnectionString"
         }
     ]
