@@ -1,3 +1,5 @@
+import { quizCreate, quizGetAll } from "../utils/azure.js";
+
 import FormData from "form-data";
 import { WebPubSubEventHandler } from "@azure/web-pubsub-express";
 import { WebPubSubServiceClient } from "@azure/web-pubsub";
@@ -5,7 +7,6 @@ import createHttpError from "http-errors";
 import env from "../utils/validateEnv.js";
 import express from "express";
 import multer from "multer";
-import { quizCreate } from "../utils/azure.js";
 import { requiresAuth } from "../middleware/requiresAuth.js";
 
 const router = express.Router();
@@ -119,6 +120,17 @@ router.post("/create", upload.any(), requiresAuth, async (req, res, next) => {
             } else {
                 next(createHttpError(500, "An unknown error occurred"));
             }
+        });
+});
+
+router.get("/all", requiresAuth, (req, res, next) => {
+    quizGetAll(req.user.id)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((error) => {
+            console.log(error);
+            next(createHttpError(500, "An unknown error occurred"));
         });
 });
 

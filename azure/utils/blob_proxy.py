@@ -26,7 +26,7 @@ def get_blob_client(
 
 
 def get_async_blob_client(
-    filetype: str = "pdf", blob_name: str = str(uuid.uuid4())
+    filetype: str = "pdf", blob_name: str = None
 ) -> AsyncBlobClient:
     """
     Returns an instance of AsyncBlobClient for accessing Azure Blob Storage.
@@ -39,6 +39,9 @@ def get_async_blob_client(
         AsyncBlobClient: An instance of AsyncBlobClient.
 
     """
+    if blob_name is None:
+        blob_name = str(uuid.uuid4())
+
     return AsyncBlobClient.from_connection_string(
         os.environ["AzureStorageConnectionString"],
         container_name=os.environ["DocumentBlobContainer"],

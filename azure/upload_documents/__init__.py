@@ -120,6 +120,7 @@ def main(req: HttpRequest) -> HttpResponse:
     # Save document to database
     process_body = {
         "user_id": user_id,
+        "shared_with": [],
         "name": quiz_name,
         "files": file_contents,
         "processed": False,

@@ -6,8 +6,8 @@ var app = new Vue({
         // Loading states
         loadingScreen: false,
         loading: false,
+        loadingQuizList: true,
 
-        user: null,
         inputs: {
             username: "",
             password: "",
@@ -20,6 +20,11 @@ var app = new Vue({
         mode: "login",
         creatingQuiz: false,
         filesUploaded: [],
+
+        // Data states
+        user: null,
+        ownQuizzes: [],
+        sharedQuizzes: [],
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -39,6 +44,10 @@ var app = new Vue({
             this.inputs.quizText = "";
             this.filesUploaded = [];
         },
+        clearQuizList() {
+            this.ownQuizzes = [];
+            this.sharedQuizzes = [];
+        },
         login() {
             sendRequest(
                 "POST",
@@ -51,6 +60,7 @@ var app = new Vue({
                     console.log(res);
                     this.user = res.data;
                     connectPubSub();
+                    this.updateQuizList();
                     this.clearLoginInputs();
                 },
                 (err) => {
@@ -70,6 +80,7 @@ var app = new Vue({
                     console.log(res);
                     this.user = res.data;
                     connectPubSub();
+                    this.updateQuizList();
                     this.clearLoginInputs();
                     this.success("Successfully registered!");
                 },
@@ -87,6 +98,7 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
                     this.user = null;
+                    this.clearQuizList();
                     disconnectPubSub();
                 },
                 (err) => {
@@ -141,6 +153,7 @@ var app = new Vue({
                     console.log(res);
                     this.success("Your quiz is being processed!");
                     this.clearQuizInputs();
+                    this.updateQuizList();
                     this.closeCreateQuiz();
                 },
                 (err) => {
@@ -153,6 +166,30 @@ var app = new Vue({
         },
         closeCreateQuiz() {
             this.creatingQuiz = false;
+            this.clearQuizInputs();
+        },
+        updateQuizList() {
+            this.loadingQuizList = true;
+            sendRequest(
+                "GET",
+                "/api/quiz/all",
+                null,
+                (res) => {
+                    console.log(res);
+                    this.ownQuizzes = res.data.own_quizzes;
+                    this.sharedQuizzes = res.data.shared_quizzes;
+                    this.loadingQuizList = false;
+                },
+                (err) => {
+                    this.fail(err.response.data.error);
+                    this.loadingQuizList = false;
+                },
+                false
+            );
+        },
+        startQuiz(quizID) {
+            // todo:: change this
+            this.success("Starting quiz: " + quizID);
         },
     },
 });
@@ -167,6 +204,15 @@ function connect() {
 
             // Connect to pubsub
             connectPubSub();
+
+            // Update quiz list
+            // app.updateQuizList();
+
+            // todo:: remove this, and use the one above
+            // To test loading of quizzes:
+            setTimeout(() => {
+                app.updateQuizList();
+            }, 1000);
         })
         .catch((err) => {
             console.log("User not logged in");
@@ -196,6 +242,7 @@ function connectPubSub() {
                     event_data.data.type &&
                     event_data.data.type === "quiz_processed"
                 ) {
+                    app.updateQuizList();
                     app.success("Your quiz has been created!");
                 }
                 console.log(event_data);

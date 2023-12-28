@@ -39,3 +39,7 @@ export function userGet(id) {
 export function quizCreate(formData, headers) {
     return fetchHelper("/upload_documents", "POST", formData, {}, headers);
 }
+
+export function quizGetAll(id) {
+    return fetchHelper("/quiz_get_all", "GET", null, { id });
+}
