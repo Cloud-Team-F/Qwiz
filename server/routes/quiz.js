@@ -1,4 +1,10 @@
-import { quizCreate, quizDelete, quizGet, quizGetAll } from "../utils/azure.js";
+import {
+    quizCreate,
+    quizDelete,
+    quizGet,
+    quizGetAll,
+    quizLeave,
+} from "../utils/azure.js";
 
 import FormData from "form-data";
 import { WebPubSubEventHandler } from "@azure/web-pubsub-express";
@@ -180,6 +186,26 @@ router.delete("/:id", requiresAuth, (req, res, next) => {
                 next(
                     createHttpError(403, "You do not have access to this quiz")
                 );
+            } else if (error.response.status === 404) {
+                next(createHttpError(404, "Quiz not found"));
+            } else {
+                next(createHttpError(500, "An unknown error occurred"));
+            }
+        });
+});
+
+router.post("/:id/leave", requiresAuth, (req, res, next) => {
+    quizLeave(req.params.id, req.user.id)
+        .then((response) => {
+            res.status(204).send();
+        })
+        .catch((error) => {
+            console.log(error);
+
+            if (!error.response) {
+                next(createHttpError(500, "An unknown error occurred"));
+            } else if (error.response.status === 400) {
+                next(createHttpError(400, "Cannot remove user from quiz"));
             } else if (error.response.status === 404) {
                 next(createHttpError(404, "Quiz not found"));
             } else {
