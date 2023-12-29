@@ -55,22 +55,57 @@ def main(req: HttpRequest) -> HttpResponse:
     file_contents = []
 
     # Get quiz_name, user_id from from form data
-    quiz_name = req.form.get("quiz_name")
+    quiz_name = req.form.get("quiz_name", "").strip()
     user_id = req.form.get("user_id")
+    content = req.form.get("content", "").strip()
+    topic = req.form.get("topic", "")
+    num_questions = req.form.get("num_questions")
+    question_types = req.form.get("question_types", [])
+    # ["multi-choice", "fill-gaps", "short-answer"]
 
     # Check missing form data
     if not quiz_name or not user_id:
         logging.error(f"Form data: {req.form}")
         return create_error_response("Missing quiz name or user id", 400)
-    if not files:
-        return create_error_response("No files uploaded", 400)
+    if not num_questions or not question_types:
+        logging.error(f"Form data: {req.form}")
+        return create_error_response("Missing num_questions or question_types", 400)
+    if not files and not content:
+        return create_error_response("Must upload files or provide text content", 400)
     if len(files) > 5:
         return create_error_response("Max 5 files", 400)
     logging.info(f"Received {len(files)} files")
 
-    # Validate quiz_name
+    # Convert question_types to list
+    try:
+        question_types = json.loads(question_types)
+    except:
+        return create_error_response("Invalid question types", 400)
+
+    # Validate
     if len(quiz_name) > 50:
         return create_error_response("Quiz name too long (max 50 characters)", 400)
+    if content and not (400 < len(content) < 5000):
+        return create_error_response(
+            "Content must be between 400 and 5000 characters", 400
+        )
+    if len(topic) > 100:
+        return create_error_response("Topic too long (max 100 characters)", 400)
+    if not num_questions.isdigit():
+        return create_error_response("Number of questions must be an integer", 400)
+
+    num_questions = int(num_questions)
+    if num_questions < 3 or num_questions > 30:
+        return create_error_response(
+            "Number of questions must be between 3 and 30", 400
+        )
+    if not (set(question_types) <= set(["multi-choice", "fill-gaps", "short-answer"])):
+        return create_error_response(
+            "Invalid question types. Must be one of: 'multi-choice', 'fill-gaps', 'short-answer'",
+            400,
+        )
+    if len(question_types) == 0:
+        return create_error_response("Must select at least one question type", 400)
 
     # Validate if user exists
     try:
@@ -78,53 +113,62 @@ def main(req: HttpRequest) -> HttpResponse:
     except:
         return create_error_response(f"User with id {user_id} not found.", 404)
 
-    # Validate each file
-    for file in files:
-        # Ensure file is not empty and is a supported file type
-        if not file:
-            return create_error_response("No files uploaded", 400)
-        if file.mimetype not in supported_filetypes:
-            return create_error_response(f"Unsupported file type: {file.mimetype}", 415)
+    if files:
+        # Validate each file
+        for file in files:
+            # Ensure file is not empty and is a supported file type
+            if not file:
+                return create_error_response("No files uploaded", 400)
+            if file.mimetype not in supported_filetypes:
+                return create_error_response(
+                    f"Unsupported file type: {file.mimetype}", 415
+                )
 
-        # Ensure file binary is a pdf (magic number check)
-        try:
-            file_type = filetype.guess(file.read())
-        except Exception as e:
-            logging.error("Error guessing filetype: ", e)
-            return create_error_response("Error guessing filetype", 415)
+            # Ensure file binary is a pdf (magic number check)
+            try:
+                file_type = filetype.guess(file.read())
+            except Exception as e:
+                logging.error("Error guessing filetype: ", e)
+                return create_error_response("Error guessing filetype", 415)
 
-        if file_type.mime != file.mimetype:
-            return create_error_response(
-                f"Unsupported file type: {file_type.mime}", 415
+            if file_type.mime != file.mimetype:
+                return create_error_response(
+                    f"Unsupported file type: {file_type.mime}", 415
+                )
+
+            # Ensure file size is not too large
+            file.seek(0)
+            if len(file.read()) > max_file_size:
+                return create_error_response(
+                    f"File '{file.filename}' is too large (max 30MB)", 400
+                )
+
+            # Add file to file_contents
+            file.seek(0)
+            file_contents.append(
+                {
+                    "filename": file.filename,
+                    "content": file.read(),
+                    "mime": file_type.mime,
+                    "extension": file_type.extension,
+                }
             )
 
-        # Ensure file size is not too large
-        file.seek(0)
-        if len(file.read()) > max_file_size:
-            return create_error_response(
-                f"File '{file.filename}' is too large (max 30MB)", 400
-            )
-
-        # Add file to file_contents
-        file.seek(0)
-        file_contents.append(
-            {
-                "filename": file.filename,
-                "content": file.read(),
-                "mime": file_type.mime,
-                "extension": file_type.extension,
-            }
-        )
-
-    # Store files in blob storage
-    asyncio.run(upload_files_to_blob_storage(file_contents))
+        # Store files in blob storage
+        asyncio.run(upload_files_to_blob_storage(file_contents))
+    else:
+        files = []
 
     # Save document to database
     process_body = {
         "user_id": user_id,
         "shared_with": [],
         "name": quiz_name,
+        "topic": topic,
+        "num_questions": num_questions,
+        "question_types": question_types,
         "files": file_contents,
+        "content": content,
         "processed": False,
         "invite_code": secrets.token_hex(6),
     }

@@ -53,9 +53,18 @@ router.get("/negotiate", requiresAuth, async (req, res) => {
 });
 
 router.post("/create", upload.any(), requiresAuth, async (req, res, next) => {
-    // Check if quiz name is provided
-    if (!req.body["quiz_name"]) {
-        next(createHttpError(400, "Quiz name not provided"));
+    // Check for missing parameters
+    if (
+        !req.body["quiz_name"] ||
+        !req.body["num_questions"] ||
+        !req.body["question_types"]
+    ) {
+        next(
+            createHttpError(
+                400,
+                "Missing quiz name, number of questions, or question types"
+            )
+        );
         return;
     }
 
@@ -70,9 +79,9 @@ router.post("/create", upload.any(), requiresAuth, async (req, res, next) => {
         return;
     }
 
-    // Check there are files
-    if (req.files && req.files.length === 0) {
-        next(createHttpError(400, "No files uploaded"));
+    // Check there are files or content
+    if (req.files && req.files.length === 0 && !req.body["content"]) {
+        next(createHttpError(400, "No files or content provided"));
         return;
     }
     if (req.files.length > 5) {

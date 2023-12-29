@@ -1,12 +1,22 @@
 import logging
 
 
-def create_quiz(content: str) -> list[dict]:
+def create_quiz(
+    num_questions: int,
+    question_types: list[str],
+    topic: str = "",
+    text_content: str = "",
+    file_contents: list[str] = [],
+) -> list[dict]:
     """
     Create a quiz from the given content using gpt.
 
     Args:
-        content (str): The text content from which to create the quiz.
+        num_questions (int): The number of questions to generate for the quiz.
+        question_types (list[str]): A list of question types to include in the quiz. Possible values are: ["multi-choice", "fill-gaps", "short-answer"]
+        topic (str, optional): The topic of the quiz. Defaults to "".
+        text_content (str, optional): The text content from which to create the quiz. Defaults to "".
+        file_contents (list[str], optional): A list of file contents from which to create the quiz. Defaults to [].
 
     Returns:
         list[dict]: A list of dictionaries representing the quiz questions.
@@ -17,7 +27,7 @@ def create_quiz(content: str) -> list[dict]:
             - 'options': A list of options for the question (applicable for 'multi-choice' type).
             todo
     """
-    logging.info(f"Creating quiz from text: {content}")
+    logging.info(f"Creating quiz")
 
     # todo:: gpt stuff
 

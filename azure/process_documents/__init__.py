@@ -30,12 +30,22 @@ def main(msg: QueueMessage) -> None:
         return
 
     quiz_id = message["quiz_id"]
-    user_id = message["user_id"]
-    files = message["files"]
 
     logging.info("Quiz ID: %s", quiz_id)
-    logging.info("User ID: %s", user_id)
-    logging.info("Files: %s", files)
+
+    # Get the quiz from the database
+    try:
+        quiz = QuizContainerProxy.read_item(item=quiz_id, partition_key=quiz_id)
+    except Exception as e:
+        logging.error("Error getting quiz from database: %s", e, exc_info=True)
+        return
+
+    user_id = quiz["user_id"]
+    topic = quiz.get("topic", "")
+    num_questions = quiz.get("num_questions", 3)
+    question_types = quiz.get("question_types", ["multi-choice"])
+    files = quiz.get("files", [])
+    text_content = quiz.get("content", "")
 
     # Check files is a list
     if not isinstance(files, list):
@@ -61,14 +71,13 @@ def main(msg: QueueMessage) -> None:
             logging.error("Error deleting blob: %s", e, exc_info=True)
 
     # Create quiz from text
-    created_quiz = create_quiz(content="\n".join(all_content))
-
-    # Get the quiz from the database
-    try:
-        quiz = QuizContainerProxy.read_item(item=quiz_id, partition_key=quiz_id)
-    except Exception as e:
-        logging.error("Error getting quiz from database: %s", e, exc_info=True)
-        return
+    created_quiz = create_quiz(
+        num_questions=num_questions,
+        question_types=question_types,
+        topic=topic,
+        text_content=text_content,
+        file_contents=all_content,
+    )
 
     # Add sample questions to quiz
     quiz["questions"] = created_quiz
