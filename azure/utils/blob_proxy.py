@@ -5,9 +5,7 @@ from azure.storage.blob import BlobClient
 from azure.storage.blob.aio import BlobClient as AsyncBlobClient
 
 
-def get_blob_client(
-    filetype: str = "pdf", blob_name: str = str(uuid.uuid4())
-) -> BlobClient:
+def get_blob_client(filetype: str = None, blob_name: str = None) -> BlobClient:
     """
     Returns a BlobClient object for accessing a blob in Azure Blob Storage.
 
@@ -18,15 +16,20 @@ def get_blob_client(
     Returns:
     - BlobClient: The BlobClient object for accessing the blob.
     """
+    if blob_name is None:
+        blob_name_gen = str(uuid.uuid4())
+    if filetype is None:
+        filetype = "pdf"
+
     return BlobClient.from_connection_string(
         os.environ["AzureStorageConnectionString"],
         container_name=os.environ["DocumentBlobContainer"],
-        blob_name=blob_name + "." + filetype,
+        blob_name=(blob_name_gen + "." + filetype) if blob_name is None else blob_name,
     )
 
 
 def get_async_blob_client(
-    filetype: str = "pdf", blob_name: str = None
+    filetype: str = None, blob_name: str = None
 ) -> AsyncBlobClient:
     """
     Returns an instance of AsyncBlobClient for accessing Azure Blob Storage.
@@ -40,10 +43,12 @@ def get_async_blob_client(
 
     """
     if blob_name is None:
-        blob_name = str(uuid.uuid4())
+        blob_name_gen = str(uuid.uuid4())
+    if filetype is None:
+        filetype = "pdf"
 
     return AsyncBlobClient.from_connection_string(
         os.environ["AzureStorageConnectionString"],
         container_name=os.environ["DocumentBlobContainer"],
-        blob_name=blob_name + "." + filetype,
+        blob_name=(blob_name_gen + "." + filetype) if blob_name is None else blob_name,
     )

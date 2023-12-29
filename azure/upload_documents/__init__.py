@@ -34,6 +34,7 @@ async def upload_blob_async(file: dict) -> dict:
             overwrite=True,
             content_settings=ContentSettings(content_type=file["mime"]),
         )
+        file["blob_name"] = blob_client.blob_name
         file["url"] = blob_client.url
         del file["content"]
         return file
@@ -92,7 +93,7 @@ def main(req: HttpRequest) -> HttpResponse:
             logging.error("Error guessing filetype: ", e)
             return create_error_response("Error guessing filetype", 415)
 
-        if file_type.mime != "application/pdf":
+        if file_type.mime != file.mimetype:
             return create_error_response(
                 f"Unsupported file type: {file_type.mime}", 415
             )

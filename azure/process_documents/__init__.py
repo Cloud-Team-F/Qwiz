@@ -3,7 +3,9 @@ import json
 import logging
 
 from azure.functions import QueueMessage
-from utils import get_quizzes_container, get_pubsub_client
+from utils import get_blob_client, get_pubsub_client, get_quizzes_container
+from utils.files import convert_to_text
+from utils.gpt import create_quiz
 
 # Proxy to CosmosDB
 QuizContainerProxy = get_quizzes_container()
@@ -40,9 +42,26 @@ def main(msg: QueueMessage) -> None:
         logging.error("Files is not a list")
         return
 
-    # todo:: convert file to text
+    # convert file to text
+    all_content = []
+    for file in files:
+        try:
+            content = convert_to_text(file["url"], file["mime"])
+            all_content.append(content)
+        except Exception as e:
+            logging.error("Error converting file to text: %s", e, exc_info=True)
+            return
 
-    # todo:: gpt stuff
+    # Remove files from blob
+    for file in files:
+        try:
+            blob_client = get_blob_client(blob_name=file["blob_name"])
+            blob_client.delete_blob(delete_snapshots="include")
+        except Exception as e:
+            logging.error("Error deleting blob: %s", e, exc_info=True)
+
+    # Create quiz from text
+    created_quiz = create_quiz(content="\n".join(all_content))
 
     # Get the quiz from the database
     try:
@@ -51,28 +70,8 @@ def main(msg: QueueMessage) -> None:
         logging.error("Error getting quiz from database: %s", e, exc_info=True)
         return
 
-    # todo:: change this to use the gpt text
     # Add sample questions to quiz
-    quiz["questions"] = [
-        {
-            "questionID": "1",
-            "question": "What is the capital of France?",
-            "type": "multi-choice",
-            "options": ["Paris", "London", "Berlin", "Madrid"],
-        },
-        {
-            "questionID": "2",
-            "question": "What is the capital of Spain?",
-            "type": "multi-choice",
-            "options": ["Paris", "London", "Berlin", "Madrid"],
-        },
-        {
-            "questionID": "3",
-            "question": "What is the capital of Germany?",
-            "type": "multi-choice",
-            "options": ["Paris", "London", "Berlin", "Madrid"],
-        },
-    ]
+    quiz["questions"] = created_quiz
 
     # Update processed flag
     quiz["processed"] = True
