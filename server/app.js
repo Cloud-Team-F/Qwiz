@@ -8,6 +8,7 @@ import createHttpError from "http-errors";
 import env from "./utils/validateEnv.js";
 import express from "express";
 import { fileURLToPath } from "url";
+import inviteRoutes from "./routes/invite.js";
 import morgan from "morgan";
 import quizRoutes from "./routes/quiz.js";
 
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/quiz", quizRoutes);
+app.use("/api/invite", inviteRoutes);
 
 app.use((req, res, next) => {
     res.render("404");

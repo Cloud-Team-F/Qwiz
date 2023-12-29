@@ -47,7 +47,9 @@ def main(req: HttpRequest) -> HttpResponse:
             )
         )
         shared_with_ids = map(lambda x: x["id"], shared_with_users)
-        shared_with_usernames = map(lambda x: x["username"], shared_with_users)
+        shared_with_usernames = map(
+            lambda x: x.get("username", "Unknown"), shared_with_users
+        )
 
         # Check if user_id is in shared_with_users id or user_id is owner
         if (user_id not in shared_with_ids) and user_id != quiz["user_id"]:
@@ -57,12 +59,12 @@ def main(req: HttpRequest) -> HttpResponse:
         return HttpResponse(
             body=json.dumps(
                 {
-                    "owner_name": user["username"],
-                    "quiz_name": quiz["name"],
-                    "total_questions": len(quiz["questions"]),
-                    "questions": quiz["questions"],
-                    "processed": quiz["processed"],
-                    "invite_code": quiz.get("invite_code", None),
+                    "owner_name": user.get("username", "Unknown"),
+                    "quiz_name": quiz.get("name", "Unknown"),
+                    "total_questions": len(quiz.get("questions", [])),
+                    "questions": quiz.get("questions", []),
+                    "processed": quiz.get("processed", False),
+                    "invite_code": quiz.get("invite_code", "Unknown"),
                     "people": list(shared_with_usernames),
                 }
             ),

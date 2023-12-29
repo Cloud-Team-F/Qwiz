@@ -57,3 +57,10 @@ export function quizDelete(quiz_id, user_id) {
         user_id,
     });
 }
+
+export function inviteJoin(invite_code, user_id) {
+    return fetchHelper("/quiz_join", "POST", {
+        invite_code,
+        user_id,
+    });
+}
