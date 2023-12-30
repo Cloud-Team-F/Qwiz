@@ -8,6 +8,14 @@ body {
     color: white;
 }
 
+.overflow-auto {
+    background: #33014B 0% 0% no-repeat padding-box; 
+}
+
+.overflow-auto .logged-in {
+    background-color: #E9BBFF;
+}
+
 .loading-screen {
     position: fixed;
     top: 50%;
@@ -753,4 +761,125 @@ body {
 .checkbox-input:checked + .custom-checkbox {
     background-color: #5869FF;
     border-color: #5869FF;
+}
+
+/* Smaller screen (e.g., 14-inch laptop) adjustments */
+@media screen and (max-width: 1440px) {
+    .navbar {
+        padding: 1rem 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .main-menu {
+        gap: 1.5rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .menu-container {
+        padding: 1.5rem 3rem;
+    }
+
+    .basic-text {
+        font-size: 1rem;
+    }
+
+    .basic-input, .basic-input-center {
+        padding: 0.7rem; 
+        font-size: 16px; 
+    }
+
+    .quiz-name {
+        font-size: 1.15rem;
+    }
+    
+    .date span {
+        font-size: 15px;
+    }
+
+    .quiz-item {
+        padding: 0.8rem 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .main-btn, .small-btn {
+        padding: 0.5rem 1.5rem;
+        font-size: 18px;
+    }
+
+    .navbar-title {
+        font-size: 1.8rem;
+    }
+
+    .menu-col-3 {
+        width: 35%;
+    }
+    
+    .large-button {
+        padding: 0.8rem 1.5rem;
+    }
+
+    .create-quiz-container {
+        padding: 1.5rem;
+        margin: 0 7rem;
+        gap: 15px;
+    }
+
+    .quiz-input {
+        gap: 5px;
+    }
+
+    .large-inputs {
+        gap: 20px;
+    }
+
+    .quiz-text-input {
+        padding: 0.75rem 1rem;
+        margin: 0.25rem 0;
+        font-size: 16px;
+        width: 50%; 
+        height: 250px;
+    }
+
+    .file-upload {
+        gap: 5px;  
+    }
+    
+    .file-upload-container {
+        padding: 0.75rem;
+        margin: 0.25rem 0;
+    }
+    
+    .file-label {
+        gap: 5px; 
+        font-size: 18px;
+    }
+    
+    .info-text {
+        gap: 3px;
+    }
+    
+    .info-text span {
+        font-size: 10px;
+    }
+
+    .quiz-info-headers {
+        gap: 7.5px;
+    }
+    
+    .quiz-info-headers span {
+        font-size: 1.15rem;
+    }
+
+    .less-padding {
+        padding: 1.2rem 2.5rem;
+    }
+    
+    .lesser-padding {
+        padding: 1.2rem 1.7rem;
+    }
+
+    .larger-font {
+        font-size: 1.15rem;
+    }
 }
