@@ -3,7 +3,7 @@ p {
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Outfit', sans-serif;
     background: #33014B 0% 0% no-repeat padding-box;
     color: white;
 }
@@ -33,17 +33,16 @@ body {
 }
 
 .navbar-logo {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 5px;
     display: flex;
-    align-items: center;
+    justify-content: center; /* Center the logo horizontally */
+    align-items: center; /* Center the logo vertically */
+    flex: 1; /* This will allow the logo to take up space in the flex container */
+    gap: 5px; 
 }
 
 .navbar-title {
     font-weight: 500;
-    font-size: 36px;
+    font-size: 2.2rem;
     margin: 0; /* Remove default margin */
     line-height: 1;
     text-align: center;
@@ -51,13 +50,32 @@ body {
 
 .navbar-right {
     display: flex;
-    justify-content: flex-end; /* Align button to the right */
-    width: 100%; /* Take full width to push the button to the right */
+    align-items: center;
+    justify-content: end; /* Center the contents */
+    flex: 1;  
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    justify-content: start; /* Center the contents */
+    flex: 1;  
+}
+
+.navbar-left {
+    display: flex;
+    justify-content: flex-start; 
+    width: 100%; 
+}
+
+.icon-24 {
+    width: 24px;
+    height: 24px;
 }
 
 .login-title {
     font-weight: bold;
-    font-size: 50px;
+    font-size: 54px;
     color: #DAADE7;
     margin-bottom: -10px;
     text-align: center;
@@ -68,7 +86,7 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: 400;
-    font-size: 13px;
+    font-size: 15px;
     color: #DAADE7;
     margin-bottom: 2rem;
     text-align: center;
@@ -115,11 +133,10 @@ body {
 
 .main-btn {
     border-radius: 40px;
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    font-weight: 300; /* Make the text bold */
+    padding: 0.75rem 2.5rem;
+    margin-top: 0.8rem;
+    font-weight: 300;
+    font-size: 20px;
     background: #540479; /* Purple background */
     border: none; /* Remove border */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
@@ -150,22 +167,23 @@ body {
     background: #7B1FA2; /* Darker purple background on hover */
 }
 
-.logout-btn {
+.navbar-btn {
     border-radius: 40px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem 2rem;
     font-weight: 400; /* Make the text bold */
     background: transparent; /* Purple background */
     border-color: white;
     border-width: 1px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
     color: white;
-    font-size: 14px;
+    font-size: 18px;
+    display: flex;          /* Establishes this element as a flex container */
+    align-items: center;    /* Vertically centers the flex items */
+    justify-content: center;
+    gap: 8px;
 }
 
-.logout-btn:hover {
+.navbar-btn:hover {
     background: #7B1FA2; /* Darker purple background on hover */
 }
 
@@ -208,13 +226,13 @@ body {
     display: flex;
     justify-content: center; /* This will vertically center the content */
     align-items: start; /* This will horizontally center the content */
-    gap: 5rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    gap: 3rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
 }
 
 .menu-col-1 {
-    width: 40%;
+    width: 35%;
     padding: 10px;
     height: 90vh;
     display: flex; /* Make it a flex container */
@@ -224,7 +242,17 @@ body {
 }
 
 .menu-col-2 {
-    width: 40%;
+    width: 35%;
+    padding: 10px;
+    height: 90vh;
+    display: flex; /* Make it a flex container */
+    align-items: start; /* Center items vertically */
+    flex-direction: column; /* Stack items vertically */
+    gap: 1rem; /* Spacing between each item */
+}
+
+.menu-col-3 {
+    width: 30%;
     padding: 10px;
     height: 90vh;
     display: flex; /* Make it a flex container */
@@ -244,6 +272,63 @@ body {
     padding: 2rem 4rem;
     gap: 15px; /* Spacing between each item */
     width: 100%;
+}
+
+.less-padding {
+    padding: 1.5rem 3rem;
+}
+
+.lesser-padding {
+    padding: 1.5rem 2rem;
+}
+
+.invite-code {
+    cursor: pointer;
+}
+
+.align-items-start {
+    align-items: start;
+}
+
+.larger-font {
+    font-weight: 500;
+    font-size: 1.3rem;
+}
+
+.grey-font {
+    color: #E2E2E2;
+}
+
+.quiz-info {
+   display: flex; 
+   flex-wrap: wrap; 
+   align-items: start; 
+   flex-direction: column;
+   justify-content: center;
+   gap: 5px; 
+}
+
+.quiz-info-headers {
+    display: flex; 
+    flex-wrap: wrap; 
+    align-items: center; 
+    gap: 10px;
+}
+
+.quiz-info-headers span {
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: black;
+    line-height: 1;
+    margin: 0;
+}
+
+.quiz-info-headers span.red-font{
+    color: #FF5757;
+}
+
+.red-font {
+    color: #FF5757;
 }
 
 .create-quiz-container {
@@ -285,15 +370,15 @@ body {
 
 .basic-text {
     color: black;
-    font-weight: 500;
-    font-size: 15px;
+    font-weight: 400;
+    font-size: 1.15rem;
     text-align: center;
 }
 
 .col-titles {
     color: black;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .back-button {
@@ -320,8 +405,8 @@ body {
     border-radius: 40px;
     border: 3px solid #D5D5D5;
     padding: 1rem;
-    margin: 0.5rem 0;
     text-align: center;
+    font-size: 18px;
 }
 
 .basic-input {
@@ -331,9 +416,12 @@ body {
     padding-bottom: 0.5rem;
     padding-left: 1rem;
     padding-right: 1rem;
-    margin: 0.5rem 0;
-    font-size: 16px;
+    font-size: 18px;
     width: 50%;
+}
+
+.width-100 {
+    width: 100%;
 }
 
 .quiz-text-input {
@@ -341,13 +429,31 @@ body {
     border: 3px solid #D5D5D5;
     padding: 1rem 1.5rem;
     margin: 0.5rem 0;
-    font-size: 16px;
+    font-size: 18px;
     width: 50%; /* Adjust width as needed */
     height: 300px; /* Set a fixed height or use min-height */
     resize: vertical; /* Allow resizing vertically */
     overflow: hidden; /* Add scroll bar when content overflows */
 }
 
+.vertical {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.horizontal, .vertical {
+    display: flex;
+    gap: 25px;
+    width: 100%;
+}
+
+.horizontal {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    justify-content: start;
+    align-items: start;
+}
 
 .date {
     display: flex; /* Continue using flexbox */
@@ -358,7 +464,7 @@ body {
 
 .date span {
     font-weight: 300;
-    font-size: 14px;
+    font-size: 18px;
     color: black;
     line-height: 1;
     margin: 0;
@@ -436,6 +542,11 @@ body {
     width: 100%;
 }
 
+.large-button {
+    cursor: pointer;
+    padding: 1rem 2rem;
+}
+
 .quiz-text-input,
 .file-upload {
     flex: 1; /* Each child takes equal width */
@@ -511,6 +622,7 @@ body {
     width: 100%;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
     gap: 2rem;
+    cursor: pointer;
 }
 
 .quiz-details {
@@ -524,7 +636,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 8px;
+}
+
+.question-count {
+    color: black;
+    font-weight: 400;
+    font-size: 1rem;
+    text-align: center;
 }
 
 .circle {
@@ -534,10 +653,21 @@ body {
     background-color: #5869FF;
 }
 
+.black {
+    background-color: black;
+}
+
 .quiz-name {
     font-weight: 400;
-    font-size: 18px;
+    font-size: 1.25rem;
     color: black;
+}
+
+.quiz-title {
+    font-weight: 500;
+    font-size: 1.4rem;
+    color: black;
+    text-align: center;
 }
 
 .loading-container {
@@ -546,4 +676,81 @@ body {
     border-radius: 40px;
     width: 100%;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+  
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 5px;
+    background: #d3d3d3;
+    outline: none;
+    border-radius: 10px;
+    overflow: visible;
+}
+
+  
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 5px;
+    height: 25px; /* Adjust height as needed */
+    background: #5869FF;
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: visible;
+}
+  
+.slider::-moz-range-thumb {
+    width: 5px;
+    height: 25px; /* Adjust height as needed */
+    background: #5869FF;
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: visible;
+}
+  
+.slider-value {
+    margin-left: 8px;
+    color: black;
+}
+
+.radio-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.checkbox-input {
+    display: none;
+  }
+  
+  /* Create a custom appearance for the label that will act as the custom checkbox */
+.checkbox-label {
+    display: flex;
+    align-items: center; /* This will vertically center the checkbox with the text */
+    cursor: pointer;  
+}
+  
+.custom-checkbox {
+    height: 20px;
+    width: 20px;
+    background-color: transparent;
+    border: 2px solid black;
+    border-radius: 50%;
+    margin-right: 10px; /* Add some space between the checkbox and the label text */
+}
+  
+  /* Style for when the checkbox is checked */
+.checkbox-input:checked + .custom-checkbox {
+    background-color: #5869FF;
+    border-color: #5869FF;
 }

@@ -78,7 +78,11 @@ def main(req: HttpRequest) -> HttpResponse:
 
     # Convert question_types to list
     try:
-        question_types = json.loads(question_types)
+        # print('Question types: ', question_types)
+        # question_types = json.loads(question_types)
+
+        print('Question types: ', question_types)
+        question_types = question_types.split(',')
     except:
         return create_error_response("Invalid question types", 400)
 

@@ -33,32 +33,20 @@
             v-for="quiz in ownQuizzes"
             class="quiz-container"
         >
-            <div class="quiz-item">
+            <div class="quiz-item" @click="viewQuiz(quiz)">
                 <div class="quiz-details">
                     <div class="quiz-question-count">
                         <div class="circle"></div>
-                        <p class="basic-text">{{ quiz.question_count }} questions</p>
+                        <p class="question-count">{{ quiz.question_count }} questions</p>
                     </div>
                     <p class="quiz-name">{{ quiz.name }}</p>
                 </div>
 
-                <button @click="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
+                <button @click.stop="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
                     <img src="/static/play.png" alt="start" />
                     <span>Start</span>
                 </button>
             </div>
-            <!-- <div class="menu-container basic-text">
-                <p>{{ quiz.question_count }} Questions</p>
-                <p>{{ quiz.name }}</p>
-                <p v-if="!quiz.processed">Currently being processed!</p>
-                <button
-                    @click="startQuiz(quiz.id)"
-                    class="main-btn"
-                    :disabled="!quiz.processed"
-                >
-                    Start
-                </button>
-            </div> -->
         </div>
         <div v-if="loadingQuizList" v-for="index in 3" :key="index">
             <div class="menu-container basic-text placeholder placeholder-glow">
@@ -86,7 +74,7 @@
                 <div class="quiz-details">
                     <div class="quiz-question-count">
                         <div class="circle"></div>
-                        <p class="basic-text">{{ quiz.question_count }} questions</p>
+                        <p class="question-count">{{ quiz.question_count }} questions</p>
                     </div>
                     <p class="quiz-name">{{ quiz.name }}</p>
                 </div>

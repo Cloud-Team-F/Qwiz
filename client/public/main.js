@@ -1,5 +1,13 @@
 let ws = null;
 
+// STATES = [
+//     'LOGIN',
+//     'MENU',
+//     'CREATE-QUIZ-1',
+//     'CREATE-QUIZ-2',
+//     'VIEW-QUIZ'
+// ]
+
 var app = new Vue({
     el: "#app",
     data: {
@@ -14,17 +22,23 @@ var app = new Vue({
             inviteCode: "",
             quizName: "",
             quizText: "",
+            userToInvite: "",
+            quizTopic: "",
+            numOfQuestions: 10,
+            questionTypes: []
         },
         errorMessage: null,
         successMessage: null,
         mode: "login",
-        creatingQuiz: false,
         filesUploaded: [],
 
         // Data states
+        currentState: 'LOGIN',
         user: null,
         ownQuizzes: [],
         sharedQuizzes: [],
+        currentQuiz: null,
+        selectedType: null
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -48,6 +62,10 @@ var app = new Vue({
             this.ownQuizzes = [];
             this.sharedQuizzes = [];
         },
+        backToHome() {
+            this.currentState = 'MENU';
+            this.currentQuiz = null;
+        },
         login() {
             sendRequest(
                 "POST",
@@ -59,6 +77,7 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
                     this.user = res.data;
+                    app.currentState = 'MENU';
                     connectPubSub();
                     this.updateQuizList();
                     this.clearLoginInputs();
@@ -79,6 +98,7 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
                     this.user = res.data;
+                    app.currentState = 'MENU';
                     connectPubSub();
                     this.updateQuizList();
                     this.clearLoginInputs();
@@ -98,6 +118,7 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
                     this.user = null;
+                    app.currentState = 'LOGIN';
                     this.clearQuizList();
                     disconnectPubSub();
                 },
@@ -119,15 +140,34 @@ var app = new Vue({
             }, 3000);
         },
         uploadFile(event) {
-            console.log("Uploading file...");
+            console.log("Uploading file, number of current files: ", this.filesUploaded.length);
             const file = event.target.files[0];
 
             if (this.filesUploaded.length < 5) {
                 console.log(file);
                 this.filesUploaded.push(file);
             } else {
-                this.fail("Maximum 5 files allowed");
+                this.fail("Too many files! (5 max)");
             }
+        },
+        continueQuizCreate() {
+            if (this.inputs.quizName == "") {
+                this.fail('A quiz name is required!')
+            } else if (this.inputs.quizText == "" && this.filesUploaded.length == 0) {
+                this.fail('Prompt text or a file upload is required!')
+            } else {
+                this.currentState = 'CREATE-QUIZ-2'
+            }
+        },
+        updateQuestionTypes(questionType) {
+            const index = this.inputs.questionTypes.indexOf(questionType);
+            if (index === -1) {
+                this.inputs.questionTypes.push(questionType);
+            } else {
+                this.inputs.questionTypes.splice(index, 1);
+            }
+
+            console.log('Question types: ', this.inputs.questionTypes);
         },
         uploadQuiz() {
             console.log("Uploading quiz...");
@@ -144,6 +184,10 @@ var app = new Vue({
                 formData.append("files[]", file);
             }
 
+            formData.append("num_questions", this.inputs.numOfQuestions);
+            formData.append("topic", this.inputs.quizTopic);
+            formData.append("question_types", this.inputs.questionTypes);
+
             // Ssend request to server
             sendFormData(
                 "POST",
@@ -157,16 +201,30 @@ var app = new Vue({
                     this.closeCreateQuiz();
                 },
                 (err) => {
+                    console.log(err);
                     this.fail(err.response.data.error);
                 }
             );
         },
         createQuiz() {
-            this.creatingQuiz = true;
+            this.currentState = 'CREATE-QUIZ-1';
+        },
+        createQuizBack() {
+            if (this.currentState == 'CREATE-QUIZ-1') {
+                this.currentState = 'MENU';
+                this.clearQuizInputs();
+            } else if (this.currentState == 'CREATE-QUIZ-2') {
+                this.currentState = 'CREATE-QUIZ-1';
+            }
         },
         closeCreateQuiz() {
-            this.creatingQuiz = false;
+            this.currentState = 'MENU';
             this.clearQuizInputs();
+        },
+        viewQuiz(quiz) {
+            this.currentQuiz = quiz;
+            this.currentState = 'VIEW-QUIZ'
+            console.log('Viewing quiz: ', quiz);
         },
         updateQuizList() {
             this.loadingQuizList = true;
@@ -191,6 +249,29 @@ var app = new Vue({
             // todo:: change this
             this.success("Starting quiz: " + quizID);
         },
+        removeQuiz(quiz) {
+            this.ownQuizzes.filter(item => item.id == quiz.id);
+            this.sharedQuizzes.filter(item => item.id == quiz.id);
+        },
+        leaveQuiz(quiz) {
+            sendRequest(
+                "POST",
+                "/api/quiz/leave",
+                quiz,
+                (res) => {
+                    console.log(res);
+                    this.success("You have left the quiz.");
+                    this.connectPubSub();
+                    this.updateQuizList();
+                    this.removeQuiz(quiz);
+                    this.backToHome();
+                },
+                (err) => {
+                    this.fail(err.response.data.error);
+                },
+                false
+            );
+        }
     },
 });
 
@@ -201,7 +282,7 @@ function connect() {
         .then((res) => {
             console.log(res.data);
             app.user = res.data;
-
+            app.currentState = 'MENU';
             // Connect to pubsub
             connectPubSub();
 

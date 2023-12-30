@@ -1,10 +1,17 @@
 <div class="navbar">
+    <div class="navbar-left" v-if="currentState == 'VIEW-QUIZ'">
+        <button @click="backToHome()" class="navbar-btn" v-if="user">
+            <img class="icon-24" src="/static/home.png" alt="home">
+            <span class="logout-btn-text">Return to home</span>
+        </button>
+    </div>
+    <div class="navbar-left" v-else></div>
     <div class="navbar-logo" v-if="user">
         <img src="/static/star.png" alt="star">
         <h3 class="navbar-title">Qwiz</h3>
     </div>
     <div class="navbar-right">
-        <button @click="logout()" class="logout-btn" v-if="user">
+        <button @click="logout()" class="navbar-btn" v-if="user">
             <span class="logout-btn-text">{{ user.username }}</span>
             <img src="/static/logout-icon.png" alt="logout">
         </button>

@@ -1,11 +1,12 @@
 <div class="main-menu">
     <div class="create-quiz-container">
-        <button class="back-button" @click="closeCreateQuiz()">
+        <button class="back-button" @click="createQuizBack()">
             <img src="/static/left.png" alt="back" />
         </button>
         <img src="/static/create-doc.png" alt="create" />
 
-        <div class="quiz-input">
+        <!-- CREATE QUIZ PAGE 1 -->
+        <div class="quiz-input" v-if="currentState == 'CREATE-QUIZ-1'">
             <div class="date">
                 <img src="/static/name.png" alt="name" />
                 <span>Quiz name</span>
@@ -18,7 +19,7 @@
             />
         </div>
 
-        <div class="quiz-input">
+        <div class="quiz-input" v-if="currentState == 'CREATE-QUIZ-1'">
             <div class="date">
                 <img src="/static/document.png" alt="name" />
                 <span>Add text and/or files</span>
@@ -69,6 +70,60 @@
             </div>
         </div>
 
-        <button @click="uploadQuiz()" class="main-btn">Continue</button>
+        <!-- CREATE QUIZ PAGE 2 -->
+        <div class="horizontal"  v-if="currentState == 'CREATE-QUIZ-2'">
+            <div class="vertical">
+                <div class="quiz-input">
+                    <div class="date">
+                        <img src="/static/Topic.png" alt="topic" />
+                        <span>What topic and academic level is this? (optional)</span>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="E.g. Cloud App Development - University"
+                        v-model="inputs.quizTopic"
+                        class="basic-input width-100"
+                    />
+                </div>
+
+                <div class="quiz-input">
+                    <div class="date">
+                        <img src="/static/Questions.png" alt="questions" />
+                        <span>How many questions do you want?</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" min="1" max="25" v-model="inputs.numOfQuestions" class="slider">
+                        <span class="slider-value">{{ inputs.numOfQuestions }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-input">
+                <div class="date">
+                    <img src="/static/Type.png" alt="type" />
+                    <span>What type of questions do you want?</span>
+                </div>
+                <div class="radio-buttons">
+                    <label class="checkbox-label basic-text">
+                        <input type="checkbox" value="multi-choice" @change="updateQuestionTypes('multi-choice')" class="checkbox-input">
+                        <span class="custom-checkbox"></span>
+                        Multiple choice
+                    </label>
+                    <label class="checkbox-label basic-text">
+                        <input type="checkbox" value="fill-gaps" @change="updateQuestionTypes('fill-gaps')" class="checkbox-input">
+                        <span class="custom-checkbox"></span>
+                        Fill in the gaps
+                    </label>
+                    <label class="checkbox-label basic-text">
+                        <input type="checkbox" value="short-answer" @change="updateQuestionTypes('short-answer')" class="checkbox-input">
+                        <span class="custom-checkbox"></span>
+                        Short answer
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button @click="continueQuizCreate()" class="main-btn" v-if="currentState == 'CREATE-QUIZ-1'">Continue</button>
+        <button @click="uploadQuiz()" class="main-btn" v-else>Finish</button>
     </div>
 </div>
