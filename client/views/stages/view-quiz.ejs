@@ -1,4 +1,4 @@
-<div class="main-menu">
+<div class="main-menu max-height">
     <div class="menu-col-1">
         <div class="menu-container">
             <img src="/static/Quiz.png" alt="quiz" class="main-img"/>
@@ -36,7 +36,7 @@
         </div>
     </div>
     <div class="menu-col-3">
-        <div class="menu-container large-button align-items-start">
+        <div class="menu-container large-button align-items-start" @click="startQuiz(currentQuiz.quiz_id)">
             <div class="quiz-info-headers">
                 <img src="/static/Play Black.png" alt="start"> 
                 <span>start quiz</span>

@@ -4,7 +4,8 @@
             <p class="quiz-text blue">Question {{ question.questionID }}/{{ currentQuiz.total_questions }}</p>
             <p class="quiz-text">{{ question.question }}</p>
             <div class="answer-container">
-                <div class="answer-option" v-for="(option, index) in question.options" :key="index"
+                <!-- Multi choice -->
+                <div v-if="question.type == 'multi-choice'" class="answer-option" v-for="(option, index) in question.options" :key="index"
                      :class="{'selected-answer-option': currentQuiz.answers[question.questionID] == option}">
                     <span>{{ option }}</span>
                     <input type="radio" :value="option" v-model="currentQuiz.answers[question.questionID]" 
@@ -12,7 +13,18 @@
                            :id="'option-' + question.questionID + '-' + index" class="option-input" @change="optionSelected(option, question.questionID)">
                     <label :for="'option-' + question.questionID + '-' + index" class="option-circle"></label>
                 </div>
+
+                <!-- Short answer & Fill gaps -->
+                <input
+                    v-if="question.type == 'short-answer' || question.type == 'fill-gaps'"
+                    type="text"
+                    placeholder="Enter answer"
+                    v-model="currentQuiz.answers[question.questionID]"
+                    class="answer-input"
+                />
             </div>
         </div>
+
+        <button  class="main-btn width-100">Submit</button>
     </div>
 </div>

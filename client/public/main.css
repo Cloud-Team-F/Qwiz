@@ -2,11 +2,33 @@ p {
     margin: 0;
 }
 
+.background-starburst-1 {
+    background-image: url('/static/starburst.png');
+    background-repeat: no-repeat;
+    background-position: 20% 30%; /* Example position, you can adjust it */
+    transform: rotate(20deg); /* Example rotation, you can adjust it */
+}
+
+.background-starburst-2 {
+    background-image: url('/static/starburst.png');
+    background-repeat: no-repeat;
+    background-position: 80% 70%; /* Example position, you can adjust it */
+    transform: rotate(-30deg); /* Example rotation, you can adjust it */
+}
+
+.background-starburst-1, .background-starburst-2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 300px;
+    z-index: 0;
+}
+
 body {
     font-family: 'Outfit', sans-serif;
     background: #33014B 0% 0% no-repeat padding-box;
     color: white;
-    overflow: hidden;
 }
 
 .overflow-auto {
@@ -15,6 +37,10 @@ body {
 
 .overflow-auto .logged-in {
     background-color: #E9BBFF;
+}
+
+.max-height {
+    height: 90vh;
 }
 
 .loading-screen {
@@ -152,7 +178,9 @@ body {
     color: white;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+    text-align: center;
 }
 
 .main-btn:hover {
@@ -230,7 +258,6 @@ body {
 
 .main-menu {
     background-color: #E9BBFF;
-    max-height: 100vh; /* This sets the height to be 100% of the viewport height */
     width: 100%; /* This ensures it takes the full width; adjust as necessary */
     display: flex;
     justify-content: center; /* This will vertically center the content */
@@ -243,7 +270,6 @@ body {
 .menu-col-1 {
     width: 35%;
     padding: 10px;
-    max-height: 90vh; /* Set a maximum height */
     display: flex;
     align-items: flex-start; /* Align items to the start, not center */
     flex-direction: column;
@@ -275,7 +301,6 @@ body {
 .menu-col-2 {
     width: 35%;
     padding: 10px;
-    height: 90vh;
     display: flex; /* Make it a flex container */
     align-items: start; /* Center items vertically */
     flex-direction: column; /* Stack items vertically */
@@ -826,7 +851,7 @@ body {
     flex-direction: column;
     gap: 10px;
     width: 100%;
-    padding: 0.5rem;
+    margin-top: 5px;
 }
 
 .answer-option {
@@ -834,11 +859,19 @@ body {
     justify-content: space-between;
     align-items: center;
     border: 2px solid #DFDFDF;
-    border-radius: 25px;
+    border-radius: 20px;
     color: #939393;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
     padding: 1rem;
+    width: 100%;
+}
+
+.answer-input {
+    border: 2px solid #DFDFDF;
+    border-radius: 20px;
+    padding: 1rem;
+    font-size: 18px;
     width: 100%;
 }
 
