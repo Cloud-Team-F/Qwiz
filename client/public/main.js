@@ -269,7 +269,7 @@ var app = new Vue({
         leaveQuiz(quiz) {
             sendRequest(
                 "POST",
-                `/api/quiz/${quiz.id}/leave`,
+                `/api/quiz/${quiz.quiz_id}/leave`,
                 quiz,
                 (res) => {
                     console.log(res);
@@ -286,7 +286,7 @@ var app = new Vue({
         deleteQuiz(quiz) {
             sendRequest(
                 "DELETE",
-                `/api/quiz/${quiz.id}`,
+                `/api/quiz/${quiz.quiz_id}`,
                 quiz,
                 (res) => {
                     console.log(res);

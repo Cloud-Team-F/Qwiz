@@ -42,7 +42,7 @@
                 <span>start quiz</span>
             </div> 
         </div>
-        <div class="menu-container align-items-start lesser-padding" v-if="currentQuiz.owner_name == user.username">
+        <div class="menu-container align-items-start lesser-padding" v-if="currentQuiz.is_owner">
             <div class="quiz-info-headers">
                 <img src="/static/invite.png" alt="invite"> 
                 <span>invite friends</span>
@@ -60,13 +60,13 @@
             </div> 
         </div>
 
-        <div @click.stop="leaveQuiz(currentQuiz)" class="menu-container large-button align-items-start" v-if="currentQuiz.owner_name != user.username">
+        <div @click.stop="leaveQuiz(currentQuiz)" class="menu-container large-button align-items-start" v-if="!currentQuiz.is_owner">
             <div class="quiz-info-headers red-font">
                 <img src="/static/Leave.png" alt="leave"> 
                 <span class="red-font">leave quiz</span>
             </div> 
         </div>
-        <div @click.stop="deleteQuiz(currentQuiz)" class="menu-container large-button align-items-start" v-if="currentQuiz.owner_name == user.username">
+        <div @click.stop="deleteQuiz(currentQuiz)" class="menu-container large-button align-items-start" v-if="currentQuiz.is_owner">
             <div class="quiz-info-headers red-font">
                 <img src="/static/Delete.png" alt="delete"> 
                 <span class="red-font">delete quiz</span>
