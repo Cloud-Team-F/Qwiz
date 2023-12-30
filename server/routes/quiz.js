@@ -19,7 +19,11 @@ const router = express.Router();
 
 // Multer
 const upload = multer();
-const supportedFileTypes = ["application/pdf"];
+const supportedFileTypes = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+];
 
 // PubSub client
 const hubName = "hub";

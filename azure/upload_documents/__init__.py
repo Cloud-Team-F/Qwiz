@@ -15,7 +15,11 @@ from utils import (
     get_user_container,
 )
 
-supported_filetypes = ["application/pdf"]
+supported_filetypes = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+]
 max_file_size = 30 * 1024 * 1024  # 30MB
 
 # Proxy to CosmosDB
@@ -125,7 +129,7 @@ def main(req: HttpRequest) -> HttpResponse:
                     f"Unsupported file type: {file.mimetype}", 415
                 )
 
-            # Ensure file binary is a pdf (magic number check)
+            # Ensure file binary is correct (magic number check)
             try:
                 file_type = filetype.guess(file.read())
             except Exception as e:
@@ -134,7 +138,7 @@ def main(req: HttpRequest) -> HttpResponse:
 
             if file_type.mime != file.mimetype:
                 return create_error_response(
-                    f"Unsupported file type: {file_type.mime}", 415
+                    f"File '{file.filename}' is not a {file.mimetype} file", 415
                 )
 
             # Ensure file size is not too large
