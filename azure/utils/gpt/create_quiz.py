@@ -34,21 +34,19 @@ def create_quiz(
     # Example response (this is what the response should look like)
     return [
         {
-            "questionID": "1",
+            "question_id": "1",
             "question": "What is the capital of France?",
             "type": "multi-choice",
             "options": ["Paris", "London", "Berlin", "Madrid"],
         },
         {
-            "questionID": "2",
-            "question": "What is the capital of Spain?",
-            "type": "multi-choice",
-            "options": ["Paris", "London", "Berlin", "Madrid"],
+            "question_id": "2",
+            "question": "____ is the capital of Spain.",
+            "type": "fill-gaps",
         },
         {
-            "questionID": "3",
+            "question_id": "3",
             "question": "What is the capital of Germany?",
-            "type": "multi-choice",
-            "options": ["Paris", "London", "Berlin", "Madrid"],
+            "type": "short-answer",
         },
     ]

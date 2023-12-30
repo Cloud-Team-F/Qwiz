@@ -90,7 +90,7 @@ def main(req: HttpRequest) -> HttpResponse:
     # Validate
     if len(quiz_name) > 50:
         return create_error_response("Quiz name too long (max 50 characters)", 400)
-    if content and not (400 < len(content) < 5000):
+    if content and not (400 <= len(content) <= 5000):
         return create_error_response(
             "Content must be between 400 and 5000 characters", 400
         )

@@ -26,7 +26,7 @@
             </div>
             <div class="large-inputs">
                 <textarea
-                    placeholder="Enter text here (max 4000 characters)"
+                    placeholder="Enter text here (max 5000 characters)"
                     v-model="inputs.quizText"
                     class="quiz-text-input"
                 ></textarea>
@@ -37,7 +37,7 @@
                             id="fileInput"
                             class="file-input"
                             @change="uploadFile"
-                            accept=".pdf,.pptx,.doc,.docx"
+                            accept=".pdf,.pptx,.docx"
                         />
                         <label for="fileInput" class="file-label">
                             <img src="/static/upload.png" alt="upload" class="main-img"/>
@@ -45,7 +45,7 @@
                             <div class="info-text">
                                 <img src="/static/info.png" alt="info" class="small-img"/>
                                 <span
-                                    >Supported types: PDF, PPTX, DOCX, DOC</span
+                                    >Supported types: PDF, PPTX, DOCX</span
                                 >
                             </div>
                         </label>
@@ -92,7 +92,7 @@
                         <span>How many questions do you want?</span>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="1" max="25" v-model="inputs.numOfQuestions" class="slider">
+                        <input type="range" min="1" max="30" v-model="inputs.numOfQuestions" class="slider">
                         <span class="slider-value">{{ inputs.numOfQuestions }}</span>
                     </div>
                 </div>
