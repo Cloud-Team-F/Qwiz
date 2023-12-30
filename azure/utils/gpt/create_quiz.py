@@ -7,6 +7,7 @@ import re
 def create_quiz(
     num_questions: int,
     question_types: list[str],
+    topic: str = "",
     text_content: str = "",
     file_contents: list[str] = [],
 ) -> list[dict]:
@@ -38,6 +39,9 @@ def create_quiz(
     completionMulti=""
     completionBlanks=""
     completionShort=""
+
+    for info in file_contents:
+        text_content = text_content + info
 
     if "multi-choice" in typesCount:
         completionMulti = messageMultiChoice(typesCount["multi-choice"],text_content) 
