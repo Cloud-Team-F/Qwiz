@@ -32,8 +32,7 @@ var app = new Vue({
             numOfQuestions: 10,
             questionTypes: [],
         },
-        errorMessage: null,
-        successMessage: null,
+        alertMessages: [],
         mode: "login",
         filesUploaded: [],
 
@@ -156,15 +155,15 @@ var app = new Vue({
             );
         },
         fail(message) {
-            this.errorMessage = message;
+            this.alertMessages.push({ type: "error", message: message });
             setTimeout(() => {
-                this.errorMessage = null;
+                this.alertMessages.shift();
             }, 3000);
         },
         success(message) {
-            this.successMessage = message;
+            this.alertMessages.push({ type: "success", message: message });
             setTimeout(() => {
-                this.successMessage = null;
+                this.alertMessages.shift();
             }, 3000);
         },
         uploadFile(event) {
