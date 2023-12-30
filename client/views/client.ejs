@@ -13,12 +13,7 @@
 
         <div v-else>
             <!-- Alerts -->
-            <div v-if="errorMessage">
-                <%- include('components/error-popup'); -%>
-            </div>
-            <div v-if="successMessage">
-                <%- include('components/success-popup'); -%>
-            </div>
+            <%- include('components/alert-popup'); -%>
 
             <!-- Login page -->
             <div v-if="!user"><%- include('stages/login'); -%></div>

@@ -522,45 +522,45 @@ body {
     font-size: 14px;
 }
 
+
+/* Container for all alert */
+.alert-container {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    position: fixed; /* Stay in the same place even on page scroll */
+    top: 10px; /* Start from the top */
+    left: 50%; /* Center horizontally */
+    z-index: 1000; /* Ensure it's above other elements */
+    transform: translateX(-50%);
+}
+
+/* Individual message boxes */
 .error-popup-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: fixed; /* Stay in the same place even on page scroll */
-    top: 0; /* Start from the top */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center the div based on its width */
     background-color: white;
+    box-sizing: content-box;
     border-radius: 20px;
-    padding: 10px 20px;
+    padding: 10px 45px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     min-width: 15%;
     max-width: 80%; /* You can adjust or remove this */
     white-space: nowrap; /* Keep text in a single line */
     opacity: 0; /* Start with an invisible popup */
     animation: slideDown 0.5s forwards; /* Animation to slide down */
-    z-index: 1000; /* Ensure it's above other elements */
+    margin-bottom: 10px; /* Space between messages */
 }
 
 @keyframes slideDown {
     0% {
-        top: -100px; /* Start above the screen */
+        transform: translateY(-100px); /* Start above the current position */
         opacity: 0;
     }
     100% {
-        top: 10px; /* The final position from the top */
+        transform: translateY(0); /* End at the current position */
         opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    0% {
-        top: 10px; /* Current visible position */
-        opacity: 1;
-    }
-    100% {
-        top: -100px; /* Position above the screen */
-        opacity: 0;
     }
 }
 
