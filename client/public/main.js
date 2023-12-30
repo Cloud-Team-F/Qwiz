@@ -74,6 +74,10 @@ var app = new Vue({
             this.currentState = "MENU";
             this.currentQuiz = null;
         },
+        copyInviteCode(inviteCode) {
+            navigator.clipboard.writeText(inviteCode);
+            this.success("Invite code copied to clipboard!");
+        },
         login() {
             sendRequest(
                 "POST",
@@ -129,6 +133,22 @@ var app = new Vue({
                     app.currentState = "LOGIN";
                     this.clearQuizList();
                     disconnectPubSub();
+                },
+                (err) => {
+                    this.fail(err.response.data.error);
+                }
+            );
+        },
+        joinQuiz() {
+            sendRequest(
+                "POST",
+                `/api/invite/join/${this.inputs.inviteCode}`,
+                null,
+                (res) => {
+                    console.log(res);
+                    this.success("Successfully joined quiz!");
+                    this.inputs.inviteCode = "";
+                    this.updateQuizList();
                 },
                 (err) => {
                     this.fail(err.response.data.error);
@@ -316,6 +336,7 @@ var app = new Vue({
                         (q) => q.id !== quiz.id
                     );
                     this.backToHome();
+                    this.success("Successfully left quiz!");
                 },
                 (err) => {
                     this.fail(err.response.data.error);
@@ -337,6 +358,7 @@ var app = new Vue({
                         (q) => q.id !== quiz.id
                     );
                     this.backToHome();
+                    this.success("Successfully deleted quiz!");
                 },
                 (err) => {
                     this.fail(err.response.data.error);

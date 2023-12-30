@@ -53,10 +53,10 @@
                 v-model="inputs.userToInvite"
                 class="basic-input width-100"
             />
-            <div class="quiz-info-headers invite-code">
+            <div class="quiz-info-headers">
                 <span v-if="currentQuiz.invite_code">invite code: {{ currentQuiz.invite_code }}</span>
                 <span v-else>invite code: 121212</span>
-                <img src="/static/Copy.png" alt="copy"> 
+                <img src="/static/Copy.png" alt="copy" class="invite-code" @click="copyInviteCode(currentQuiz.invite_code)"> 
             </div> 
         </div>
 

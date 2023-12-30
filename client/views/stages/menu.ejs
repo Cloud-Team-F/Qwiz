@@ -19,6 +19,7 @@
                 placeholder="Enter invite code →"
                 v-model="inputs.inviteCode"
                 class="basic-input-center"
+                v-on:keyup.enter="joinQuiz()"
             />
         </div>
     </div>
