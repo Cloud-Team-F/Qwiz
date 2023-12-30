@@ -1,0 +1,18 @@
+<div class="main-menu">
+    <div class="menu-col-1">
+        <div class="quiz-question-container" v-for="question in currentQuiz.questions" :key="question.questionID">
+            <p class="quiz-text blue">Question {{ question.questionID }}/{{ currentQuiz.total_questions }}</p>
+            <p class="quiz-text">{{ question.question }}</p>
+            <div class="answer-container">
+                <div class="answer-option" v-for="(option, index) in question.options" :key="index"
+                     :class="{'selected-answer-option': currentQuiz.answers[question.questionID] == option}">
+                    <span>{{ option }}</span>
+                    <input type="radio" :value="option" v-model="currentQuiz.answers[question.questionID]" 
+                           :name="'question-' + question.questionID" 
+                           :id="'option-' + question.questionID + '-' + index" class="option-input" @change="optionSelected(option, question.questionID)">
+                    <label :for="'option-' + question.questionID + '-' + index" class="option-circle"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

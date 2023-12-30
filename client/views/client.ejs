@@ -27,6 +27,7 @@
             <div v-else>
                 <div v-if="currentState == 'CREATE-QUIZ-1' || currentState == 'CREATE-QUIZ-2'"><%- include('stages/create-quiz'); -%></div>
                 <div v-if="currentState == 'VIEW-QUIZ'"><%- include('stages/view-quiz'); -%></div>
+                <div v-if="currentState == 'START-QUIZ'"><%- include('stages/quiz-answering'); -%></div>
                 <div v-if="currentState == 'MENU'"><%- include('stages/menu'); -%></div>
             </div>
         </div>

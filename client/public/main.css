@@ -6,6 +6,7 @@ body {
     font-family: 'Outfit', sans-serif;
     background: #33014B 0% 0% no-repeat padding-box;
     color: white;
+    overflow: hidden;
 }
 
 .overflow-auto {
@@ -229,7 +230,7 @@ body {
 
 .main-menu {
     background-color: #E9BBFF;
-    height: 90vh; /* This sets the height to be 100% of the viewport height */
+    max-height: 100vh; /* This sets the height to be 100% of the viewport height */
     width: 100%; /* This ensures it takes the full width; adjust as necessary */
     display: flex;
     justify-content: center; /* This will vertically center the content */
@@ -242,11 +243,33 @@ body {
 .menu-col-1 {
     width: 35%;
     padding: 10px;
-    height: 90vh;
-    display: flex; /* Make it a flex container */
-    align-items: center; /* Center items vertically */
-    flex-direction: column; /* Stack items vertically */
-    gap: 2rem; /* Spacing between each item */
+    max-height: 90vh; /* Set a maximum height */
+    display: flex;
+    align-items: flex-start; /* Align items to the start, not center */
+    flex-direction: column;
+    gap: 2rem;
+    overflow-y: auto;
+    scrollbar-width: thin; /* "auto" or "thin" */
+    scrollbar-color: #DFDFDF transparent; 
+}
+
+.menu-col-1::-webkit-scrollbar {
+    width: 8px;
+}
+
+.menu-col-1::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.menu-col-1::-webkit-scrollbar-thumb {
+    background-color: #DFDFDF; 
+    border-radius: 10px;
+    border: 3px solid transparent; 
+}
+
+.menu-col-1::-webkit-scrollbar-thumb:hover {
+    background: #C0C0C0; 
 }
 
 .menu-col-2 {
@@ -413,17 +436,28 @@ body {
     border-radius: 40px;
     border: 3px solid #D5D5D5;
     padding: 1rem;
-    text-align: center;
     font-size: 18px;
+    padding-right: 30px; /* Adjust as needed, make room for the icon */
+    width: 100%;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+
+.input-icon {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
 }
 
 .basic-input {
     border-radius: 40px;
     border: 3px solid #D5D5D5;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 1rem;
     font-size: 18px;
     width: 50%;
 }
@@ -761,6 +795,96 @@ body {
 .checkbox-input:checked + .custom-checkbox {
     background-color: #5869FF;
     border-color: #5869FF;
+}
+
+.quiz-text {
+    font-size: 20px;
+    font-weight: 400;  
+    color: black;
+}
+
+.blue {
+    color: #5869FF;
+}
+
+.quiz-question-container {
+    background-color: white;
+    border-radius: 40px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    display: flex; 
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    flex-direction: column; 
+    padding: 1.3rem 1.7rem;
+    gap: 5px;
+    width: 100%;
+}
+
+.answer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.answer-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #DFDFDF;
+    border-radius: 25px;
+    color: #939393;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 1rem;
+    width: 100%;
+}
+
+.answer-option .selected-answer-option {
+    border: 2px solid #5869FF;
+    color: #5869FF;
+}
+
+.option-input {
+    opacity: 0;
+    position: absolute;
+}
+
+.option-circle {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 2px solid #DFDFDF;
+    display: inline-block;
+    position: relative;
+}
+
+.option-input:checked + .option-circle {
+    background-color: #5869FF;
+    border-color: #5869FF;
+}
+
+.option-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background-color: #5869FF;
+    border-radius: 50%;
+    display: none;
+}
+
+.option-input:checked + .option-circle::after {
+    display: block;
+}
+
+.bottom-margin {
+    margin-bottom: 2rem;
 }
 
 /* Smaller screen (e.g., 14-inch laptop) adjustments */

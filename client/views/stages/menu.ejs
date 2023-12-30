@@ -14,13 +14,16 @@
             <p class="basic-text">
                 Join a friend's personalised quiz and compete!
             </p>
-            <input
-                type="text"
-                placeholder="Enter invite code →"
-                v-model="inputs.inviteCode"
-                class="basic-input-center"
-                v-on:keyup.enter="joinQuiz()"
-            />
+            <div class="input-container">
+                <input
+                    type="text"
+                    placeholder="Enter invite code"
+                    v-model="inputs.inviteCode"
+                    class="basic-input-center"
+                    v-on:keyup.enter="joinQuiz()"
+                />
+                <img src="/static/Right.png" alt="submit" class="input-icon" @click="joinQuiz()"/>
+            </div>
         </div>
     </div>
     <div class="menu-col-2">

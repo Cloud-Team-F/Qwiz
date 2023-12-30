@@ -140,20 +140,24 @@ var app = new Vue({
             );
         },
         joinQuiz() {
-            sendRequest(
-                "POST",
-                `/api/invite/join/${this.inputs.inviteCode}`,
-                null,
-                (res) => {
-                    console.log(res);
-                    this.success("Successfully joined quiz!");
-                    this.inputs.inviteCode = "";
-                    this.updateQuizList();
-                },
-                (err) => {
-                    this.fail(err.response.data.error);
-                }
-            );
+            if (this.inputs.inviteCode == "") {
+                this.fail("Enter an invite code to join a quiz!");
+            } else {
+                sendRequest(
+                    "POST",
+                    `/api/invite/join/${this.inputs.inviteCode}`,
+                    null,
+                    (res) => {
+                        console.log(res);
+                        this.success("Successfully joined quiz!");
+                        this.inputs.inviteCode = "";
+                        this.updateQuizList();
+                    },
+                    (err) => {
+                        this.fail(err.response.data.error);
+                    }
+                );
+            }
         },
         fail(message) {
             this.errorMessage = message;
@@ -314,9 +318,36 @@ var app = new Vue({
                 false
             );
         },
+        optionSelected(option, questionID) {
+            this.currentQuiz.answers[questionID] = option;
+            console.log('Answers:', this.currentQuiz.answers);
+        },
         startQuiz(quizID) {
             // todo:: change this
-            this.success("Starting quiz: " + quizID);
+            // this.success("Starting quiz: " + quizID);
+            sendRequest(
+                "GET",
+                `/api/quiz/${quizID}`,
+                null,
+                (res) => {
+                    console.log(res);
+                    let answers = {};
+
+                    for (let question of res.data.questions) {
+                        answers[question.questionID] = "";
+                    }
+
+                    this.currentQuiz = res.data;
+                    this.currentQuiz.answers = answers;
+
+                    this.currentState = "START-QUIZ";
+                    console.log("Starting quiz: ", this.currentQuiz);
+                },
+                (err) => {
+                    this.fail(err.response.data.error);
+                },
+                true
+            );
         },
         removeQuiz(quiz) {
             this.ownQuizzes.filter((item) => item.id == quiz.id);
