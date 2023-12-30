@@ -222,9 +222,22 @@ var app = new Vue({
             this.clearQuizInputs();
         },
         viewQuiz(quiz) {
-            this.currentQuiz = quiz;
-            this.currentState = 'VIEW-QUIZ'
-            console.log('Viewing quiz: ', quiz);
+            console.log('Current quiz: ', quiz);
+            sendRequest(
+                "GET",
+                `/api/quiz/${quiz.id}`,
+                quiz.id,
+                (res) => {
+                    console.log(res);
+                    this.currentQuiz = {...quiz, ...res.data};
+                    this.currentState = 'VIEW-QUIZ'
+                    console.log('Viewing quiz: ', this.currentQuiz);
+                },
+                (err) => {
+                    this.fail(err.response.data.error);
+                },
+                true
+            );
         },
         updateQuizList() {
             this.loadingQuizList = true;
@@ -256,21 +269,36 @@ var app = new Vue({
         leaveQuiz(quiz) {
             sendRequest(
                 "POST",
-                "/api/quiz/leave",
+                `/api/quiz/${quiz.id}/leave`,
                 quiz,
                 (res) => {
                     console.log(res);
-                    this.success("You have left the quiz.");
-                    this.connectPubSub();
-                    this.updateQuizList();
-                    this.removeQuiz(quiz);
+                    this.ownQuizzes = this.ownQuizzes.filter(q => q.id !== quiz.id);
+                    this.sharedQuizzes = this.sharedQuizzes.filter(q => q.id !== quiz.id);
                     this.backToHome();
                 },
                 (err) => {
                     this.fail(err.response.data.error);
                 },
-                false
+                true
             );
+        },
+        deleteQuiz(quiz) {
+            sendRequest(
+                "DELETE",
+                `/api/quiz/${quiz.id}`,
+                quiz,
+                (res) => {
+                    console.log(res);
+                    this.ownQuizzes = this.ownQuizzes.filter(q => q.id !== quiz.id);
+                    this.sharedQuizzes = this.sharedQuizzes.filter(q => q.id !== quiz.id);
+                    this.backToHome();
+                },
+                (err) => {
+                    this.fail(err.response.data.error);
+                },
+                true
+            ); 
         }
     },
 });

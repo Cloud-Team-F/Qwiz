@@ -3,7 +3,7 @@
         <button class="back-button" @click="createQuizBack()">
             <img src="/static/left.png" alt="back" />
         </button>
-        <img src="/static/create-doc.png" alt="create" />
+        <img src="/static/create-doc.png" alt="create" class="main-img"/>
 
         <!-- CREATE QUIZ PAGE 1 -->
         <div class="quiz-input" v-if="currentState == 'CREATE-QUIZ-1'">
@@ -40,10 +40,10 @@
                             accept=".pdf,.pptx,.doc,.docx"
                         />
                         <label for="fileInput" class="file-label">
-                            <img src="/static/upload.png" alt="upload" />
+                            <img src="/static/upload.png" alt="upload" class="main-img"/>
                             <span>Upload or drop files</span>
                             <div class="info-text">
-                                <img src="/static/info.png" alt="info" />
+                                <img src="/static/info.png" alt="info" class="small-img"/>
                                 <span
                                     >Supported types: PDF, PPTX, DOCX, DOC</span
                                 >

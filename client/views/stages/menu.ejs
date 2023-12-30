@@ -1,7 +1,7 @@
 <div class="main-menu">
     <div class="menu-col-1">
         <div class="menu-container">
-            <img src="/static/create-doc.png" alt="create" />
+            <img src="/static/create-doc.png" alt="create" class="main-img"/>
             <p class="basic-text">
                 Add text and files to generate a personalised quiz!
             </p>
@@ -10,7 +10,7 @@
             </button>
         </div>
         <div class="menu-container">
-            <img src="/static/student.png" alt="student" />
+            <img src="/static/student.png" alt="student" class="main-img"/>
             <p class="basic-text">
                 Join a friend's personalised quiz and compete!
             </p>
@@ -70,7 +70,7 @@
             v-for="quiz in sharedQuizzes"
             class="quiz-container"
         >
-            <div class="quiz-item">
+            <div class="quiz-item" @click="viewQuiz(quiz)">
                 <div class="quiz-details">
                     <div class="quiz-question-count">
                         <div class="circle"></div>

@@ -42,9 +42,9 @@ body {
 
 .navbar-logo {
     display: flex;
-    justify-content: center; /* Center the logo horizontally */
-    align-items: center; /* Center the logo vertically */
-    flex: 1; /* This will allow the logo to take up space in the flex container */
+    justify-content: center;
+    align-items: center; 
+    flex: 1; 
     gap: 5px; 
 }
 
@@ -313,7 +313,7 @@ body {
    align-items: start; 
    flex-direction: column;
    justify-content: center;
-   gap: 5px; 
+   gap: 3px; 
 }
 
 .quiz-info-headers {
@@ -770,6 +770,32 @@ body {
         margin-bottom: 1rem;
     }
 
+    .navbar-logo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .navbar-btn {
+        padding: 0.3rem 1.7rem;
+        font-size: 16px;
+        gap: 5px;
+    }
+
+    .navbar-btn img{
+        width: 20px;
+        height: 20px;
+    }
+
+    .date img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .quiz-info-headers img {
+        width: 25px;
+        height: 25px;
+    }
+
     .main-menu {
         gap: 1.5rem;
         padding-left: 2rem;
@@ -802,9 +828,41 @@ body {
         gap: 1.5rem;
     }
 
+    .back-button {
+        top: 1.25rem;
+        left: 1.25rem;
+        height: 35px; /* Specific height for a perfect circle */
+        width: 35px; 
+    }
+
+    .back-button img {
+        width: 25px;
+        height: 25px;
+    }
+
     .main-btn, .small-btn {
-        padding: 0.5rem 1.5rem;
-        font-size: 18px;
+        padding: 0.5rem 1.25rem;
+        font-size: 16px;
+    }
+
+    .main-img {
+        width: 85px;
+        height: 85px;
+    }
+
+    .small-img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .main-btn {
+        gap: 5px;
+        margin-top: 0.5rem;
+    }
+
+    .small-btn img {
+        width: 20px;
+        height: 20px;
     }
 
     .navbar-title {

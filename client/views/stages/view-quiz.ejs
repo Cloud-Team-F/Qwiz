@@ -1,18 +1,18 @@
 <div class="main-menu">
     <div class="menu-col-1">
         <div class="menu-container">
-            <img src="/static/Quiz.png" alt="quiz" />
+            <img src="/static/Quiz.png" alt="quiz" class="main-img"/>
             <p class="quiz-title">
-                {{ currentQuiz.name }} 
+                {{ currentQuiz.quiz_name }} 
             </p>
            <div class="quiz-info">
                 <div class="quiz-question-count">
                     <div class="circle"></div>
-                    <p class="basic-text">{{ currentQuiz.question_count }} questions</p>
+                    <p class="basic-text">{{ currentQuiz.total_questions }} questions</p>
                 </div>
                 <div class="quiz-question-count">
                     <div class="circle black"></div>
-                    <p class="basic-text" v-if="currentQuiz.owner_id">{{ currentQuiz.owner_id }}</p>
+                    <p class="basic-text" v-if="currentQuiz.owner_name">{{ currentQuiz.owner_name }}</p>
                     <p class="basic-text" v-else>quiz creator</p>
                 </div>
            </div>
@@ -23,6 +23,7 @@
                     <img src="/static/People.png" alt="people"> 
                     <span>people</span>
                 </div>
+                <p v-if="currentQuiz.people" v-for="person in currentQuiz.people" class="larger-font grey-font">{{ person }}</p>
             </div>
             <div class="quiz-info">
                 <div class="quiz-info-headers">
@@ -41,7 +42,7 @@
                 <span>start quiz</span>
             </div> 
         </div>
-        <div class="menu-container align-items-start lesser-padding">
+        <div class="menu-container align-items-start lesser-padding" v-if="currentQuiz.owner_name == user.username">
             <div class="quiz-info-headers">
                 <img src="/static/invite.png" alt="invite"> 
                 <span>invite friends</span>
@@ -59,13 +60,13 @@
             </div> 
         </div>
 
-        <div @click.stop="leaveQuiz(currentQuiz)" class="menu-container large-button align-items-start">
+        <div @click.stop="leaveQuiz(currentQuiz)" class="menu-container large-button align-items-start" v-if="currentQuiz.owner_name != user.username">
             <div class="quiz-info-headers red-font">
                 <img src="/static/Leave.png" alt="leave"> 
                 <span class="red-font">leave quiz</span>
             </div> 
         </div>
-        <div class="menu-container large-button align-items-start">
+        <div @click.stop="deleteQuiz(currentQuiz)" class="menu-container large-button align-items-start" v-if="currentQuiz.owner_name == user.username">
             <div class="quiz-info-headers red-font">
                 <img src="/static/Delete.png" alt="delete"> 
                 <span class="red-font">delete quiz</span>
