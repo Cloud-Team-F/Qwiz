@@ -15,6 +15,8 @@ pubsub = get_pubsub_client()
 
 
 def main(msg: QueueMessage) -> None:
+    logging.info("Python queue trigger function processed a queue item")
+
     # Decode the message body from base64 and json
     try:
         # decode with base64

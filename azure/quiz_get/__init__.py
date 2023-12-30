@@ -59,13 +59,16 @@ def main(req: HttpRequest) -> HttpResponse:
         return HttpResponse(
             body=json.dumps(
                 {
+                    "quiz_id": quiz_id,
                     "owner_name": user.get("username", "Unknown"),
+                    "is_owner": user_id == quiz.get("user_id", ""),
                     "quiz_name": quiz.get("name", "Unknown"),
                     "total_questions": len(quiz.get("questions", [])),
                     "questions": quiz.get("questions", []),
                     "processed": quiz.get("processed", False),
                     "invite_code": quiz.get("invite_code", "Unknown"),
                     "people": list(shared_with_usernames),
+                    "top_score": 10,
                 }
             ),
             status_code=200,
