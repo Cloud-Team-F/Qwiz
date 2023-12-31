@@ -5,12 +5,21 @@
             <p class="quiz-text">{{ question.question }}</p>
             <div class="answer-container">
                 <!-- Multi choice -->
-                <div v-if="question.type == 'multi-choice'" class="answer-option" v-for="(option, index) in question.options" :key="index"
-                     :class="{'selected-answer-option': currentQuiz.answers[question.question_id] == option}">
-                    <span>{{ option }}</span>
-                    <input type="radio" :value="option" v-model="currentQuiz.answers[question.question_id]" 
-                           :name="'question-' + question.question_id" 
-                           :id="'option-' + question.question_id + '-' + index" class="option-input" @change="optionSelected(option, question.question_id)">
+                <div v-if="question.type == 'multi-choice'" 
+                    class="answer-option" 
+                    v-for="(option, index) in question.options" 
+                    :key="index"
+                    @click="optionSelected(option, question.question_id, $event)"
+                    :class="{'selected-answer-option': currentQuiz.answers[question.question_id] === option}">
+                    <span>
+                        {{ option }}
+                    </span>
+                    <input type="radio" 
+                        :value="option" 
+                        v-model="currentQuiz.answers[question.question_id]" 
+                        :name="'question-' + question.question_id" 
+                        :id="'option-' + question.question_id + '-' + index" 
+                        class="option-input">
                     <label :for="'option-' + question.question_id + '-' + index" class="option-circle"></label>
                 </div>
 

@@ -63,7 +63,7 @@
             />
             <div class="quiz-info-headers">
                 <span v-if="currentQuiz.invite_code">invite code: {{ currentQuiz.invite_code }}</span>
-                <span v-else>invite code: 121212</span>
+                <span v-else>invite code: no code</span>
                 <img src="/static/Copy.png" alt="copy" class="invite-code" @click="copyInviteCode(currentQuiz.invite_code)"> 
             </div> 
         </div>

@@ -317,10 +317,18 @@ var app = new Vue({
                 false
             );
         },
-        optionSelected(option, questionID) {
-            this.currentQuiz.answers[questionID] = option;
-            console.log("Answers:", this.currentQuiz.answers);
-        },
+        optionSelected(option, questionId, event) {
+            // Prevent the method from running if the radio itself is clicked
+            if (event.target.type !== 'radio') {
+                // Toggle the answer
+                this.currentQuiz.answers[questionId] = this.currentQuiz.answers[questionId] === option ? "" : option;
+            }
+            // Ensure Vue updates the radio button state
+            this.$nextTick(() => {
+                this.$forceUpdate();
+            });
+            console.log('Answers:', this.currentQuiz.answers);
+        },        
         startQuiz(quizID) {
             // todo:: change this
             // this.success("Starting quiz: " + quizID);
@@ -342,7 +350,7 @@ var app = new Vue({
                     let answers = {};
 
                     for (let question of res.data.questions) {
-                        answers[question.questionID] = "";
+                        answers[question.question_id] = "";
                     }
 
                     this.currentQuiz = res.data;
