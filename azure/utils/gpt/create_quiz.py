@@ -263,7 +263,7 @@ def parse_fill_blanks2(quiz_text, phraseUsed):
 
     for line in lines:
         # Remove the question number
-        option = re.sub(r"^\d+\.\s+", "", line)
+        option = re.sub(r"^\d+\.\s+|^- ", "", line)
 
         # Check for the correct answer indicator and remove it
         if "*" in option:
