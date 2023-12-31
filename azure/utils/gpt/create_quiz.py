@@ -220,6 +220,9 @@ def parse_multi_quiz(
     for part in question_parts:
         lines = part.strip().split("\n")
         question_text = lines[0].strip()
+        # Remove the question number
+        question_text = re.sub(r"^\d+[.)]\s+", "", question_text)
+
         options_with_labels = lines[1:]
 
         options = []
@@ -283,6 +286,11 @@ def parse_fill_blanks2(quiz_text, phraseUsed):
             option = correct_answer
 
         options.append(option)
+
+    #a function that takes phraseUsed, and correct_answer and blanks the answer.
+    # Replace only the first instance of the phrase
+    pattern = re.escape(correct_answer)
+    phraseUsed = re.sub(pattern, "___________", phraseUsed, count=1, flags=re.IGNORECASE)   
 
     # Create a question with the options and the correct answer
     question = Question(phraseUsed, options, correct_answer, "fill-gaps")
