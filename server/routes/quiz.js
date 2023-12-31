@@ -84,12 +84,12 @@ router.post("/create", upload.any(), requiresAuth, async (req, res, next) => {
     }
 
     // Check there are files or content
-    if (req.files && req.files.length === 0 && !req.body["content"]) {
+    if (req.files.length === 0 && !req.body["content"]) {
         next(createHttpError(400, "No files or content provided"));
         return;
     }
-    if (req.files.length > 5) {
-        next(createHttpError(400, "Maximum 5 files allowed"));
+    if (req.files.length > 3) {
+        next(createHttpError(400, "Maximum 3 files allowed"));
         return;
     }
 

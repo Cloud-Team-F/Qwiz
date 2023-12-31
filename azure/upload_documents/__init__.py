@@ -76,8 +76,8 @@ def main(req: HttpRequest) -> HttpResponse:
         return create_error_response("Missing num_questions or question_types", 400)
     if not files and not content:
         return create_error_response("Must upload files or provide text content", 400)
-    if len(files) > 5:
-        return create_error_response("Max 5 files", 400)
+    if len(files) > 3:
+        return create_error_response("Max 3 files", 400)
     logging.info(f"Received {len(files)} files")
 
     # Convert question_types to list
@@ -90,9 +90,9 @@ def main(req: HttpRequest) -> HttpResponse:
     # Validate
     if len(quiz_name) > 50:
         return create_error_response("Quiz name too long (max 50 characters)", 400)
-    if content and not (400 <= len(content) <= 5000):
+    if content and not (400 <= len(content) <= 2000):
         return create_error_response(
-            "Content must be between 400 and 5000 characters", 400
+            "Content must be between 400 and 2000 characters", 400
         )
     if len(topic) > 100:
         return create_error_response("Topic too long (max 100 characters)", 400)
@@ -175,6 +175,7 @@ def main(req: HttpRequest) -> HttpResponse:
         "files": file_contents,
         "content": content,
         "processed": False,
+        "errored": False,
         "invite_code": secrets.token_hex(3),
     }
     try:

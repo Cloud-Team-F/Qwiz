@@ -102,28 +102,7 @@ def create_quiz(
 
     except Exception as e:
         logging.error("Error creating quiz: %s", e, exc_info=True)
-
-        # Example response (this is what the response should look like)
-        return [
-            {
-                "question_id": "1",
-                "question": "What is the capital of France?",
-                "type": "multi-choice",
-                "options": ["Paris", "London", "Berlin", "Madrid"],
-                "correct-answer": "Paris",
-            },
-            {
-                "question_id": "2",
-                "question": "____ is the capital of Spain.",
-                "type": "fill-gaps",
-                "correct-answer": "Madrid",
-            },
-            {
-                "question_id": "3",
-                "question": "What is the capital of Germany?",
-                "type": "short-answer",
-            },
-        ]
+        raise e
 
 
 """
@@ -177,7 +156,7 @@ class Submission:
 
 def add_sequential_quiz_id(quiz):
     for i, question in enumerate(quiz.questions):
-        question.question_id = i+1
+        question.question_id = i + 1
     return quiz
 
 
@@ -287,10 +266,12 @@ def parse_fill_blanks2(quiz_text, phraseUsed):
 
         options.append(option)
 
-    #a function that takes phraseUsed, and correct_answer and blanks the answer.
+    # a function that takes phraseUsed, and correct_answer and blanks the answer.
     # Replace only the first instance of the phrase
     pattern = re.escape(correct_answer)
-    phraseUsed = re.sub(pattern, "___________", phraseUsed, count=1, flags=re.IGNORECASE)   
+    phraseUsed = re.sub(
+        pattern, "___________", phraseUsed, count=1, flags=re.IGNORECASE
+    )
 
     # Create a question with the options and the correct answer
     question = Question(phraseUsed, options, correct_answer, "fill-gaps")

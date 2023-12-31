@@ -180,11 +180,11 @@ var app = new Vue({
             if (file.type && !supportedFileTypes.includes(file.type)) {
                 // check file type
                 this.fail("File type not supported!");
-            } else if (this.filesUploaded.length < 5) {
+            } else if (this.filesUploaded.length < 3) {
                 console.log(file);
                 this.filesUploaded.push(file);
             } else {
-                this.fail("Too many files! (5 max)");
+                this.fail("Too many files! (3 max)");
             }
         },
         continueQuizCreate() {
@@ -198,10 +198,10 @@ var app = new Vue({
                 this.fail("Quiz name must be less than 50 characters!");
             } else if (
                 quizText &&
-                (quizText.length < 400 || quizText.length > 5000)
+                (quizText.length < 400 || quizText.length > 2000)
             ) {
                 this.fail(
-                    "Content text must be between 400 and 5000 characters!"
+                    "Content text must be between 400 and 2000 characters!"
                 );
             } else {
                 this.currentState = "CREATE-QUIZ-2";
@@ -236,7 +236,7 @@ var app = new Vue({
 
             // Append text fields
             formData.append("quiz_name", this.inputs.quizName);
-            formData.append("quiz_text", this.inputs.quizText);
+            formData.append("content", this.inputs.quizText);
 
             // Append files
             for (const file of this.filesUploaded) {
@@ -319,7 +319,7 @@ var app = new Vue({
         },
         optionSelected(option, questionID) {
             this.currentQuiz.answers[questionID] = option;
-            console.log('Answers:', this.currentQuiz.answers);
+            console.log("Answers:", this.currentQuiz.answers);
         },
         startQuiz(quizID) {
             // todo:: change this
@@ -436,13 +436,17 @@ function connectPubSub() {
                 } catch (e) {
                     console.log(e);
                 }
-                if (
-                    event_data.data &&
-                    event_data.data.type &&
-                    event_data.data.type === "quiz_processed"
-                ) {
-                    app.updateQuizList();
-                    app.success("Your quiz has been created!");
+                if (event_data.data && event_data.data.type) {
+                    if (event_data.data.type === "quiz_processed") {
+                        app.updateQuizList();
+                        app.success("Your quiz has been created!");
+                    }
+
+                    if (event_data.data.type === "quiz_errored") {
+                        app.fail(
+                            "Your quiz could not be created! Please try again with different content."
+                        );
+                    }
                 }
                 console.log(event_data);
             };

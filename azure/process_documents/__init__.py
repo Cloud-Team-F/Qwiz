@@ -14,6 +14,49 @@ QuizContainerProxy = get_quizzes_container()
 pubsub = get_pubsub_client()
 
 
+def setQuizErrored(quiz_id: str) -> None:
+    """
+    Set quiz errored field to true
+
+    Args:
+        quiz_id (str): quiz id
+    """
+    try:
+        quiz = QuizContainerProxy.read_item(item=quiz_id, partition_key=quiz_id)
+        quiz["errored"] = True
+        QuizContainerProxy.replace_item(
+            item=quiz_id,
+            body=quiz,
+        )
+    except Exception as e:
+        logging.error("Error setting quiz errored field: %s", e, exc_info=True)
+
+
+def sendPubSubMessage(user_id: str, quiz_id: str, message_type: str) -> None:
+    """
+    Sends a Pub/Sub message to a user for a specific quiz.
+
+    Args:
+        user_id (str): The ID of the user to send the message to.
+        quiz_id (str): The ID of the quiz associated with the message.
+        message_type (str): The type of the message. This can be one of: quiz_processed, quiz_errored.
+
+    Returns:
+        None: This function does not return anything.
+    """
+    try:
+        pubsub.send_to_user(
+            user_id=user_id,
+            message={
+                "type": message_type,
+                "quiz_id": quiz_id,
+            },
+        )
+    except Exception as e:
+        logging.error("Error sending quiz pubsub message: %s", e, exc_info=True)
+        return
+
+
 def main(msg: QueueMessage) -> None:
     logging.info("Python queue trigger function processed a queue item")
 
@@ -72,32 +115,34 @@ def main(msg: QueueMessage) -> None:
         except Exception as e:
             logging.error("Error deleting blob: %s", e, exc_info=True)
 
-    # Create quiz from text
-    created_quiz = create_quiz(
-        num_questions=num_questions,
-        question_types=question_types,
-        topic=topic,
-        text_content=text_content,
-        file_contents=all_content,
-    )
+    try:
+        # Create quiz from text
+        created_quiz = create_quiz(
+            num_questions=num_questions,
+            question_types=question_types,
+            topic=topic,
+            text_content=text_content,
+            file_contents=all_content,
+        )
 
-    # Add sample questions to quiz
-    quiz["questions"] = created_quiz
+        # Add sample questions to quiz
+        quiz["questions"] = created_quiz
 
-    # Update processed flag
-    quiz["processed"] = True
+        # Update processed flag
+        quiz["processed"] = True
 
-    # Update quiz with new questions
-    QuizContainerProxy.replace_item(
-        item=message["quiz_id"],
-        body=quiz,
-    )
+        # Update quiz with new questions
+        QuizContainerProxy.replace_item(
+            item=message["quiz_id"],
+            body=quiz,
+        )
 
-    # Notify user that quiz has been processed
-    pubsub.send_to_user(
-        user_id=user_id,
-        message={
-            "type": "quiz_processed",
-            "quiz_id": quiz_id,
-        },
-    )
+        # Notify the user that the quiz has been processed
+        sendPubSubMessage(user_id, quiz_id, "quiz_processed")
+    except Exception as e:
+        logging.error("Error creating quiz: %s", e, exc_info=True)
+        setQuizErrored(quiz_id)
+
+        # Notify the user that the quiz has errored
+        sendPubSubMessage(user_id, quiz_id, "quiz_errored")
+        return
