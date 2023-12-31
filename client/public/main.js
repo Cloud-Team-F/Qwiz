@@ -330,6 +330,15 @@ var app = new Vue({
                 null,
                 (res) => {
                     console.log(res);
+                    
+                    const errored = res.data.errored;
+                    if (errored) {
+                        this.fail(
+                            "This quiz has errored and cannot be started!"
+                        );
+                        return;
+                    }
+
                     let answers = {};
 
                     for (let question of res.data.questions) {
@@ -443,6 +452,7 @@ function connectPubSub() {
                     }
 
                     if (event_data.data.type === "quiz_errored") {
+                        app.updateQuizList();
                         app.fail(
                             "Your quiz could not be created! Please try again with different content."
                         );

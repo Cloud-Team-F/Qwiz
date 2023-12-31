@@ -35,13 +35,14 @@
         <div
             v-if="!loadingQuizList"
             v-for="quiz in ownQuizzes"
-            class="quiz-container"
+            class="quiz-container position-relative"
         >
             <div class="quiz-item" @click="viewQuiz(quiz)">
                 <div class="quiz-details">
                     <div class="quiz-question-count">
-                        <div class="circle"></div>
-                        <p class="question-count">{{ quiz.question_count }} questions</p>
+                        <div class="circle" :class="{ 'red': quiz.errored }"></div>
+                        <p class="question-count" v-if="quiz.errored">Something went wrong!</p>
+                        <p class="question-count" v-else>{{ quiz.question_count }} questions</p>
                     </div>
                     <p class="quiz-name">{{ quiz.name }}</p>
                 </div>
@@ -50,6 +51,14 @@
                     <img src="/static/play.png" alt="start" />
                     <span>Start</span>
                 </button>
+            </div>
+
+            <div v-if="!quiz.processed" class="quiz-item-loading">
+                <div class="spinner-border spinner-purple" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span class="ms-2 text-white
+                ">Creating quiz...</span>
             </div>
         </div>
         <div v-if="loadingQuizList" v-for="index in 3" :key="index">

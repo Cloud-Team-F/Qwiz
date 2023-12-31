@@ -23,6 +23,7 @@ def setQuizErrored(quiz_id: str) -> None:
     """
     try:
         quiz = QuizContainerProxy.read_item(item=quiz_id, partition_key=quiz_id)
+        quiz["processed"] = True
         quiz["errored"] = True
         QuizContainerProxy.replace_item(
             item=quiz_id,
@@ -140,7 +141,7 @@ def main(msg: QueueMessage) -> None:
         # Notify the user that the quiz has been processed
         sendPubSubMessage(user_id, quiz_id, "quiz_processed")
     except Exception as e:
-        logging.error("Error creating quiz: %s", e, exc_info=True)
+        logging.error("Error creating quiz (main func): %s", e, exc_info=True)
         setQuizErrored(quiz_id)
 
         # Notify the user that the quiz has errored

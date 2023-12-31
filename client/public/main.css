@@ -692,6 +692,21 @@ body {
     cursor: pointer;
 }
 
+.quiz-item-loading {
+    position: absolute;
+    border-radius: 40px;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(26, 27, 27, 0.8); /* light with 0.8 opacity */
+    /* opacity: 0.8; */
+}
+
 .quiz-details {
     display: flex;
     align-items: start;
@@ -724,6 +739,10 @@ body {
     background-color: black;
 }
 
+.red {
+    background-color: #FF5757;
+}
+
 .quiz-name {
     font-weight: 400;
     font-size: 1.25rem;
@@ -743,6 +762,10 @@ body {
     border-radius: 40px;
     width: 100%;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+}
+
+.spinner-purple {
+    color: rgb(223, 6, 223);
 }
 
 .slider-container {

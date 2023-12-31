@@ -36,13 +36,21 @@
         </div>
     </div>
     <div class="menu-col-3">
-        <div class="menu-container large-button align-items-start" @click="startQuiz(currentQuiz.quiz_id)">
+        <div class="menu-container large-button align-items-start" @click="startQuiz(currentQuiz.quiz_id)" v-if="!currentQuiz.errored">
             <div class="quiz-info-headers">
                 <img src="/static/Play Black.png" alt="start"> 
                 <span>start quiz</span>
             </div> 
         </div>
-        <div class="menu-container align-items-start lesser-padding" v-if="currentQuiz.is_owner">
+        <div class="menu-container align-items-start lesser-padding" v-if="currentQuiz.errored">
+            <div class="quiz-info-headers">
+                <span class="red-font">Something went wrong generating the quiz. This may have been caused by
+                    the content containing too much text.<br><br>
+                    Please try again with different files.
+                </span>
+            </div>
+        </div>
+        <div class="menu-container align-items-start lesser-padding" v-if="currentQuiz.is_owner && !currentQuiz.errored">
             <div class="quiz-info-headers">
                 <img src="/static/invite.png" alt="invite"> 
                 <span>invite friends</span>
