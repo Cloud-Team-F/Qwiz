@@ -15,7 +15,8 @@
     "extensions": {
         "http": { "routePrefix": "" },
         "queues": {
-            "maxPollingInterval": "00:00:04"
+            "maxPollingInterval": "00:00:04",
+            "maxDequeueCount": 2
         }
     }
 }

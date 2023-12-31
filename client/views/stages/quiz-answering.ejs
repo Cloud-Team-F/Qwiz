@@ -1,17 +1,17 @@
 <div class="main-menu">
     <div class="menu-col-1">
-        <div class="quiz-question-container" v-for="question in currentQuiz.questions" :key="question.questionID">
-            <p class="quiz-text blue">Question {{ question.questionID }}/{{ currentQuiz.total_questions }}</p>
+        <div class="quiz-question-container" v-for="question in currentQuiz.questions" :key="question.question_id">
+            <p class="quiz-text blue">Question {{ question.question_id }}/{{ currentQuiz.total_questions }}</p>
             <p class="quiz-text">{{ question.question }}</p>
             <div class="answer-container">
                 <!-- Multi choice -->
                 <div v-if="question.type == 'multi-choice'" class="answer-option" v-for="(option, index) in question.options" :key="index"
-                     :class="{'selected-answer-option': currentQuiz.answers[question.questionID] == option}">
+                     :class="{'selected-answer-option': currentQuiz.answers[question.question_id] == option}">
                     <span>{{ option }}</span>
-                    <input type="radio" :value="option" v-model="currentQuiz.answers[question.questionID]" 
-                           :name="'question-' + question.questionID" 
-                           :id="'option-' + question.questionID + '-' + index" class="option-input" @change="optionSelected(option, question.questionID)">
-                    <label :for="'option-' + question.questionID + '-' + index" class="option-circle"></label>
+                    <input type="radio" :value="option" v-model="currentQuiz.answers[question.question_id]" 
+                           :name="'question-' + question.question_id" 
+                           :id="'option-' + question.question_id + '-' + index" class="option-input" @change="optionSelected(option, question.question_id)">
+                    <label :for="'option-' + question.question_id + '-' + index" class="option-circle"></label>
                 </div>
 
                 <!-- Short answer & Fill gaps -->
@@ -19,7 +19,7 @@
                     v-if="question.type == 'short-answer' || question.type == 'fill-gaps'"
                     type="text"
                     placeholder="Enter answer"
-                    v-model="currentQuiz.answers[question.questionID]"
+                    v-model="currentQuiz.answers[question.question_id]"
                     class="answer-input"
                 />
             </div>
