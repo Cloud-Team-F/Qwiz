@@ -41,7 +41,9 @@ router.post("/login", (req, res, next) => {
         })
         .catch((error) => {
             // check unauthorized
-            if (error.response.status === 401) {
+            if (!error.response) {
+                return next(createHttpError(500, "An unknown error occurred"));
+            } else if (error.response.status === 401) {
                 next(createHttpError(401, "Incorrect password"));
             } else if (error.response.status === 404) {
                 next(createHttpError(404, "Username not found"));
@@ -74,7 +76,9 @@ router.post("/register", (req, res, next) => {
         })
         .catch((error) => {
             // check unauthorized
-            if (error.response.status === 400) {
+            if (!error.response) {
+                return next(createHttpError(500, "An unknown error occurred"));
+            } else if (error.response.status === 400) {
                 next(createHttpError(400, error.response.data.error));
             } else if (error.response.status === 409) {
                 next(createHttpError(409, "Username already exists"));
@@ -98,7 +102,9 @@ router.get("/me", requiresAuth, (req, res, next) => {
         })
         .catch((error) => {
             // check unauthorized
-            if (error.response.status === 404) {
+            if (!error.response) {
+                return next(createHttpError(500, "An unknown error occurred"));
+            } else if (error.response.status === 404) {
                 next(createHttpError(404, "User not found"));
             } else {
                 next(createHttpError(500, "An unknown error occurred"));
@@ -114,7 +120,9 @@ router.get("/profile/:id", (req, res, next) => {
         })
         .catch((error) => {
             // check unauthorized
-            if (error.response.status === 404) {
+            if (!error.response) {
+                return next(createHttpError(500, "An unknown error occurred"));
+            } else if (error.response.status === 404) {
                 next(createHttpError(404, "User not found"));
             } else {
                 next(createHttpError(500, "An unknown error occurred"));

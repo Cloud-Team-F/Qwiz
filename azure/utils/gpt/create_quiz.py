@@ -1,4 +1,5 @@
 import logging
+import random
 import re
 
 from openai import OpenAI
@@ -86,6 +87,11 @@ def create_quiz(
 
         # Combine the quizzes into one
         finalQuiz = combine_quizzes(quizQuestions)
+
+        # Randomize the order of the quiz questions
+        random.shuffle(finalQuiz.questions)
+
+        # Add Ids to the questions
         finalQuiz = add_sequential_quiz_id(finalQuiz)
         logging.info(f"Creating quiz - finalQuiz: {finalQuiz}")
 

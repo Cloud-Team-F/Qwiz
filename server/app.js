@@ -60,6 +60,10 @@ app.use((error, req, res, next) => {
     res.status(statusCode).json({ error: errorMessage });
 });
 
+process.on("uncaughtException", function(error) {
+    console.error("Uncaught exception: ", error);
+});
+
 app.listen(port, () => {
     console.log("Server running on port: " + port);
 });
