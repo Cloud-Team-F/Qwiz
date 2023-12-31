@@ -177,7 +177,7 @@ class Submission:
 
 def add_sequential_quiz_id(quiz):
     for i, question in enumerate(quiz.questions):
-        question.question_id = i
+        question.question_id = i+1
     return quiz
 
 
