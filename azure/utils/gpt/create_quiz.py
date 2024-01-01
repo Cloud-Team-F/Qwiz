@@ -178,6 +178,14 @@ class Submission:
             feedback  # feedback from the AI as to why the user is wrong/right.
         )
 
+def insertBlankOnPhraseUsed(phraseUsed, phrase):
+    # Calculate the number of underscores needed
+    underscores = '_' * len(phrase)
+
+    # Replace the first instance of the phrase with underscores
+    return phraseUsed.replace(phrase, underscores, 1)
+
+
 def clean_json_string(json_string):
     # Check if the string starts with '''json and ends with '''
     if json_string.startswith("```json"):
@@ -234,7 +242,7 @@ def parse_multi_quiz(json_string):
             python_dict["question_id"] = 0  # Add the 'question_id' attribute
             python_dicts.append(python_dict)
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
+            print(f"Error decoding JSON pmq: {e}")
             # Handle the error or ignore the faulty JSON object
 
     return Quiz(python_dicts)
@@ -254,7 +262,7 @@ def parse_short_quiz(json_string):
             python_dict["question_id"] = 0  # Add the 'question_id' attribute
             python_dicts.append(python_dict)
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
+            print(f"Error decoding JSON psq: {e}")
             # Handle the error or ignore the faulty JSON object
 
     return Quiz(python_dicts)
@@ -276,7 +284,7 @@ def parse_fill_blanks(json_string):
             python_dict["question_id"] = 0  # Add the 'question_id' attribute
             python_dicts.append(python_dict)
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
+            print(f"Error decoding JSON pfb: {e}")
             # Handle the error or ignore the faulty JSON object
 
     return Quiz(python_dicts)
@@ -287,6 +295,7 @@ def parse_fill_blanks2(quiz_text, phraseUsed):
     python_dicts = []
     try:
         python_dict = json.loads(quiz_text)
+        phraseUsed = insertBlankOnPhraseUsed(phraseUsed,python_dict["correct_answer"])
         python_dict["question"] = phraseUsed
         python_dict["type"] = "fill-gaps"  # Add the 'type' attribute
         python_dict["question_id"] = 0  # Add the 'question_id' attribute
@@ -306,7 +315,7 @@ def messageMultiChoice(
     myMessageSystem = (
         "Generate a "
         + str(count)
-        + "-question long multiple-choice quiz based on the provided text. Format each question as a JSON object like so {\"question\":\"\",\"options\":[\"option1\",\"option2\",\"option3\",\"option4\",\"correct_answer\":\"the correct answer\"]}"
+        + "-question long multiple-choice quiz based on the provided text. Format each question as a JSON object like so {\"question\":\"\",\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}"
     )
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -381,13 +390,13 @@ def messageFillBlanks2(
 
     return completion
 
-#if __name__ == "__main__":
-#    content = input("enter content")
-#    questionCount = int(input("enter q count"))
+if __name__ == "__main__":
+    content = input("enter content")
+    questionCount = int(input("enter q count"))
 
-#    myQuiz = create_quiz(questionCount,["multi-choice","fill-gaps","short-answer"],"",content,[])
+    myQuiz = create_quiz(questionCount,["multi-choice","fill-gaps","short-answer"],"",content,[])
 
-#    print(myQuiz)
+    print(myQuiz)
 
     # This code will ask you to enter a question and an answer, chatGPT will mark you and the submission object will be created and printed.
     """
