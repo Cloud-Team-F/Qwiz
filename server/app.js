@@ -3,7 +3,6 @@ import "dotenv/config.js";
 import path, { dirname } from "path";
 
 import authRoutes from "./routes/auth.js";
-import textToSpeechRoutes from "./routes/textToSpeech.js";
 import cookieParser from "cookie-parser";
 import createHttpError from "http-errors";
 import env from "./utils/validateEnv.js";
@@ -12,6 +11,7 @@ import { fileURLToPath } from "url";
 import inviteRoutes from "./routes/invite.js";
 import morgan from "morgan";
 import quizRoutes from "./routes/quiz.js";
+import textToSpeechRoutes from "./routes/textToSpeech.js";
 
 const port = env.PORT;
 
@@ -44,10 +44,10 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/invite", inviteRoutes);
-app.use("/api/tts", textToSpeechRoutes)
+app.use("/api/tts", textToSpeechRoutes);
 
 app.use((req, res, next) => {
-    res.render("404");
+    res.status(404).render("404");
 });
 
 app.use((error, req, res, next) => {
@@ -62,7 +62,7 @@ app.use((error, req, res, next) => {
     res.status(statusCode).json({ error: errorMessage });
 });
 
-process.on("uncaughtException", function(error) {
+process.on("uncaughtException", function (error) {
     console.error("Uncaught exception: ", error);
 });
 

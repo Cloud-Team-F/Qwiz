@@ -6,7 +6,8 @@ function fetchHelper(
     method,
     body = null,
     queryParams = {},
-    headers = { "Content-Type": "application/json" }
+    headers = { "Content-Type": "application/json" },
+    responseType = "json"
 ) {
     const queryString = new URLSearchParams(queryParams).toString();
     const url =
@@ -21,6 +22,7 @@ function fetchHelper(
         url: url,
         data: body,
         headers: headers,
+        responseType: responseType,
     }).then((response) => response.data);
 }
 
@@ -72,9 +74,13 @@ export function quizJoin(invite_code, user_id) {
     });
 }
 
-// export function textToSpeech() {
-//     return fetchHelper("/convertToSpeech", "POST", {text});
-// }
-
-
-
+export function textToSpeech(text) {
+    return fetchHelper(
+        "/convert_to_speech",
+        "POST",
+        { text },
+        {},
+        {},
+        "arraybuffer"
+    );
+}

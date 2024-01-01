@@ -5,12 +5,12 @@
       v-for="question in currentQuiz.questions"
       :key="question.question_id"
     >
-      <div>
-        <button @click="speakQuestion(question)" class="voice-button"></button>
+      <div class="d-flex justify-content-between align-items-center w-100">
+          <p class="quiz-text blue">
+            Question {{ question.question_id }}/{{ currentQuiz.total_questions }}
+          </p>
+          <button @click="speakQuestion(question)" class="voice-button"></button>
       </div>
-      <p class="quiz-text blue">
-        Question {{ question.question_id }}/{{ currentQuiz.total_questions }}
-      </p>
       <p class="quiz-text">{{ question.question }}</p>
       <div class="answer-container">
         <!-- Multi choice -->

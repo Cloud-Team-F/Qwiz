@@ -953,8 +953,8 @@ body {
     background-size: cover;
     background-color: transparent;
     border: none;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     cursor: pointer;
     padding: 0;
     display: inline-block;
@@ -963,20 +963,18 @@ body {
     transition:transform 0.2s ease ;
 }
 .voice-button:hover{
-   transform: translate(3px,3px);
+   transform: translate(2px,2px);
 
     
 }
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-    20%, 40%, 60%, 80% { transform: translateX(10px); }
-  }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
 
 .voice-button:active{
     animation: shake 1s ease-in-out infinite;
-
-     
  }
 
 
