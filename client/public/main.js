@@ -21,6 +21,7 @@ var app = new Vue({
         loading: false,
         loadingQuizList: true,
 
+
         inputs: {
             username: "",
             password: "",
@@ -49,6 +50,71 @@ var app = new Vue({
         connect();
     },
     methods: {
+        speakQuestion(question) {
+            let currentAudio = null
+
+            console.log('speakQuestion called with',question);
+            // The URL of backend endpoint that handles speech synthesis
+            const speechSynthesisUrl = '/api/tts/convertToSpeech'
+
+            if (currentAudio) {
+                currentAudio.pause()
+                currentAudio.currentTime = 0
+                
+            }
+        
+
+            let fullTextToSpeak = `Question ${question.question_id}: `;
+
+            // Extract the text that needs to be spoken
+            if (question.type === "fill-gaps") {
+                const questionFillBlanks = question.question.replace(/_{2,}/g, 'fill the blank')
+                fullTextToSpeak += questionFillBlanks
+            }else if (question.type === "short-answer"){
+                fullTextToSpeak += question.question
+
+
+            }else if (question.type === "multi-choice"){
+                
+                const questionText = `Question ${question.question_id}: ${question.question}`;
+                const optionsText = question.options.map((option, index) => `Option ${index + 1}: ${option}`).join('. ');
+                fullTextToSpeak = `${questionText}. ${optionsText}`;
+
+
+
+            }
+
+        
+            // Send the text to the backend for speech synthesis
+            axios.post(speechSynthesisUrl, { text: fullTextToSpeak }, {responseType: 'arraybuffer'})
+                .then(response => {
+                    // Assuming the response contains the audio data in a binary format
+
+                    console.log('recieved res with data size: ' + response.data.size);
+                    const audioBlob = new Blob([response.data], { type: 'audio/wav' });
+                    console.log('audio blob created with size', audioBlob.size);
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    console.log('Audio URL:',audioUrl);
+                    currentAudio = new Audio(audioUrl);
+
+                    currentAudio.play().then(()=>{
+                        console.log('Audio started successfully');
+                    }).catch(playbackError=>{
+                        console.error('Error during playing the playback', playbackError)
+                    })
+
+                    currentAudio.onended = () =>{
+                        console.log('Audio finished playing');
+                        currentAudio = null;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error synthesizing  the speech:', error);
+                    isAudioPlaying = false
+
+                });
+        },
+        
         advance() {},
         toggleMode(newMode) {
             this.mode = newMode;

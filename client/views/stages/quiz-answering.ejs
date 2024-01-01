@@ -1,39 +1,55 @@
 <div class="main-menu">
-    <div class="menu-col-1">
-        <div class="quiz-question-container" v-for="question in currentQuiz.questions" :key="question.question_id">
-            <p class="quiz-text blue">Question {{ question.question_id }}/{{ currentQuiz.total_questions }}</p>
-            <p class="quiz-text">{{ question.question }}</p>
-            <div class="answer-container">
-                <!-- Multi choice -->
-                <div v-if="question.type == 'multi-choice'" 
-                    class="answer-option" 
-                    v-for="(option, index) in question.options" 
-                    :key="index"
-                    @click="optionSelected(option, question.question_id, $event)"
-                    :class="{'selected-answer-option': currentQuiz.answers[question.question_id] === option}">
-                    <span>
-                        {{ option }}
-                    </span>
-                    <input type="radio" 
-                        :value="option" 
-                        v-model="currentQuiz.answers[question.question_id]" 
-                        :name="'question-' + question.question_id" 
-                        :id="'option-' + question.question_id + '-' + index" 
-                        class="option-input">
-                    <label :for="'option-' + question.question_id + '-' + index" class="option-circle"></label>
-                </div>
-
-                <!-- Short answer & Fill gaps -->
-                <input
-                    v-if="question.type == 'short-answer' || question.type == 'fill-gaps'"
-                    type="text"
-                    placeholder="Enter answer"
-                    v-model="currentQuiz.answers[question.question_id]"
-                    class="answer-input"
-                />
-            </div>
+  <div class="menu-col-1">
+    <div
+      class="quiz-question-container"
+      v-for="question in currentQuiz.questions"
+      :key="question.question_id"
+    >
+      <div>
+        <button @click="speakQuestion(question)" class="voice-button"></button>
+      </div>
+      <p class="quiz-text blue">
+        Question {{ question.question_id }}/{{ currentQuiz.total_questions }}
+      </p>
+      <p class="quiz-text">{{ question.question }}</p>
+      <div class="answer-container">
+        <!-- Multi choice -->
+        <div
+          v-if="question.type == 'multi-choice'"
+          class="answer-option"
+          v-for="(option, index) in question.options"
+          :key="index"
+          @click="optionSelected(option, question.question_id, $event)"
+          :class="{'selected-answer-option': currentQuiz.answers[question.question_id] === option}"
+        >
+          <span>
+            {{ option }}
+          </span>
+          <input
+            type="radio"
+            :value="option"
+            v-model="currentQuiz.answers[question.question_id]"
+            :name="'question-' + question.question_id"
+            :id="'option-' + question.question_id + '-' + index"
+            class="option-input"
+          />
+          <label
+            :for="'option-' + question.question_id + '-' + index"
+            class="option-circle"
+          ></label>
         </div>
 
-        <button  class="main-btn width-100">Submit</button>
+        <!-- Short answer & Fill gaps -->
+        <input
+          v-if="question.type == 'short-answer' || question.type == 'fill-gaps'"
+          type="text"
+          placeholder="Enter answer"
+          v-model="currentQuiz.answers[question.question_id]"
+          class="answer-input"
+        />
+      </div>
     </div>
+
+    <button class="main-btn width-100">Submit</button>
+  </div>
 </div>

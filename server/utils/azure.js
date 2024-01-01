@@ -71,3 +71,10 @@ export function quizJoin(invite_code, user_id) {
         user_id,
     });
 }
+
+// export function textToSpeech() {
+//     return fetchHelper("/convertToSpeech", "POST", {text});
+// }
+
+
+

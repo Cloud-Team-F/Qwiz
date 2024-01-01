@@ -947,6 +947,40 @@ body {
     margin-bottom: 2rem;
 }
 
+
+.voice-button {
+    background-image: url(volume.png);
+    background-size: cover;
+    background-color: transparent;
+    border: none;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    padding: 0;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition:transform 0.2s ease ;
+}
+.voice-button:hover{
+   transform: translate(3px,3px);
+
+    
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+  }
+
+.voice-button:active{
+    animation: shake 1s ease-in-out infinite;
+
+     
+ }
+
+
+
 /* Smaller screen (e.g., 14-inch laptop) adjustments */
 @media screen and (max-width: 1440px) {
     .navbar {

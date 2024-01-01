@@ -3,6 +3,7 @@ import "dotenv/config.js";
 import path, { dirname } from "path";
 
 import authRoutes from "./routes/auth.js";
+import textToSpeechRoutes from "./routes/textToSpeech.js";
 import cookieParser from "cookie-parser";
 import createHttpError from "http-errors";
 import env from "./utils/validateEnv.js";
@@ -43,6 +44,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/invite", inviteRoutes);
+app.use("/api/tts", textToSpeechRoutes)
 
 app.use((req, res, next) => {
     res.render("404");
