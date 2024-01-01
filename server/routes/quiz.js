@@ -1,10 +1,10 @@
 import {
+    quizAnswer,
     quizCreate,
     quizDelete,
     quizGet,
     quizGetAll,
     quizLeave,
-    
 } from "../utils/azure.js";
 
 import FormData from "form-data";
@@ -228,7 +228,28 @@ router.post("/:id/leave", requiresAuth, (req, res, next) => {
         });
 });
 
+router.post("/:id/answer", requiresAuth, (req, res, next) => {
+    quizAnswer(req.params.id, req.user.id, req.body)
+        .then((response) => {
+            res.status(200).json(response);
+        })
+        .catch((error) => {
+            console.log(error);
 
-
+            if (!error.response) {
+                next(createHttpError(500, "An unknown error occurred"));
+            } else if (error.response.status === 400) {
+                next(createHttpError(400, error.response.data.error));
+            } else if (error.response.status === 403) {
+                next(
+                    createHttpError(403, "You do not have access to this quiz")
+                );
+            } else if (error.response.status === 404) {
+                next(createHttpError(404, "Quiz not found"));
+            } else {
+                next(createHttpError(500, "An unknown error occurred"));
+            }
+        });
+});
 
 export default router;

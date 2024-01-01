@@ -3,6 +3,7 @@ import base64
 import json
 import logging
 import secrets
+import datetime
 
 import filetype
 from azure.functions import HttpRequest, HttpResponse
@@ -177,6 +178,8 @@ def main(req: HttpRequest) -> HttpResponse:
         "processed": False,
         "errored": False,
         "invite_code": secrets.token_hex(3),
+        "scores": [],
+        "created_at": datetime.utcnow().isoformat() + "Z",
     }
     try:
         created_quiz = QuizContainerProxy.create_item(

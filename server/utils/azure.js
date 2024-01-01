@@ -74,6 +74,14 @@ export function quizJoin(invite_code, user_id) {
     });
 }
 
+export function quizAnswer(quiz_id, user_id, answers) {
+    return fetchHelper("/answer_quiz", "POST", {
+        quiz_id,
+        user_id,
+        answers,
+    });
+}
+
 export function textToSpeech(text) {
     return fetchHelper(
         "/convert_to_speech",
