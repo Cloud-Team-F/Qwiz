@@ -198,6 +198,7 @@ var app = new Vue({
                     app.currentState = "LOGIN";
                     this.clearQuizList();
                     disconnectPubSub();
+                    this.success("Successfully logged out!");
                 },
                 (err) => {
                     this.fail(err.response.data.error);
