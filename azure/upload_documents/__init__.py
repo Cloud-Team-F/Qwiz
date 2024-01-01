@@ -3,7 +3,7 @@ import base64
 import json
 import logging
 import secrets
-import datetime
+from datetime import datetime
 
 import filetype
 from azure.functions import HttpRequest, HttpResponse
