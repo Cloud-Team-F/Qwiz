@@ -1,5 +1,5 @@
-<div class="main-menu">
-  <div class="menu-col-1">
+<div class="main-menu" :class="{ 'max-height': loadingQuizSubmission }">
+  <div class="menu-col-1" v-if="!loadingQuizSubmission">
     <div
       class="quiz-question-container"
       v-for="question in currentQuiz.questions"
@@ -50,6 +50,15 @@
       </div>
     </div>
 
-    <button class="main-btn width-100">Submit</button>
+    <button class="main-btn width-100" @click="submitAnswers()">Submit</button>
+  </div>
+
+  <div v-else class="menu-col-1">
+    <div class="menu-container">
+        <img src="/static/Results.png" alt="results" class="main-img"/>
+        <p class="basic-text bold-font">
+            Getting results!
+        </p>
+    </div>
   </div>
 </div>

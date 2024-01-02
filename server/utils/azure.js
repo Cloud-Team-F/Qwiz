@@ -17,6 +17,7 @@ function fetchHelper(
         env.AZURE_FUNCTION_TOKEN +
         (queryString ? `&${queryString}` : "");
 
+    console.log('Request to:', url);
     return axios({
         method: method,
         url: url,

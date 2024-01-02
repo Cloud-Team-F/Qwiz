@@ -75,6 +75,7 @@ router.post("/register", (req, res, next) => {
             res.status(200).json(response);
         })
         .catch((error) => {
+            console.log('Error:', error);
             // check unauthorized
             if (!error.response) {
                 return next(createHttpError(500, "An unknown error occurred"));

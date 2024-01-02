@@ -1,0 +1,68 @@
+<div class="main-menu">
+    <div class="menu-col-1">
+        <div class="menu-container">
+            <p class="larger-font">You have scored</p>
+            <h2 class="final-score blue">{{ currentQuiz.markedAnswers.score }}/{{ currentQuiz.total_questions }}</h2>
+        </div>
+
+        <div
+            class="quiz-question-container"
+            v-for="question in currentQuiz.questions"
+            :key="question.question_id"
+            >
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <p class="quiz-text grey">
+                  Question {{ question.question_id }}/{{ currentQuiz.total_questions }}
+                </p>
+                <button @click="speakQuestion(question)" class="voice-button"></button>
+            </div>
+            
+            <p class="quiz-text">{{ question.question }}</p>
+
+            <div class="answer-container answer-bottom-margin">
+                <div
+                v-if="question.type == 'multi-choice'"
+                class="answer-option disabled"
+                v-for="(option, index) in question.options"
+                :key="index"
+                :class="currentQuiz.answers[question.question_id] === option ? (currentQuiz.markedAnswers.answers[question.question_id - 1].is_correct ?  'correct-answer' : 'wrong-answer') : (option === currentQuiz.markedAnswers.answers[question.question_id - 1].correct_answer ? 'correct-answer' : '')"
+                >
+                <span>
+                    {{ option }}
+                </span>
+                <input
+                    type="radio"
+                    :name="'question-' + question.question_id"
+                    :id="'option-' + question.question_id + '-' + index"
+                    class="option-input"
+                    disabled
+                />
+                <label
+                    :for="'option-' + question.question_id + '-' + index"
+                    class="option-circle"
+                    v-if="currentQuiz.answers[question.question_id] != option && option != currentQuiz.markedAnswers.answers[question.question_id - 1].correct_answer "
+                ></label>
+                <img v-if="(currentQuiz.answers[question.question_id] === option && currentQuiz.markedAnswers.answers[question.question_id - 1].is_correct) || option === currentQuiz.markedAnswers.answers[question.question_id - 1].correct_answer" src="/static/Correct.png" alt="correct"> 
+                <img v-if="currentQuiz.answers[question.question_id] === option && !currentQuiz.markedAnswers.answers[question.question_id - 1].is_correct" src="/static/Incorrect.png" alt="incorrect">
+                </div>
+            </div>
+
+            <!-- Short answer & Fill gaps -->
+            <input
+                v-if="question.type == 'short-answer' || question.type == 'fill-gaps'"
+                type="text"
+                class="answer-input answer-bottom-margin"
+                v-model="currentQuiz.answers[question.question_id]"
+                :class="(currentQuiz.markedAnswers.answers[question.question_id - 1].is_correct) ? 'correct-answer' : 'wrong-answer'"
+                disabled
+            />
+
+            <div class="feedback" v-if="!currentQuiz.markedAnswers.answers[question.question_id - 1].is_correct && (question.type == 'short-answer' || question.type == 'fill-gaps')">
+                <p><span class="bold">Correct answer: </span> {{currentQuiz.markedAnswers.answers[question.question_id - 1].correct_answer}}</p>
+            </div>
+
+            <div class="feedback" v-if="!currentQuiz.markedAnswers.answers[question.question_id - 1].is_correct">
+                <p><span class="bold">Explanation: </span> {{currentQuiz.markedAnswers.answers[question.question_id - 1].feedback}}</p>
+            </div>
+    </div>
+</div>

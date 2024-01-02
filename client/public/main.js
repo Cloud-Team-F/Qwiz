@@ -23,6 +23,7 @@ var app = new Vue({
         loadingScreen: false,
         loading: false,
         loadingQuizList: true,
+        loadingQuizSubmission: false,
 
         inputs: {
             username: "",
@@ -45,7 +46,7 @@ var app = new Vue({
         ownQuizzes: [],
         sharedQuizzes: [],
         currentQuiz: null,
-        selectedType: null,
+        selectedType: null
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -176,6 +177,17 @@ var app = new Vue({
         backToHome() {
             this.currentState = "MENU";
             this.currentQuiz = null;
+        },
+        retryQuiz() {
+            let answers = {};
+
+            for (let question of this.currentQuiz.questions) {
+                answers[question.question_id] = "";
+            }
+
+            this.currentQuiz.answers = answers;
+            
+            this.currentState = 'START-QUIZ';
         },
         copyInviteCode(inviteCode) {
             navigator.clipboard.writeText(inviteCode);
@@ -395,7 +407,6 @@ var app = new Vue({
                     console.log(res);
                     this.currentQuiz = { ...quiz, ...res.data };
                     this.currentState = "VIEW-QUIZ";
-                    console.log("Viewing quiz: ", this.currentQuiz);
                 },
                 (err) => {
                     this.fail(err.response.data.error);
@@ -435,11 +446,8 @@ var app = new Vue({
             this.$nextTick(() => {
                 this.$forceUpdate();
             });
-            console.log("Answers:", this.currentQuiz.answers);
         },
         startQuiz(quizID) {
-            // todo:: change this
-            // this.success("Starting quiz: " + quizID);
             sendRequest(
                 "GET",
                 `/api/quiz/${quizID}`,
@@ -465,7 +473,6 @@ var app = new Vue({
                     this.currentQuiz.answers = answers;
 
                     this.currentState = "START-QUIZ";
-                    console.log("Starting quiz: ", this.currentQuiz);
                 },
                 (err) => {
                     this.fail(err.response.data.error);
@@ -483,13 +490,7 @@ var app = new Vue({
                 `/api/quiz/${quiz.quiz_id}/leave`,
                 quiz,
                 (res) => {
-                    console.log(res);
-                    this.ownQuizzes = this.ownQuizzes.filter(
-                        (q) => q.id !== quiz.id
-                    );
-                    this.sharedQuizzes = this.sharedQuizzes.filter(
-                        (q) => q.id !== quiz.id
-                    );
+                    this.updateQuizList();
                     this.backToHome();
                     this.success("Successfully left quiz!");
                 },
@@ -505,13 +506,7 @@ var app = new Vue({
                 `/api/quiz/${quiz.quiz_id}`,
                 quiz,
                 (res) => {
-                    console.log(res);
-                    this.ownQuizzes = this.ownQuizzes.filter(
-                        (q) => q.id !== quiz.id
-                    );
-                    this.sharedQuizzes = this.sharedQuizzes.filter(
-                        (q) => q.id !== quiz.id
-                    );
+                    this.updateQuizList();
                     this.backToHome();
                     this.success("Successfully deleted quiz!");
                 },
@@ -521,6 +516,34 @@ var app = new Vue({
                 true
             );
         },
+        submitAnswers() {
+            console.log('Final Answers:', this.currentQuiz.answers);
+            const allAnswersFilled = Object.values(this.currentQuiz.answers).every(answer => answer.trim() !== '');
+
+            if (allAnswersFilled) {
+                console.log('Submitting answers...');
+                this.loadingQuizSubmission = true;
+                sendRequest(
+                    "POST",
+                    `/api/quiz/${this.currentQuiz.quiz_id}/answer`,
+                    this.currentQuiz.answers,
+                    (res) => {
+                        this.loadingQuizSubmission = false;
+                        this.currentQuiz.markedAnswers = res.data; 
+        
+                        this.currentState = "QUIZ-RESULTS";
+                        this.success('Quiz submitted!');
+                    },
+                    (err) => {
+                        this.loadingQuizSubmission = false;
+                        this.fail(err.response.data.error);
+                    },
+                    false
+                );
+            } else {
+                this.fail('You haven\'t answered all the questions.')
+            }
+        }
     },
 });
 

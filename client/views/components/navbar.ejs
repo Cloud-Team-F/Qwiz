@@ -1,11 +1,17 @@
 <div class="navbar">
-    <div class="navbar-left" v-if="currentState == 'VIEW-QUIZ' || currentState == 'START-QUIZ'">
+    <div class="navbar-left" v-if="(currentState == 'VIEW-QUIZ' || currentState == 'START-QUIZ' || currentState == 'QUIZ-RESULTS') && !loadingQuizSubmission">
         <button @click="backToHome()" class="navbar-btn" v-if="user">
-            <img class="icon-24" src="/static/home.png" alt="home" v-if="currentState == 'VIEW-QUIZ'">
+            <img class="icon-24" src="/static/home.png" alt="home" v-if="currentState == 'VIEW-QUIZ' || currentState == 'QUIZ-RESULTS'">
             <img class="icon-24" src="/static/close_window.png" alt="close" v-if="currentState == 'START-QUIZ'">
 
-            <span class="logout-btn-text" v-if="currentState == 'VIEW-QUIZ'">Return to home</span>
+            <span class="logout-btn-text" v-if="currentState == 'VIEW-QUIZ' || currentState == 'QUIZ-RESULTS'">Return to home</span>
             <span class="logout-btn-text" v-if="currentState == 'START-QUIZ'">End quiz</span>
+        </button>
+
+        <button @click="retryQuiz()" class="navbar-btn" v-if="user && currentState == 'QUIZ-RESULTS'">
+            <img class="icon-24" src="/static/Try again.png" alt="try-again">
+
+            <span class="logout-btn-text">Try again</span>
         </button>
     </div>
     <div class="navbar-left" v-else></div>
