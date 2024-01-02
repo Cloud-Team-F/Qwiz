@@ -63,9 +63,7 @@ def create_quiz(
 
         # Fill in the blanks questions
         if "fill-gaps" in questionTypesCount:
-            completionBlanks = messageFillBlanks(
-                questionTypesCount["fill-gaps"], text_content
-            )
+            completionBlanks = messageFillBlanks(questionTypesCount["fill-gaps"], text_content)
             quizFill = parse_fill_blanks(completionBlanks.choices[0].message.content)
 
             questions2fingers = []
@@ -113,13 +111,6 @@ def create_quiz(
         finalQuiz = add_sequential_quiz_id(finalQuiz.questions)
         logging.info(f"Creating quiz - finalQuiz: {finalQuiz}")
 
-        '''#  Convert the finalQuiz into a list of dictionaries
-        questionDict = finalQuiz.questions
-        finalQuiz = []
-        for question in questionDict:
-            question = question.__dict__
-            finalQuiz.append(question)'''
-
         # Return the final quiz list[dict]
         logging.info(f"Creating quiz - finalQuiz: {finalQuiz}")
         return finalQuiz
@@ -130,11 +121,6 @@ def create_quiz(
 
 
 """
-Notes to read before implementing:
-Each function only makes quizes of ONE question type.
-It's likly my class implementations don't match what we already have.so a little code will need editing in the parse functions.
-As our quizzes will be a mix of questions, we might want to make algorithms that combine the quizes my code makes.
-
 ------------------------How to setup the APIkey.------------------------
     Either make a .env file and paste the line below into it. 
     OPENAI_API_KEY=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
@@ -174,9 +160,7 @@ class Quiz:
 class Submission:
     def __init__(self, mark, feedback):
         self.mark = mark  # either correct or incorrect
-        self.feedback = (
-            feedback  # feedback from the AI as to why the user is wrong/right.
-        )
+        self.feedback = feedback
 
 def insertBlankOnPhraseUsed(phraseUsed, phrase):
     # Calculate the number of underscores needed
@@ -209,11 +193,6 @@ def combine_quizzes(quizzes):
 
 
 def generateTypesCount(num_questions, question_types):
-    """
-    Function to split num_questions amongst question_types as evenly as possible.
-    Returns a dictionary with each question type and the corresponding count.
-    Example: {"multi-choice":2,"fill-gaps":2,"short-answer":1}
-    """
     # Calculate the base count for each question type
     base_count = num_questions // len(question_types)
 
@@ -308,9 +287,7 @@ def parse_fill_blanks2(quiz_text, phraseUsed):
     return python_dicts
 
 
-def messageMultiChoice(
-    count, text
-):  # asks chatGPT to make a multichoce quiz of length "count" based off of the "text"
+def messageMultiChoice(count, text):  # asks chatGPT to make a multichoce quiz of length "count" based off of the "text"
     client = OpenAI()
     myMessageSystem = (
         "Generate a "
@@ -329,9 +306,7 @@ def messageMultiChoice(
     return completion
 
 
-def messageShortAnswer(
-    count, text
-):  # asks chatGPT to make a short answer quiz of length "count" based off of the "text"
+def messageShortAnswer(count, text):  # asks chatGPT to make a short answer quiz of length "count" based off of the "text"
     client = OpenAI()
     myMessageSystem = (
         "Generate a "
@@ -350,9 +325,7 @@ def messageShortAnswer(
     return completion
 
 
-def messageFillBlanks(
-    count, text
-):  # asks chatGPT to make a fill_blanks quiz of length "count" based off of the "text"
+def messageFillBlanks(count, text): 
     client = OpenAI()
     myMessageSystem = (
         "Give me "
@@ -371,10 +344,7 @@ def messageFillBlanks(
     return completion
 
 
-def messageFillBlanks2(
-    text,
-):  # asks chatGPT to make a multichoce quiz of length "count" based off of the "text"
-    # print("messageing fill blanks 2! " + text)
+def messageFillBlanks2(text): 
     client = OpenAI()
     # myMessageSystem = ""
     completion = client.chat.completions.create(
@@ -382,7 +352,7 @@ def messageFillBlanks2(
         messages=[
             {
                 "role": "system",
-                "content": "Using the following fact, create a list of four words suitable for a fill-in-the-blank question. Format your answer as a single JSON object like this: {\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}",
+                "content": "Using the following fact, create a list of four words suitable for a fill-in-the-blank question. One of the 4 words you pick must come directly from the fact. Format your answer as a single JSON object like this: {\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}",
             },
             {"role": "user", "content": "The fact: " + text},
         ],
@@ -391,77 +361,6 @@ def messageFillBlanks2(
     return completion
 
 if __name__ == "__main__":
+    count=int(input("enter count"))
     content = input("enter content")
-    questionCount = int(input("enter q count"))
-
-    myQuiz = create_quiz(questionCount,["multi-choice","fill-gaps","short-answer"],"",content,[])
-
-    print(myQuiz)
-
-    # This code will ask you to enter a question and an answer, chatGPT will mark you and the submission object will be created and printed.
-    """
-    myQuestion = input("enter a question: ")
-    myAnswer = input("enter the answer: ")
-    completion = markShortAnswer(myQuestion,myAnswer)
-    print(completion.choices[0].message.content)
-
-    response_text = completion.choices[0].message.content
-
-    submission = parseMarking(response_text)
-
-    print(submission.__dict__)
-    """
-
-    # completion3 = messageFillBlanks2(myMessage) #generates a fill_blanks quiz
-    # print(completion3.choices[0].message.content)
-
-    """
-    def create_quiz(
-    num_questions: int,
-    question_types: list[str],
-    topic: str = "",
-    text_content: str = "",
-    file_contents: list[str] = [],
-) -> list[dict]:
-    """
-
-    # -------------------MESSAGING CHATGPT---------------------
-    # completion1 = messageMultiChoice(myCount,myMessage) #generates a multichoice quiz
-
-    # completion2 = messageShortAnswer(myCount,myMessage) #generates a short answer quiz
-
-    # completion3 = messageFillBlanks(myCount,myMessage) #generates a fill_blanks quiz
-
-    # ---------------------PARSING CHATGPT--------------------
-    # response_text1 = completion1.choices[0].message.content
-    # quiz1 = parse_multi_quiz(response_text1)
-
-    # response_text2 = completion2.choices[0].message.content
-    # quiz2 = parse_short_quiz(response_text2)
-
-    # response_text3 = completion3.choices[0].message.content
-    # quiz3 = parse_fill_blanks(response_text3)
-
-    # -----------------------PRINTING THE QUIZZES-------------------
-    # print(quiz1.__dict__)
-    # print(quiz2.__dict__)
-    # print(quiz3.__dict__)
-    """
-     print(quiz1.questions[0].__dict__)
-    print(quiz1.questions[1].__dict__)  #These 4 lines are for printing specific questions. If you just
-    print(quiz1.questions[2].__dict__)  # print the (quiz1.__dict__) like above you'll just get a bunch of 
-    print(quiz1.questions[3].__dict__)  # object references instead of being able to see the actual questions.
-    print(quiz1.questions[4].__dict__)
-
-    print(quiz2.questions[0].__dict__)
-    print(quiz2.questions[1].__dict__)  
-    print(quiz2.questions[2].__dict__) 
-    print(quiz2.questions[3].__dict__)  
-    print(quiz2.questions[4].__dict__)
-
-    print(quiz3.questions[0].__dict__)
-    print(quiz3.questions[1].__dict__)  
-    print(quiz3.questions[2].__dict__) 
-    print(quiz3.questions[3].__dict__)  
-    print(quiz3.questions[4].__dict__)
-    """
+    print(create_quiz(count,["multi-choice","fill-gaps","short-answer"],"",content,[]))
