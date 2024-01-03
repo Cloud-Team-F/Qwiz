@@ -536,7 +536,25 @@ body {
     height: 300px; /* Set a fixed height or use min-height */
     resize: vertical; /* Allow resizing vertically */
     overflow: hidden; /* Add scroll bar when content overflows */
+    overflow-y: auto;
+    scrollbar-width:thin ;
+    scrollbar-color: #c0c0c0 transparent;
+    scroll-behavior: smooth;
 }
+
+.quiz-text-input::-webkit-scrollbar{
+    width: 8px;
+
+}
+
+.quiz-text-input::-webkit-scrollbar-track{
+    background-color: transparent;
+    border-radius: 20px;
+
+
+}
+
+
 
 .vertical {
     flex-direction: column;
