@@ -97,7 +97,7 @@ def answer_quiz(answer_body: list[dict]) -> list[dict]:
     #print("----List of Response2-----")
     #print(listOfResponses)
 
-
+    listOfResponses = sorted(listOfResponses, key=lambda x: x['question_id'])
 
     #data_dicts = [json.loads(s) for s in listOfResponses]
 
