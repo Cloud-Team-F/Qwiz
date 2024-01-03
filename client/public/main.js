@@ -1,7 +1,9 @@
 let ws = null;
-let currentAudio = null;
-let currentAudioQuestion = null;
-let cachedAudio = [];
+// let currentAudio = null;
+// let currentAudioQuestion = null;
+// let cachedAudio = [];
+// let isAudioPlaying = false;
+
 const supportedFileTypes = [
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -24,6 +26,13 @@ var app = new Vue({
         loading: false,
         loadingQuizList: true,
         loadingQuizSubmission: false,
+
+        currentAudio: null,
+        currentAudioQuestion: null,
+        cachedAudio: [],
+        isAudioPlaying: false,
+
+        
 
         inputs: {
             username: "",
@@ -52,11 +61,19 @@ var app = new Vue({
         this.loadingScreen = true;
         connect();
     },
+    
     methods: {
         speakQuestion(question) {
             console.log("speakQuestion called with", question);
             // The URL of backend endpoint that handles speech synthesis
             const speechSynthesisUrl = "/api/tts/convertToSpeech";
+
+            if (currentAudio && isAudioPlaying) {
+                currentAudio.pause();
+                isAudioPlaying = false; // Update the flag
+                console.log("Audio paused");
+                return; // Exit the function to avoid playing new audio
+            }
 
             if (currentAudio) {
                 currentAudio.pause();
@@ -138,6 +155,7 @@ var app = new Vue({
             currentAudio
                 .play()
                 .then(() => {
+                    isAudioPlaying = true
                     console.log("Audio started successfully");
                 })
                 .catch((playbackError) => {
@@ -151,8 +169,22 @@ var app = new Vue({
                 console.log("Audio finished playing");
                 currentAudio = null;
                 currentAudioQuestion = null;
+                isAudioPlaying = false
             };
+
         },
+        stopAudio() {
+            if (currentAudio) {
+              this.currentAudio.pause();
+              this.currentAudio.currentTime = 0;
+              this.currentAudio = null,
+              this.currentAudioQuestion = null;
+              this.isAudioPlaying = false;
+              console.log('audio stopped successfully');
+            }
+          },
+        
+        
 
         advance() {},
         toggleMode(newMode) {
@@ -177,6 +209,7 @@ var app = new Vue({
         backToHome() {
             this.currentState = "MENU";
             this.currentQuiz = null;
+            this.stopAudio();
         },
         retryQuiz() {
             let answers = {};
@@ -237,6 +270,8 @@ var app = new Vue({
             );
         },
         logout() {
+
+            this.stopAudio();
             axios;
             sendRequest(
                 "POST",
