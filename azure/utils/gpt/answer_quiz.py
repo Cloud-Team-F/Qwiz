@@ -65,7 +65,7 @@ def answer_quiz(answer_body: list[dict]) -> list[dict]:
              message =  'You are a quiz answer-checking bot. For each object in the input, determine if you think the user_answer is correct and you must provide feedback. Be generous in your marking. If you think the student\'s answer is wrong you should fill the "correct answer" field with a model answer of your own creation. If you deem the student\'s answer correct, then you should fill the "correct answer" field with the student\'s answer. You should provide the response in JSON, in a list of objects (with fields question_id, is_correct, correct_answer, feedback).\nFor example:\n[{"correct_answer": "fill as instructed","is_correct": "put true or false","question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "fill as instructed","is_correct": "true or false","question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "fill as instructed","is_correct": "True or false","question_id": (given in input),"feedback":"Some feedback about the answer"}]'
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-1106-preview",
             messages=[
                 {
                     "role": "system",
