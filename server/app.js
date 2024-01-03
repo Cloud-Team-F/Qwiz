@@ -28,12 +28,18 @@ app.set("view engine", "ejs");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 app.set("views", path.join(__dirname, "../client/views"));
-app.use("/static", express.static(path.join(__dirname, "../client/public")));
+app.use(
+    "/static",
+    express.static(path.join(__dirname, "../client/public"), {
+        maxAge: "1d", // Cache for 1 day
+    })
+);
 
 // Client endpoint
 app.get("/", (req, res) => {
     try {
         console.log(path.join(__dirname, "../client/views"));
+        // res.set("Cache-Control", "public, max-age=86400");
         res.render("client");
     } catch (e) {
         console.log(e);

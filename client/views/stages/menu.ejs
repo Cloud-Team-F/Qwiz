@@ -32,43 +32,49 @@
             <img src="/static/calendar.png" alt="calendar"> 
             <span>December 2023</span>
         </div> -->
-        <div
-            v-if="!loadingQuizList"
-            v-for="quiz in ownQuizzes"
-            class="quiz-container position-relative"
-        >
-            <div class="quiz-item" @click="viewQuiz(quiz)">
-                <div class="quiz-details">
-                    <div class="quiz-question-count">
-                        <div class="circle" :class="{ 'red': quiz.errored }"></div>
-                        <p class="question-count" v-if="quiz.errored">Something went wrong!</p>
-                        <p class="question-count" v-else>{{ quiz.question_count }} questions</p>
+        <div class="quiz-container-list">
+            <div
+                v-if="!loadingQuizList"
+                v-for="quiz in ownQuizzes"
+                class="quiz-container position-relative"
+            >
+                <div class="quiz-item" @click="viewQuiz(quiz)">
+                    <div class="quiz-details">
+                        <div class="quiz-question-count">
+                            <div class="circle" :class="{ 'red': quiz.errored }"></div>
+                            <p class="question-count" v-if="quiz.errored">Something went wrong!</p>
+                            <p class="question-count" v-else>{{ quiz.question_count }} questions</p>
+                        </div>
+                        <p class="quiz-name">{{ quiz.name }}</p>
                     </div>
-                    <p class="quiz-name">{{ quiz.name }}</p>
+
+                    <button @click.stop="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
+                        <img src="/static/play.png" alt="start" />
+                        <span>Start</span>
+                    </button>
                 </div>
 
-                <button @click.stop="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
-                    <img src="/static/play.png" alt="start" />
-                    <span>Start</span>
-                </button>
-            </div>
-
-            <div v-if="!quiz.processed" class="quiz-item-loading">
-                <div class="spinner-border spinner-purple" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                <div v-if="!quiz.processed" class="quiz-item-loading">
+                    <div class="spinner-border spinner-purple" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span class="ms-2 text-white
+                    ">Creating quiz...</span>
                 </div>
-                <span class="ms-2 text-white
-                ">Creating quiz...</span>
             </div>
-        </div>
-        <div v-if="loadingQuizList" v-for="index in 3" :key="index">
-            <div class="menu-container basic-text placeholder placeholder-glow">
-                <span class="placeholder col-7 rounded"></span>
-                <span class="placeholder col-12 rounded"></span>
-                <button class="small-btn disabled placeholder">
-                    <img src="/static/play.png" alt="start" />
-                    <span>Start</span>
-                </button>
+            <div v-if="loadingQuizList" v-for="index in 3" :key="index" class="quiz-container">
+                <div class="quiz-item placeholder placeholder-glow basic-text">
+                    <div class="quiz-details w-50">
+                        <div class="quiz-question-count w-100 mb-1">
+                            <span class="question-count placeholder col-12 rounded basic-text w-50"></span>
+                        </div>
+                        <span class="quiz-name placeholder col-12 rounded"></span>
+                    </div>
+                    <button class="small-btn disabled placeholder">
+                        <img src="/static/play.png" alt="start" />
+                        <span>Start</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -78,34 +84,40 @@
             <img src="/static/calendar.png" alt="calendar"> 
             <span>January 2024</span>
         </div> -->
-        <div
-            v-if="!loadingQuizList"
-            v-for="quiz in sharedQuizzes"
-            class="quiz-container"
-        >
-            <div class="quiz-item" @click="viewQuiz(quiz)">
-                <div class="quiz-details">
-                    <div class="quiz-question-count">
-                        <div class="circle"></div>
-                        <p class="question-count">{{ quiz.question_count }} questions</p>
+        <div class="quiz-container-list">
+            <div
+                v-if="!loadingQuizList"
+                v-for="quiz in sharedQuizzes"
+                class="quiz-container"
+            >
+                <div class="quiz-item" @click="viewQuiz(quiz)">
+                    <div class="quiz-details">
+                        <div class="quiz-question-count">
+                            <div class="circle"></div>
+                            <p class="question-count">{{ quiz.question_count }} questions</p>
+                        </div>
+                        <p class="quiz-name">{{ quiz.name }}</p>
                     </div>
-                    <p class="quiz-name">{{ quiz.name }}</p>
-                </div>
 
-                <button @click="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
-                    <img src="/static/play.png" alt="start" />
-                    <span>Start</span>
-                </button>
+                    <button @click="startQuiz(quiz.id)" class="small-btn" :disabled="!quiz.processed">
+                        <img src="/static/play.png" alt="start" />
+                        <span>Start</span>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div v-if="loadingQuizList" v-for="index in 3" :key="index">
-            <div class="menu-container basic-text placeholder placeholder-glow">
-                <span class="placeholder col-7 rounded"></span>
-                <span class="placeholder col-12 rounded"></span>
-                <button class="small-btn disabled placeholder">
-                    <img src="/static/play.png" alt="start" />
-                    <span>Start</span>
-                </button>
+            <div v-if="loadingQuizList" v-for="index in 3" :key="index" class="quiz-container">
+                <div class="quiz-item placeholder placeholder-glow basic-text">
+                    <div class="quiz-details w-50">
+                        <div class="quiz-question-count w-100 mb-1">
+                            <span class="question-count placeholder col-12 rounded basic-text w-50"></span>
+                        </div>
+                        <span class="quiz-name placeholder col-12 rounded"></span>
+                    </div>
+                    <button class="small-btn disabled placeholder">
+                        <img src="/static/play.png" alt="start" />
+                        <span>Start</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

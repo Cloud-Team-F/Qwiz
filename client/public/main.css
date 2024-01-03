@@ -40,7 +40,7 @@ body {
 }
 
 .max-height {
-    height: 90vh;
+    /* height: 90vh; */
 }
 
 .loading-screen {
@@ -58,6 +58,9 @@ body {
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.05);
     padding: 1rem 4rem;
     display: flex;
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
     justify-content: space-between; /* This will place the title and the button at the extremes */
     align-items: center;
     margin-bottom: 2rem;
@@ -107,6 +110,10 @@ body {
 .icon-24 {
     width: 24px;
     height: 24px;
+}
+
+.login-container {
+    width: 35%;
 }
 
 .login-title {
@@ -255,6 +262,7 @@ body {
 
 .logged-in {
     background-color: #E9BBFF !important;
+    height: 100vh;
 }
 
 .main-menu {
@@ -312,6 +320,14 @@ body {
     width: 30%;
     padding: 10px;
     height: 90vh;
+    display: flex; /* Make it a flex container */
+    align-items: start; /* Center items vertically */
+    flex-direction: column; /* Stack items vertically */
+    gap: 1rem; /* Spacing between each item */
+}
+
+.quiz-container-list {
+    width: 100%;
     display: flex; /* Make it a flex container */
     align-items: start; /* Center items vertically */
     flex-direction: column; /* Stack items vertically */
@@ -711,6 +727,13 @@ body {
     cursor: pointer;
 }
 
+.quiz-details > p, .quiz-question-count > p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
 .quiz-item-loading {
     position: absolute;
     border-radius: 40px;
@@ -731,13 +754,14 @@ body {
     align-items: start;
     justify-content: start;
     flex-direction: column;
+    max-width: 50%;
 }
 
 .quiz-question-count {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
+    max-width: 100%;
 }
 
 .question-count {
@@ -1031,9 +1055,108 @@ body {
  }
 
 
+/* Mobile phone screens */
+@media screen and (max-width: 900px) {
+    .login-container {
+        width: 90%;
+    }
+
+    .navbar {
+        padding: .5rem .5rem;
+        margin-bottom: 1rem;
+        flex-wrap: nowrap;
+    }
+
+    .navbar-logo {
+        max-width: max-content;
+    }
+
+    .navbar-logo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .navbar-btn {
+        padding: 0.3rem 1rem;
+        font-size: 16px;
+        gap: 5px;
+    }
+
+    .navbar-btn img{
+        width: 20px;
+        height: 20px;
+    }
+
+    .navbar-left {
+        display: contents;
+    }
+
+    .navbar-right {
+        max-width: max-content;
+    }
+
+    .navbar-title {
+        font-size: 1.8rem;
+    }
+
+    .main-menu {
+        padding: 0 1.5rem;
+        flex-direction: column; /* Stack items vertically */
+        gap: 0.5rem; /* Spacing between each item */
+    }
+
+    .menu-container {
+        padding: 1.5rem 1.5rem;
+    }
+
+    .main-img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .menu-col-1, .menu-col-2, .menu-col-3 {
+        width: 100%; /* Take the full width of the parent or as needed */
+        gap: 1rem; /* Spacing between each item */
+    }
+
+    .max-height {
+        height: auto;
+    }
+
+    .create-quiz-container {
+        margin: 0 0;
+    }
+
+    .basic-input, .quiz-input, .quiz-text-input {
+        width: 100%;
+    }
+
+    .quiz-text-input {
+        min-height: 13rem;
+    }
+
+    .large-inputs {
+        flex-direction: column;
+        gap: .2rem;
+    }
+
+    .file-label {
+        gap: 0;
+    }
+
+    .main-btn, .small-btn {
+        padding: 0.5rem 1rem;
+        font-size: 16px;
+    }
+
+    .home-btn-text, .logout-btn-text {
+        display: none;
+    }
+}
+ 
 
 /* Smaller screen (e.g., 14-inch laptop) adjustments */
-@media screen and (max-width: 1440px) {
+@media screen and (min-width: 900px) and (max-width: 1440px) {
     .navbar {
         padding: 1rem 2.5rem;
         margin-bottom: 1rem;
@@ -1073,6 +1196,10 @@ body {
 
     .menu-container {
         padding: 1.5rem 3rem;
+    }
+
+    .menu-col-1 {
+        gap: 1rem;
     }
 
     .basic-text {
