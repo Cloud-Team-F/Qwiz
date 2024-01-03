@@ -31,6 +31,7 @@ var app = new Vue({
         currentAudioQuestion: null,
         cachedAudio: [],
         isAudioPlaying: false,
+        isPlayingAudioClicked: false,
 
         
 
@@ -92,28 +93,40 @@ var app = new Vue({
             // The URL of backend endpoint that handles speech synthesis
             const speechSynthesisUrl = "/api/tts/convertToSpeech";
 
+
+            if (this.isPlayingAudioClicked) {
+                console.log('Audio is already being processed');
+                return;
+                
+            }
+            this.isPlayingAudioClicked = true;
+
+
             if (this.currentAudio) {
                 if (this.currentAudioQuestion.question_id === question.question_id) {
                     if (this.isAudioPlaying) {
                         console.log('audio pausedd');
                         this.currentAudio.pause();
                         this.isAudioPlaying = false;
+                        this.isPlayingAudioClicked=false;
                             
                     }else{
                         console.log('audio resumed to play again');
+                        this.isPlayingAudioClicked = true
                         this.playAudio();
                     }
                     
                     
                 } else{
                     this.stopAudio()
+                    this.isPlayingAudioClicked=true
                     this.loadAudio(question,speechSynthesisUrl)
                     
                 
                 }
 
             }else{
-                    
+                this.isPlayingAudioClicked=true    
                 this.loadAudio(question, speechSynthesisUrl);
 
             }
@@ -131,11 +144,14 @@ var app = new Vue({
                         "Error during playing the playback",
                         playbackError
                     );
+                }).finally(() => {
+                    this.isPlayingAudioClicked=false;
                 });
 
             this.currentAudio.onended = () => {
                 console.log("Audio finished playing");
                 this.isAudioPlaying = false
+                this.isPlayingAudioClicked=false;
             };
 
         },
@@ -203,7 +219,7 @@ var app = new Vue({
                         this.currentAudio = new Audio(audioUrl);
                         this.currentAudioQuestion = question;
                         this.cachedAudio.push({
-                            question_id: question.question_id,
+                            question: question,
                             audio: this.currentAudio,
                         });
     
