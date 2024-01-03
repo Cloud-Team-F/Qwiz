@@ -380,6 +380,10 @@ body {
     color: #E2E2E2;
 }
 
+.darker-grey {
+    color: #8E8E8E;
+}
+
 .quiz-info {
    display: flex; 
    flex-wrap: wrap; 
@@ -589,6 +593,10 @@ body {
     color: black;
     line-height: 1;
     margin: 0;
+}
+
+.date span.blue {
+    color: #5869FF;
 }
 
 .input-title {

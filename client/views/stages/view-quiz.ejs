@@ -28,10 +28,10 @@
             <div class="quiz-info">
                 <div class="quiz-info-headers">
                     <img src="/static/High Score.png" alt="high_score"> 
-                    <span>high score</span>
+                    <span>your high score</span>
                 </div>
-                <p class="larger-font grey-font" v-if="currentQuiz.high_score">{{ currentQuiz.high_score }}</p>
-                <p class="larger-font grey-font" v-else>18/25</p>
+                <p class="larger-font grey-font" v-if="currentQuiz.personal_high_score">{{ currentQuiz.personal_high_score }}/{{ currentQuiz.total_questions }}</p>
+                <p class="larger-font grey-font" v-else>attempt the quiz!</p>
             </div>
         </div>
     </div>
@@ -55,12 +55,12 @@
                 <img src="/static/invite.png" alt="invite"> 
                 <span>invite friends</span>
             </div> 
-            <input
+            <!-- <input
                 type="text"
                 placeholder="Enter username"
                 v-model="inputs.userToInvite"
                 class="basic-input width-100"
-            />
+            /> -->
             <div class="quiz-info-headers">
                 <span v-if="currentQuiz.invite_code">invite code: {{ currentQuiz.invite_code }}</span>
                 <span v-else>invite code: no code</span>
@@ -81,5 +81,15 @@
             </div> 
         </div>
     </div>
-    <div class="menu-col-1"></div>
+    <div class="menu-col-1">
+        <div class="menu-container align-items-start less-padding">
+            <div class="quiz-info">
+                <div class="quiz-info-headers">
+                    <img src="/static/High Score.png" alt="high_score"> 
+                    <span>leaderboard</span>
+                </div>
+                <p v-if="currentQuiz.leaderboard" v-for="person in currentQuiz.leaderboard.slice(0, 5)" class="larger-font" :class="person.username == user.username ? 'darker-grey' : 'grey-font'">{{ person.username }}: {{ person.score }}</p>
+            </div>
+        </div>
+    </div>
 </div>
