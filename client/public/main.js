@@ -1,7 +1,9 @@
 let ws = null;
-let currentAudio = null;
-let currentAudioQuestion = null;
-let cachedAudio = [];
+// let this.currentAudio = null;
+// let this.currentAudioQuestion = null;
+// let this.cachedAudio = [];
+// let this.isAudioPlaying = false;
+
 const supportedFileTypes = [
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -24,6 +26,13 @@ var app = new Vue({
         loading: false,
         loadingQuizList: true,
         loadingQuizSubmission: false,
+
+        currentAudio: null,
+        currentAudioQuestion: null,
+        cachedAudio: [],
+        isAudioPlaying: false,
+
+        
 
         inputs: {
             username: "",
@@ -83,16 +92,23 @@ var app = new Vue({
             // The URL of backend endpoint that handles speech synthesis
             const speechSynthesisUrl = "/api/tts/convertToSpeech";
 
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
+            if (this.currentAudio && this.isAudioPlaying) {
+                this.currentAudio.pause();
+                this.isAudioPlaying = false; // Update the flag
+                console.log("Audio paused");
+                return; // Exit the function to avoid playing new audio
+            }
+
+            if (this.currentAudio) {
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
             }
             if (
-                currentAudioQuestion &&
-                currentAudioQuestion.question_id === question.question_id
+                this.currentAudioQuestion &&
+                this.currentAudioQuestion.question_id === question.question_id
             ) {
-                currentAudio = null;
-                currentAudioQuestion = null;
+                this.currentAudio = null;
+                this.currentAudioQuestion = null;
                 return;
             }
 
@@ -116,14 +132,14 @@ var app = new Vue({
             }
 
             // Check cache for audio
-            const cachedAudioItem = cachedAudio.find(
+            const cachedAudioItem = this.cachedAudio.find(
                 (item) => item.question_id === question.question_id
             );
             if (cachedAudioItem) {
                 console.log("Found cached audio for question", question);
-                currentAudio = cachedAudioItem.audio;
-                currentAudioQuestion = question;
-                this.playAudio(currentAudio);
+                this.currentAudio = cachedAudioItem.audio;
+                this.currentAudioQuestion = question;
+                this.playAudio(this.currentAudio);
                 return;
             }
 
@@ -145,24 +161,25 @@ var app = new Vue({
                     console.log("audio blob created with size", audioBlob.size);
                     const audioUrl = URL.createObjectURL(audioBlob);
                     console.log("Audio URL:", audioUrl);
-                    currentAudio = new Audio(audioUrl);
-                    currentAudioQuestion = question;
-                    cachedAudio.push({
+                    this.currentAudio = new Audio(audioUrl);
+                    this.currentAudioQuestion = question;
+                    this.cachedAudio.push({
                         question_id: question.question_id,
-                        audio: currentAudio,
+                        audio: this.currentAudio,
                     });
 
-                    this.playAudio(currentAudio);
+                    this.playAudio(this.currentAudio);
                 })
                 .catch((error) => {
                     console.error("Error synthesizing  the speech:", error);
-                    isAudioPlaying = false;
+                    this.isAudioPlaying = false;
                 });
         },
         playAudio(currentAudio) {
-            currentAudio
+            this.currentAudio
                 .play()
                 .then(() => {
+                    this.isAudioPlaying = true
                     console.log("Audio started successfully");
                 })
                 .catch((playbackError) => {
@@ -172,12 +189,26 @@ var app = new Vue({
                     );
                 });
 
-            currentAudio.onended = () => {
+            this.currentAudio.onended = () => {
                 console.log("Audio finished playing");
-                currentAudio = null;
-                currentAudioQuestion = null;
+                this.currentAudio = null;
+                this.currentAudioQuestion = null;
+                this.isAudioPlaying = false
             };
+
         },
+        stopAudio() {
+            if (this.currentAudio) {
+              this.currentAudio.pause();
+              this.currentAudio.currentTime = 0;
+              this.currentAudio = null,
+              this.currentAudioQuestion = null;
+              this.isAudioPlaying = false;
+              console.log('audio stopped successfully');
+            }
+          },
+        
+        
 
         advance() {},
         toggleMode(newMode) {
@@ -202,6 +233,7 @@ var app = new Vue({
         backToHome() {
             this.currentState = "MENU";
             this.currentQuiz = null;
+            this.stopAudio();
         },
         retryQuiz() {
             let answers = {};
@@ -262,6 +294,8 @@ var app = new Vue({
             );
         },
         logout() {
+
+            this.stopAudio();
             axios;
             sendRequest(
                 "POST",
