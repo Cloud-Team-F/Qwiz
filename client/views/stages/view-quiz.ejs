@@ -42,6 +42,15 @@
                 <span>start quiz</span>
             </div> 
         </div>
+        <div class="menu-container align-items-start less-padding">
+            <div class="quiz-info">
+                <div class="quiz-info-headers">
+                    <img src="/static/High Score.png" alt="high_score"> 
+                    <span>leaderboard</span>
+                </div>
+                <p v-if="currentQuiz.leaderboard" v-for="person in currentQuiz.leaderboard.slice(0, 5)" class="larger-font" :class="person.username == user.username ? 'darker-grey' : 'grey-font'">{{ person.username }}: {{ person.score }}</p>
+            </div>
+        </div>
         <div class="menu-container align-items-start lesser-padding" v-if="currentQuiz.errored">
             <div class="quiz-info-headers">
                 <span class="red-font">Something went wrong generating the quiz. This may have been caused by
@@ -82,7 +91,7 @@
         </div>
     </div>
     <div class="menu-col-1">
-        <div class="menu-container align-items-start less-padding">
+        <!-- <div class="menu-container align-items-start less-padding">
             <div class="quiz-info">
                 <div class="quiz-info-headers">
                     <img src="/static/High Score.png" alt="high_score"> 
@@ -90,6 +99,6 @@
                 </div>
                 <p v-if="currentQuiz.leaderboard" v-for="person in currentQuiz.leaderboard.slice(0, 5)" class="larger-font" :class="person.username == user.username ? 'darker-grey' : 'grey-font'">{{ person.username }}: {{ person.score }}</p>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>

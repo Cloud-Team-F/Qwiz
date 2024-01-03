@@ -39,13 +39,23 @@
           ></label>
         </div>
 
-        <!-- Short answer & Fill gaps -->
+        <!-- Fill gaps -->
+        <div v-if="question.type == 'fill-gaps'">
+          <select v-model="currentQuiz.answers[question.question_id]" class="answer-input-dropdown">
+              <option disabled value="">Select an answer</option>
+              <option v-for="(option, index) in question.options" :key="index" :value="option">
+                  {{ option }}
+              </option>
+          </select>
+        </div>
+
+         <!-- Short answer -->
         <input
-          v-if="question.type == 'short-answer' || question.type == 'fill-gaps'"
-          type="text"
-          placeholder="Enter answer"
-          v-model="currentQuiz.answers[question.question_id]"
-          class="answer-input"
+            v-else-if="question.type == 'short-answer'"
+            type="text"
+            placeholder="Enter answer"
+            v-model="currentQuiz.answers[question.question_id]"
+            class="answer-input"
         />
       </div>
     </div>
