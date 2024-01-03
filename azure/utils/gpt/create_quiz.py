@@ -292,7 +292,7 @@ def messageMultiChoice(count, text):  # asks chatGPT to make a multichoce quiz o
     myMessageSystem = (
         "Generate a "
         + str(count)
-        + "-question long multiple-choice quiz based on the provided text. Format each question as a JSON object like so {\"question\":\"\",\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}"
+        + "-question long multiple-choice quiz based on the provided text. Make it so each question has 4 possible options. Format each question as a JSON object like so {\"question\":\"\",\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}"
     )
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
