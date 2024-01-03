@@ -145,13 +145,15 @@ var app = new Vue({
               this.currentAudio.currentTime = 0;
               this.isAudioPlaying = false;
               console.log('audio stopped successfully');
+              this.currentAudio=null;
+              this.currentAudioQuestion=null;
             }
         },
 
         loadAudio(question, speechSynthesisUrl){
              // Check cache for audio
              let cachedAudioItem = this.cachedAudio.find(
-                (item) => item.question_id === question.question_id
+                (item) => item.question === question
             );
             if (cachedAudioItem) {
                 console.log("Found cached audio for question", question);
