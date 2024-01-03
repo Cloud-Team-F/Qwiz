@@ -92,90 +92,34 @@ var app = new Vue({
             // The URL of backend endpoint that handles speech synthesis
             const speechSynthesisUrl = "/api/tts/convertToSpeech";
 
-            if (this.currentAudio && this.isAudioPlaying) {
-                this.currentAudio.pause();
-                this.isAudioPlaying = false; // Update the flag
-                console.log("Audio paused");
-                return; // Exit the function to avoid playing new audio
-            }
-
             if (this.currentAudio) {
-                this.currentAudio.pause();
-                this.currentAudio.currentTime = 0;
+                if (this.currentAudioQuestion.question_id === question.question_id) {
+                    if (this.isAudioPlaying) {
+                        console.log('audio pausedd');
+                        this.currentAudio.pause();
+                        this.isAudioPlaying = false;
+                            
+                    }else{
+                        console.log('audio resumed to play again');
+                        this.playAudio();
+                    }
+                    
+                    
+                } else{
+                    this.stopAudio()
+                    this.loadAudio(question,speechSynthesisUrl)
+                    
+                
+                }
+
+            }else{
+                    
+                this.loadAudio(question, speechSynthesisUrl);
+
             }
-            if (
-                this.currentAudioQuestion &&
-                this.currentAudioQuestion.question_id === question.question_id
-            ) {
-                this.currentAudio = null;
-                this.currentAudioQuestion = null;
-                return;
-            }
-
-            let fullTextToSpeak = `Question ${question.question_id}: `;
-
-            // Extract the text that needs to be spoken
-            if (question.type === "fill-gaps") {
-                const questionFillBlanks = question.question.replace(
-                    /_{2,}/g,
-                    "fill the blank"
-                );
-                fullTextToSpeak += questionFillBlanks;
-            } else if (question.type === "short-answer") {
-                fullTextToSpeak += question.question;
-            } else if (question.type === "multi-choice") {
-                const questionText = `Question ${question.question_id}: ${question.question}`;
-                const optionsText = question.options
-                    .map((option, index) => `Option ${index + 1}: ${option}`)
-                    .join(". ");
-                fullTextToSpeak = `${questionText}. ${optionsText}`;
-            }
-
-            // Check cache for audio
-            const cachedAudioItem = this.cachedAudio.find(
-                (item) => item.question_id === question.question_id
-            );
-            if (cachedAudioItem) {
-                console.log("Found cached audio for question", question);
-                this.currentAudio = cachedAudioItem.audio;
-                this.currentAudioQuestion = question;
-                this.playAudio(this.currentAudio);
-                return;
-            }
-
-            // Send the text to the backend for speech synthesis
-            axios
-                .post(
-                    speechSynthesisUrl,
-                    { text: fullTextToSpeak },
-                    { responseType: "arraybuffer" }
-                )
-                .then((response) => {
-                    // Assuming the response contains the audio data in a binary format
-                    console.log(
-                        "recieved res with data size: " + response.data.size
-                    );
-                    const audioBlob = new Blob([response.data], {
-                        type: "audio/wav",
-                    });
-                    console.log("audio blob created with size", audioBlob.size);
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    console.log("Audio URL:", audioUrl);
-                    this.currentAudio = new Audio(audioUrl);
-                    this.currentAudioQuestion = question;
-                    this.cachedAudio.push({
-                        question_id: question.question_id,
-                        audio: this.currentAudio,
-                    });
-
-                    this.playAudio(this.currentAudio);
-                })
-                .catch((error) => {
-                    console.error("Error synthesizing  the speech:", error);
-                    this.isAudioPlaying = false;
-                });
+               
         },
-        playAudio(currentAudio) {
+        playAudio() {
             this.currentAudio
                 .play()
                 .then(() => {
@@ -191,8 +135,6 @@ var app = new Vue({
 
             this.currentAudio.onended = () => {
                 console.log("Audio finished playing");
-                this.currentAudio = null;
-                this.currentAudioQuestion = null;
                 this.isAudioPlaying = false
             };
 
@@ -201,12 +143,83 @@ var app = new Vue({
             if (this.currentAudio) {
               this.currentAudio.pause();
               this.currentAudio.currentTime = 0;
-              this.currentAudio = null,
-              this.currentAudioQuestion = null;
               this.isAudioPlaying = false;
               console.log('audio stopped successfully');
             }
-          },
+        },
+
+        loadAudio(question, speechSynthesisUrl){
+             // Check cache for audio
+             let cachedAudioItem = this.cachedAudio.find(
+                (item) => item.question_id === question.question_id
+            );
+            if (cachedAudioItem) {
+                console.log("Found cached audio for question", question);
+                this.currentAudio = cachedAudioItem.audio;
+                this.currentAudioQuestion = question;
+                this.playAudio();
+            }else{
+
+                let fullTextToSpeak = `Question ${question.question_id}: `;
+
+                // Extract the text that needs to be spoken
+                if (question.type === "fill-gaps") {
+                    const questionFillBlanks = question.question.replace(
+                        /_{2,}/g,
+                        "fill the blank"
+                    );
+                    fullTextToSpeak += questionFillBlanks;
+                } else if (question.type === "short-answer") {
+                    fullTextToSpeak += question.question;
+                } else if (question.type === "multi-choice") {
+                    const questionText = `Question ${question.question_id}: ${question.question}`;
+                    const optionsText = question.options
+                        .map((option, index) => `Option ${index + 1}: ${option}`)
+                        .join(". ");
+                    fullTextToSpeak = `${questionText}. ${optionsText}`;
+                }
+    
+               
+                // Send the text to the backend for speech synthesis
+                axios
+                    .post(
+                        speechSynthesisUrl,
+                        { text: fullTextToSpeak },
+                        { responseType: "arraybuffer" }
+                    )
+                    .then((response) => {
+                        // Assuming the response contains the audio data in a binary format
+                        console.log(
+                            "recieved res with data size: " + response.data.size
+                        );
+                        const audioBlob = new Blob([response.data], {
+                            type: "audio/wav",
+                        });
+                        console.log("audio blob created with size", audioBlob.size);
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        console.log("Audio URL:", audioUrl);
+                        this.currentAudio = new Audio(audioUrl);
+                        this.currentAudioQuestion = question;
+                        this.cachedAudio.push({
+                            question_id: question.question_id,
+                            audio: this.currentAudio,
+                        });
+    
+                        this.playAudio(this.currentAudio);
+                    })
+                    .catch((error) => {
+                        console.error("Error synthesizing  the speech:", error);
+                        this.isAudioPlaying = false;
+                    });
+
+
+
+            }
+
+
+
+        },
+
         
         
 
