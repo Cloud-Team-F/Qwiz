@@ -52,10 +52,23 @@ def create_quiz(
                 questionTypesCount["multi-choice"], text_content
             )
 
+            print("completion Multi 1")
+            print(completionMulti)
+
             completionMulti = completionMulti.choices[0].message.content
+
+            print("completion Multi 2")
+            print(completionMulti)
+
             completionMulti = clean_json_string(completionMulti)
 
+            print("completion Multi 3")
+            print(completionMulti)
+
             quizMulti = parse_multi_quiz(completionMulti)
+
+            print("completion Multi 4")
+            print(quizMulti)
 
             quizQuestions.append(quizMulti)
 
@@ -292,7 +305,7 @@ def messageMultiChoice(count, text):  # asks chatGPT to make a multichoce quiz o
     myMessageSystem = (
         "Generate a "
         + str(count)
-        + "-question long multiple-choice quiz based on the provided text. Make it so each question has 4 possible options. Format each question as a JSON object like so {\"question\":\"\",\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}"
+        + "-question long multiple-choice quiz based on the provided text. Make it so each question has 4 possible options. Format each question as a JSON object like so {\"question\":\"\",\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}. Each JSON object should be separated by only a newLine."
     )
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -328,9 +341,9 @@ def messageShortAnswer(count, text):  # asks chatGPT to make a short answer quiz
 def messageFillBlanks(count, text): 
     client = OpenAI()
     myMessageSystem = (
-        "Give me "
+        "Give me exactly "
         + str(count)
-        + "facts about the topic below. Format each fact as a JSON object like so {\"fact\":\"\"}. Do not use the ``` symbol to format your answer"
+        + " facts about the topic below. Format each fact as a JSON object like so {\"fact\":\"\"}. Do not use the ``` symbol to format your answer. Each JSON should be separated only by a newLine"
     )
 
     completion = client.chat.completions.create(
