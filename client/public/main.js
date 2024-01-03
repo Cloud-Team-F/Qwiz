@@ -52,7 +52,32 @@ var app = new Vue({
         this.loadingScreen = true;
         connect();
     },
+    computed: {
+        groupedOwnQuizzes() {
+            return this.sortQuizzes(this.ownQuizzes);
+        },
+        groupedSharedQuizzes() {
+            return this.sortQuizzes(this.sharedQuizzes);
+        },
+    },
     methods: {
+        sortQuizzes(quizzes) {
+            let quizzesByMonth = {};
+            quizzes.forEach(quiz => {
+                let monthYear = this.formatDate(quiz.created_at);
+                if (!quizzesByMonth[monthYear]) {
+                    quizzesByMonth[monthYear] = [];
+                }
+                quizzesByMonth[monthYear].push(quiz);
+            });
+            return Object.entries(quizzesByMonth)
+                .sort((a, b) => new Date(b[0]) - new Date(a[0]))
+                .map(([monthYear, quizzes]) => ({ monthYear, quizzes: quizzes.sort((a, b) => new Date(b.created_at || new Date()) - new Date(a.created_at || new Date())) }));
+        },
+        formatDate(dateStr) {
+            let date = new Date(dateStr);
+            return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+        },
         speakQuestion(question) {
             console.log("speakQuestion called with", question);
             // The URL of backend endpoint that handles speech synthesis

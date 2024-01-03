@@ -86,10 +86,20 @@ def main(req: HttpRequest) -> HttpResponse:
         correct_answers = answer_quiz(answer_body)
 
         current_scores = quiz.get("scores", [])
+
+        total_score = sum([1 for answer in correct_answers if answer["is_correct"]])
+
+        # Check if top_score
+        is_top_score = False
+        if current_scores:
+            top_score = max([score["score"] for score in current_scores])
+            if total_score > top_score:
+                is_top_score = True
+
         # Add user score to quiz
         score_obj = {
             "user_id": user_id,
-            "score": sum([1 for answer in correct_answers if answer["is_correct"]]),
+            "score": total_score,
             "date": datetime.now().isoformat(),
         }
 
@@ -106,6 +116,7 @@ def main(req: HttpRequest) -> HttpResponse:
                 {
                     "answers": correct_answers,
                     "score": score_obj["score"],
+                    "is_top_score": is_top_score,
                 }
             ),
             status_code=200,

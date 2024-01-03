@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime
 
 from azure.cosmos.exceptions import CosmosHttpResponseError
 from azure.functions import HttpRequest, HttpResponse
@@ -55,6 +56,31 @@ def main(req: HttpRequest) -> HttpResponse:
         if (user_id not in shared_with_ids) and user_id != quiz["user_id"]:
             return create_error_response("User not authorized to view this quiz.", 403)
 
+        # Get top 5 scores
+        sorted_scores = sorted(
+            quiz.get("scores", []), key=lambda s: s["score"], reverse=True
+        )
+        if len(sorted_scores) > 5:
+            sorted_scores = sorted_scores[:5]
+
+        # Create a dictionary mapping user IDs to usernames
+        usernames = {quiz.get("user_id"): user.get("username", "Unknown")} | {
+            sharedUser["id"]: sharedUser.get("username", "Unknown")
+            for sharedUser in shared_with_users
+        }
+
+        # Get leaderboard with usernames
+        leaderboard = [
+            {
+                "username": usernames.get(score["user_id"], "Unknown"),
+                "score": score["score"],
+                "date": datetime.strptime(
+                    score["date"], "%Y-%m-%dT%H:%M:%S.%f"
+                ).strftime("%H:%M %d/%m/%Y"),
+            }
+            for score in sorted_scores
+        ]
+
         # http success response
         return HttpResponse(
             body=json.dumps(
@@ -69,7 +95,8 @@ def main(req: HttpRequest) -> HttpResponse:
                     "errored": quiz.get("errored", False),
                     "invite_code": quiz.get("invite_code", "Unknown"),
                     "people": list(shared_with_usernames),
-                    "top_score": 10,
+                    "top_score": sorted_scores[0]["score"] if sorted_scores else 0,
+                    "leaderboard": leaderboard,
                 }
             ),
             status_code=200,

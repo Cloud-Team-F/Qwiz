@@ -28,13 +28,13 @@ def main(req: HttpRequest) -> HttpResponse:
     try:
         # Get quizzes from database
         own_quizzes = QuizContainerProxy.query_items(
-            query="SELECT c.id, c.name, c.num_questions as question_count, c.processed, c.errored, TimestampToDateTime(c._ts*1000) AS last_modified FROM c WHERE c.user_id = @filter",
+            query="SELECT c.id, c.name, c.num_questions as question_count, c.processed, c.errored, c.created_at, TimestampToDateTime(c._ts*1000) AS last_modified FROM c WHERE c.user_id = @filter",
             parameters=[dict(name="@filter", value=user_id)],
             enable_cross_partition_query=True,
         )
 
         shared_quizzes = QuizContainerProxy.query_items(
-            query="SELECT c.id, c.name, c.num_questions as question_count, c.processed, c.errored, TimestampToDateTime(c._ts*1000) AS last_modified FROM c WHERE ARRAY_CONTAINS(c.shared_with, @filter)",
+            query="SELECT c.id, c.name, c.num_questions as question_count, c.processed, c.errored, c.created_at, TimestampToDateTime(c._ts*1000) AS last_modified FROM c WHERE ARRAY_CONTAINS(c.shared_with, @filter)",
             parameters=[dict(name="@filter", value=user_id)],
             enable_cross_partition_query=True,
         )
