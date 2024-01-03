@@ -13,7 +13,7 @@ def answer_quiz(myLists):
     
     # Grouping the dictionaries by 'type'
     grouped_by_type = {}
-    for item in data:
+    for item in myLists:
         item_type = item['type']
         if item_type not in grouped_by_type:
             grouped_by_type[item_type] = []
