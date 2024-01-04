@@ -3,6 +3,10 @@
         <div class="menu-container">
             <p class="larger-font">You have scored</p>
             <h2 class="final-score blue">{{ currentQuiz.markedAnswers.score }}/{{ currentQuiz.total_questions }}</h2>
+            <div class="date" v-if="currentQuiz.markedAnswers.is_top_score">
+                <img src="/static/New High Score.png" alt="high-score" />
+                <span class="blue">New high score!</span>
+            </div>
         </div>
 
         <div

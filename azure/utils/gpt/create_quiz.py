@@ -179,8 +179,12 @@ def insertBlankOnPhraseUsed(phraseUsed, phrase):
     # Calculate the number of underscores needed
     underscores = '_' * len(phrase)
 
+    # Define the regular expression pattern for a whole word match, with word boundaries
+    pattern = r'\b' + re.escape(phrase) + r'\b'
+
     # Replace the first instance of the phrase with underscores, case-insensitive
-    return re.sub(re.escape(phrase), underscores, phraseUsed, count=1, flags=re.IGNORECASE)
+    return re.sub(pattern, underscores, phraseUsed, count=1, flags=re.IGNORECASE)
+
 
 
 def clean_json_string(json_string):

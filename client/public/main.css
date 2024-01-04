@@ -410,7 +410,11 @@ body {
 }
 
 .grey-font {
-    color: #E2E2E2;
+    color: #a7a6a6;
+}
+
+.darker-grey {
+    color: #4c4c4c;
 }
 
 .quiz-info {
@@ -622,6 +626,10 @@ body {
     color: black;
     line-height: 1;
     margin: 0;
+}
+
+.date span.blue {
+    color: #5869FF;
 }
 
 .input-title {
@@ -1011,6 +1019,24 @@ body {
     padding: 1rem;
     font-size: 18px;
     width: 100%;
+}
+
+.answer-input-dropdown {
+    border: 2px solid #DFDFDF;
+    border-radius: 20px;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+    padding-right: 2rem; /* Adjust if needed */
+    font-size: 18px;
+    width: 100%;
+    -webkit-appearance: none; /* For Safari */
+    -moz-appearance: none; /* For Firefox */
+    appearance: none; /* Standard syntax; must be used last */
+    background-image: url('/static/down.png');
+    background-repeat: no-repeat;
+    background-position: right 1rem center; /* Adjust the position as needed */
+    background-size: 1.5rem; /* Adjust size as needed */
 }
 
 .selected-answer-option {

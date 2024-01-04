@@ -495,7 +495,10 @@ var app = new Vue({
                 quiz.id,
                 (res) => {
                     console.log(res);
-                    this.currentQuiz = { ...quiz, ...res.data };
+
+                    const userHighScore = res.data.leaderboard.find(entry => entry.username === this.user.username)?.score ?? null;
+                    console.log('personal high score:', userHighScore);
+                    this.currentQuiz = { ...quiz, ...res.data, personal_high_score: userHighScore };
                     this.currentState = "VIEW-QUIZ";
                 },
                 (err) => {

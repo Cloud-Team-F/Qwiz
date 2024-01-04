@@ -95,6 +95,8 @@ def main(req: HttpRequest) -> HttpResponse:
             top_score = max([score["score"] for score in current_scores])
             if total_score > top_score:
                 is_top_score = True
+        else:
+           is_top_score = True 
 
         # Add user score to quiz
         score_obj = {

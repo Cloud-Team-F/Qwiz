@@ -56,12 +56,12 @@ def main(req: HttpRequest) -> HttpResponse:
         if (user_id not in shared_with_ids) and user_id != quiz["user_id"]:
             return create_error_response("User not authorized to view this quiz.", 403)
 
-        # Get top 5 scores
-        sorted_scores = sorted(
-            quiz.get("scores", []), key=lambda s: s["score"], reverse=True
-        )
-        if len(sorted_scores) > 5:
-            sorted_scores = sorted_scores[:5]
+        # Get top sorted scores
+        seen_user_ids = set()
+        sorted_scores = [score for score in sorted(quiz.get("scores", []), key=lambda s: s["score"], reverse=True) if not (score["user_id"] in seen_user_ids or seen_user_ids.add(score["user_id"]))]
+
+        # if len(sorted_scores) > 5:
+        #     sorted_scores = sorted_scores[:5]
 
         # Create a dictionary mapping user IDs to usernames
         usernames = {quiz.get("user_id"): user.get("username", "Unknown")} | {
