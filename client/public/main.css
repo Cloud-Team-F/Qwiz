@@ -1159,6 +1159,14 @@ body {
     animation: shake 1s ease-in-out infinite;
  }
 
+@keyframes tilt {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-animation {
+    animation: tilt 2.5s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
 
 /* Mobile phone screens */
 @media screen and (max-width: 900px) {
