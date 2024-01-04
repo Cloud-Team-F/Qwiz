@@ -105,13 +105,13 @@ var app = new Vue({
             if (this.currentAudio) {
                 if (this.currentAudioQuestion.question_id === question.question_id) {
                     if (this.isAudioPlaying) {
-                        console.log('audio pausedd');
+                        console.log('Audio Paused!');
                         this.currentAudio.pause();
                         this.isAudioPlaying = false;
                         this.isPlayingAudioClicked=false;
                             
                     }else{
-                        console.log('audio resumed to play again');
+                        console.log('Audio resumed to play again');
                         this.isPlayingAudioClicked = true
                         this.playAudio();
                     }
@@ -208,12 +208,12 @@ var app = new Vue({
                     .then((response) => {
                         // Assuming the response contains the audio data in a binary format
                         console.log(
-                            "recieved res with data size: " + response.data.size
+                            "Received res with data size: " + response.data.size
                         );
                         const audioBlob = new Blob([response.data], {
                             type: "audio/wav",
                         });
-                        console.log("audio blob created with size", audioBlob.size);
+                        console.log("Audio blob created with size", audioBlob.size);
                         const audioUrl = URL.createObjectURL(audioBlob);
                         console.log("Audio URL:", audioUrl);
                         this.currentAudio = new Audio(audioUrl);
@@ -290,7 +290,7 @@ var app = new Vue({
                     password: this.inputs.password,
                 },
                 (res) => {
-                    console.log(res);
+                    // console.log(res);
                     this.user = res.data;
                     app.currentState = "MENU";
                     connectPubSub();
@@ -311,7 +311,7 @@ var app = new Vue({
                     password: this.inputs.password,
                 },
                 (res) => {
-                    console.log(res);
+                    // console.log(res);
                     this.user = res.data;
                     app.currentState = "MENU";
                     connectPubSub();
@@ -333,7 +333,7 @@ var app = new Vue({
                 "/api/auth/logout",
                 null,
                 (res) => {
-                    console.log(res);
+                    // console.log(res);
                     this.user = null;
                     app.currentState = "LOGIN";
                     this.clearQuizList();
@@ -354,7 +354,7 @@ var app = new Vue({
                     `/api/invite/join/${this.inputs.inviteCode}`,
                     null,
                     (res) => {
-                        console.log(res);
+                        // console.log(res);
                         this.success("Successfully joined quiz!");
                         this.inputs.inviteCode = "";
                         this.updateQuizList();
