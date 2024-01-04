@@ -1053,16 +1053,16 @@ body {
     padding-top: 1rem;
     padding-left: 1rem;
     padding-bottom: 1rem;
-    padding-right: 2rem; /* Adjust if needed */
+    padding-right: 2rem; 
     font-size: 18px;
     width: 100%;
-    -webkit-appearance: none; /* For Safari */
-    -moz-appearance: none; /* For Firefox */
-    appearance: none; /* Standard syntax; must be used last */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background-image: url('/static/down.png');
     background-repeat: no-repeat;
-    background-position: right 1rem center; /* Adjust the position as needed */
-    background-size: 1.5rem; /* Adjust size as needed */
+    background-position: right 1rem center;
+    background-size: 1.5rem; 
 }
 
 .selected-answer-option {
