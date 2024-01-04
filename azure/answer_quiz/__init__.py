@@ -80,6 +80,7 @@ def main(req: HttpRequest) -> HttpResponse:
                 "question": question["question"],
                 "user_answer": answers[question_id_str],
                 "type": question_type,
+                "correct_answer": question.get("correct_answer", ""),
             }
             | (
                 {"options": question.get("options", [])}
