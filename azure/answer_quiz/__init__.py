@@ -34,7 +34,15 @@ def main(req: HttpRequest) -> HttpResponse:
     if not isinstance(answers, dict):
         return create_error_response("'answers' should be a dictionary", 400)
 
-    # todo:: validate answers (answer length)
+    # Validate answers
+    for question_id, answer in answers.items():
+        # Strip answer if string
+        if isinstance(answer, str):
+            answers[question_id] = answer.strip()
+        if len(answer) > 200:
+            return create_error_response(
+                f"Your answer for question {question_id} is too long!", 400
+            )
 
     # Get quiz from database
     try:
@@ -65,6 +73,7 @@ def main(req: HttpRequest) -> HttpResponse:
             return create_error_response(
                 f"Missing answer for question {question['question_id']}", 400
             )
+
         answer_body.append(
             {
                 "question_id": question["question_id"],
@@ -96,7 +105,7 @@ def main(req: HttpRequest) -> HttpResponse:
             if total_score > top_score:
                 is_top_score = True
         else:
-           is_top_score = True 
+            is_top_score = True
 
         # Add user score to quiz
         score_obj = {
