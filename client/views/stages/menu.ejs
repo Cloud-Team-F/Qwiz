@@ -33,7 +33,7 @@
     </div>
     <div class="menu-col-2">
         <p class="col-titles">My quizzes</p>
-        <div class="quiz-container-list">
+        <div class="quiz-container-list container-scroll">
             <div
                 v-if="!loadingQuizList"
                 v-for="group in groupedOwnQuizzes"
@@ -113,7 +113,7 @@
     </div>
     <div class="menu-col-2">
         <p class="col-titles">Shared quizzes</p>
-        <div class="quiz-container-list">
+        <div class="quiz-container-list container-scroll">
             <div
                 v-if="!loadingQuizList"
                 v-for="group in groupedSharedQuizzes"

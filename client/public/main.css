@@ -340,6 +340,25 @@ body {
     background: #C0C0C0; 
 }
 
+.quiz-container-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.quiz-container-list::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.quiz-container-list::-webkit-scrollbar-thumb {
+    background-color: #DFDFDF; 
+    border-radius: 10px;
+    border: 3px solid transparent; 
+}
+
+.quiz-container-list::-webkit-scrollbar-thumb:hover {
+    background: #C0C0C0; 
+}
+
 .menu-col-2 {
     width: 35%;
     padding: 10px;
@@ -366,6 +385,13 @@ body {
     align-items: start; /* Center items vertically */
     flex-direction: column; /* Stack items vertically */
     gap: 1rem; /* Spacing between each item */
+}
+
+.container-scroll {
+    overflow-y: auto;
+    max-height: 75vh;
+    padding-right: 3px;
+    padding-bottom: .7rem;
 }
 
 .menu-container {
