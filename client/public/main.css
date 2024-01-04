@@ -212,6 +212,38 @@ body {
     background: #7B1FA2; /* Darker purple background on hover */
 }
 
+.btn-danger {
+    background: #FF5757; /* Red background */
+}
+
+.btn-danger:hover {
+    background: #FF6E6E; /* Darker red background on hover */
+}
+
+.btn-secondary {
+    background: #E2E2E2; /* Grey background */
+    color: black;
+}
+
+.btn-secondary:hover {
+    background: #D5D5D5; /* Darker grey background on hover */
+    color: black;
+}
+
+.main-modal {
+    border-radius: 40px;
+    border: none; /* Remove border */
+    padding: .5rem; /* Add padding */
+}
+
+.modal-header {
+    border-bottom: none; /* Remove border */
+}
+
+.modal-footer {
+    border-top: none; /* Remove border */
+}
+
 .navbar-btn {
     border-radius: 40px;
     padding: 0.5rem 2rem;
@@ -328,6 +360,7 @@ body {
 }
 
 .quiz-container-list {
+    display: flex !important;
     width: 100%;
     display: flex; /* Make it a flex container */
     align-items: start; /* Center items vertically */
