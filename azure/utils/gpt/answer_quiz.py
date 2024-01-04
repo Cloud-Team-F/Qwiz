@@ -34,7 +34,18 @@ def answer_quiz(myLists):
             result = future.result()
             results.append(result)
 
-    results = flatten_and_sort_list(results)
+    print("results")
+    print(results)
+
+    print("Thingys:")
+    for thingy in results:
+        print(thingy)   
+        print(type(thingy))     
+
+    print("flatting:-----------------------")
+    results = flatten_list_of_json_strings(results)
+
+    results = sort_by_question_id(results)
 
     return results
 
@@ -81,16 +92,35 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
     question_list = group_by_type(answer_body)
 
     listOfResponses = []
+    correctQuestionGroup = ''
 
     for questionGroup in question_list:
 
         if questionGroup[0]["type"] == "fill-gaps":
-
+            
+            questionGroup = update_question_list(questionGroup)
             message =  'You are a quiz answer-checking bot. Do not decide for yourself if you belive the student is correct/incorrect, use the provided JSON and look at is_correct. For each object, you must provide feedback. You should provide the response in JSON, in a list of objects (with fields question_id, is_correct, correct_answer, feedback).\nFor example:\n[{ "correct_answer": "(given in input)", "is_correct": (given in input, but covert to true or false), "question_id": (given in input), "feedback":"Some feedback about the answer"},{"correct_answer": (given in input), "is_correct": (given in input, but convert to true or false), "question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "(given in input)","is_correct": (given in input, but convert to true or false),"question_id": (given in input), "feedback":"Some feedback about the answer"}]'
 
         if questionGroup[0]["type"] == "multi-choice":
 
-             message =  'You are a quiz answer-checking bot. Check the following list of JSON objects to see if the student was correct or incorrect for each question. Do not decide for yourself wether or not you deem the answer correct; you must go by what the input says for that question. For each object, you must provide feedback. You should provide the response in JSON, in a list of objects (with fields question_id, is_correct, correct_answer, feedback).\nFor example:\n[{"correct_answer": "(given in input)","is_correct": (given in input, but put true or false),"question_id": (given in input), "feedback":"Some feedback about the answer"},{"correct_answer": (given in input),"is_correct": (given in input, but put true or false),"question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "(given in input)","is_correct": (given in input, but put true or false),"question_id": (given in input),"feedback":"Some feedback about the answer"}]'
+            questionGroup = update_question_list(questionGroup)
+            message =  'You are a quiz answer-checking bot. Check the following list of JSON objects. The student has got all the following questions wrong. For each object, you must provide helpful feedback for the student. You should provide the response in JSON, in a list of objects (with fields question_id, is_correct, correct_answer, feedback).\nFor example:\n[{"correct_answer": "(given in input)","is_correct": (given in input, but put true or false),"question_id": (given in input), "feedback":"Some feedback about the answer"},{"correct_answer": (given in input),"is_correct": (given in input, but put true or false),"question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "(given in input)","is_correct": (given in input, but put true or false),"question_id": (given in input),"feedback":"Some feedback about the answer"}]'
+            correctQuestionGroup = alterQuestionGroup(questionGroup,"correct")
+            questionGroup = alterQuestionGroup(questionGroup,"incorrect")
+
+
+            correctQuestionGroup = (alterCorrectMultis(correctQuestionGroup))
+
+            print("---correct qs---")
+            print(correctQuestionGroup)
+
+            print(type(alterCorrectMultis(correctQuestionGroup)))
+
+            correctQuestionGroup = json.dumps(alterCorrectMultis(correctQuestionGroup))[1:-1] + "," #maybe add a comma
+
+            #listOfResponses.append(json.dumps(alterCorrectMultis(correctQuestionGroup))[1:-1])
+            #print("---List of responses---")
+            #print(listOfResponses)
 
         if questionGroup[0]["type"] == "short-answer":    
 
@@ -113,7 +143,14 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
         #clean response (test if it's good/expected)
         #print(response.choices[0].message.content)
 
-        listOfResponses.append((response.choices[0].message.content)[1:-1])
+        print("--Incorrect qs--")
+        print(type((response.choices[0].message.content)[1:-1]))
+        print(((response.choices[0].message.content)[1:-1]))
+
+        combined = correctQuestionGroup + ((response.choices[0].message.content)[1:-1])
+
+        #listOfResponses.append((response.choices[0].message.content)[1:-1])
+        listOfResponses.append(combined)
 
 
     #logging.info("GPT-3 response: %s", response.choices[0].message.content)
@@ -122,16 +159,15 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
     #print(listOfResponses)    
 
     #combine all 3 lists inside listOfResponses
-    #listOfResponses = [s[1:-1] for s in listOfResponses if len(s) > 1]
-    listOfResponses = fix_combined_dicts(listOfResponses)
+
+    #listOfResponses = fix_combined_dicts(listOfResponses)
 
 
     #print("----List of Response2-----")
     #print(listOfResponses)
 
-    listOfResponses = sorted(listOfResponses, key=lambda x: x['question_id'])
+    #listOfResponses = sorted(listOfResponses, key=lambda x: x['question_id'])
 
-    #data_dicts = [json.loads(s) for s in listOfResponses]
 
     return listOfResponses
 
@@ -149,11 +185,55 @@ def fix_combined_dicts(lst):
     # Convert each string back to a dictionary
     return [json.loads(s) for s in separated_strs]
 
-def flatten_and_sort_list(nested_list):
+def flatten_list_of_json_strings(nested_list):
     flattened_list = []
+
+    # Iterating over each sublist
     for sublist in nested_list:
-        for item in sublist:
-            flattened_list.append(item)
-    # Sorting the flattened list by 'question_id'
-    sorted_list = sorted(flattened_list, key=lambda x: x['question_id'])
+        for json_string in sublist:
+            # Splitting the string by '},' to handle multiple JSON objects in a single string
+            split_strings = json_string.split('},')
+            for index, s in enumerate(split_strings):
+                # Adding the missing '}' back except for the last item
+                if index != len(split_strings) - 1:
+                    s += '}'
+                # Converting the string to a dictionary and appending to the list
+                print(s)
+                dict_item = json.loads(s)
+                flattened_list.append(dict_item)
+
+    return flattened_list
+
+def alterQuestionGroup(question_list, correct_status):
+    # Filtering the list based on the 'is_correct' attribute matching the given string
+    filtered_list = [question for question in question_list if str(question.get('is_correct')).lower() == correct_status.lower()]
+    return filtered_list
+
+def update_question_list(question_list):
+    for question in question_list:
+        if question["user_answer"] == question["correct_answer"]:
+            question["is_correct"] = "correct"
+        else:
+            question["is_correct"] = "incorrect"
+    return question_list
+
+def alterCorrectMultis(question_list):
+    altered_list = []
+    for question in question_list:
+        if question["is_correct"] == "correct" or question["is_correct"] == True:
+            myMsg = True
+        else:
+            myMsg = False    
+        new_question = {
+            'correct_answer': question['correct_answer'],
+            'is_correct': myMsg,
+            'question_id': question['question_id'],
+            'feedback': ''
+        }
+        altered_list.append(new_question)
+    return altered_list
+
+def sort_by_question_id(question_list):
+    # Sorting the list by 'question_id'
+    sorted_list = sorted(question_list, key=lambda x: x['question_id'])
     return sorted_list
