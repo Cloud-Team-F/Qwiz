@@ -369,7 +369,7 @@ def messageFillBlanks2(text):
         messages=[
             {
                 "role": "system",
-                "content": "Using the following fact, create a list of four words suitable for a fill-in-the-blank question. One of the 4 words you pick must come directly from the fact. Format your answer as a single JSON object like this: {\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}",
+                "content": "Using the following fact, create a list of four words suitable for a fill-in-the-blank question. One of the 4 words you pick must come directly from the fact (letter for letter). Format your answer as a single JSON object like this: {\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}",
             },
             {"role": "user", "content": "The fact: " + text},
         ],
