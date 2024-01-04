@@ -376,8 +376,3 @@ def messageFillBlanks2(text):
     )
 
     return completion
-
-if __name__ == "__main__":
-    count=int(input("enter count"))
-    content = input("enter content")
-    print(create_quiz(count,["multi-choice","fill-gaps","short-answer"],"",content,[]))
