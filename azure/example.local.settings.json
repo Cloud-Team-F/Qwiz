@@ -1,0 +1,17 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "FUNCTIONS_WORKER_RUNTIME": "python",
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "AzureCosmosDBConnectionString": "your-cosmosdb-connection-string",
+        "Database": "your-cosmosdb-database-name",
+        "UserContainer": "your-cosmosdb-user-container-name",
+        "QuizzesContainer": "your-cosmosdb-quizzes-container-name",
+        "AzureStorageConnectionString": "your-azure-storage-connection-string",
+        "DocumentBlobContainer": "your-azure-storage-blob-container-name",
+        "DocumentQueue": "your-azure-storage-queue-name",
+        "PubSubConnectionString": "your-azure-service-bus-connection-string",
+        "OPENAI_API_KEY": "your-openai-api-key",
+        "SPEECH_SERVICE_KEY": "your-azure-speech-service-key"
+    }
+}
