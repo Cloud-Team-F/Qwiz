@@ -1,7 +1,7 @@
 <div class="navbar">
     <div class="navbar-left" v-if="(currentState == 'VIEW-QUIZ' || currentState == 'START-QUIZ' || currentState == 'QUIZ-RESULTS') && !loadingQuizSubmission">
         <button @click="backToHome()" class="navbar-btn" v-if="user">
-            <img class="icon-24" src="/static/home.png" alt="home" v-if="currentState == 'VIEW-QUIZ' || currentState == 'QUIZ-RESULTS'">
+            <img class="icon-24" src="/static/Home.png" alt="home" v-if="currentState == 'VIEW-QUIZ' || currentState == 'QUIZ-RESULTS'">
             <img class="icon-24" src="/static/close_window.png" alt="close" v-if="currentState == 'START-QUIZ'">
 
             <span class="logout-btn-text home-btn-text" v-if="currentState == 'VIEW-QUIZ' || currentState == 'QUIZ-RESULTS'">Return to home</span>
@@ -9,7 +9,7 @@
         </button>
 
         <button @click="retryQuiz()" class="navbar-btn" v-if="user && currentState == 'QUIZ-RESULTS'">
-            <img class="icon-24" src="/static/Try again.png" alt="try-again">
+            <img class="icon-24" src="/static/Try Again.png" alt="try-again">
 
             <span class="logout-btn-text">Try again</span>
         </button>

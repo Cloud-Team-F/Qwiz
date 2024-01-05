@@ -1,7 +1,7 @@
 <div class="alert-container">
     <div class="error-popup-container" v-for="(item, index) in alertMessages.slice(-5)" :key="index">
         <div>
-            <img src="/static/ok.png" alt="Success Icon" class="error-icon" v-if="item.type === 'success'">
+            <img src="/static/Ok.png" alt="Success Icon" class="error-icon" v-if="item.type === 'success'">
             <img src="/static/Error icon.png" alt="Error Icon" class="error-icon" v-if="item.type === 'error'">
             <span class="error-message">{{ item.message }}</span>
         </div>

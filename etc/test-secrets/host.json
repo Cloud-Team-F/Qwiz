@@ -1,0 +1,8 @@
+{
+    "masterKey": {
+        "name": "master",
+        "value": "test",
+        "encrypted": false
+    },
+    "functionKeys": []
+}

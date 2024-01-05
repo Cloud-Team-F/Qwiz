@@ -10,14 +10,15 @@ function fetchHelper(
     responseType = "json"
 ) {
     const queryString = new URLSearchParams(queryParams).toString();
+    const functionToken = env.AZURE_FUNCTION_TOKEN;
     const url =
         env.AZURE_FUNCTION_URL +
         endpoint +
-        "?code=" +
-        env.AZURE_FUNCTION_TOKEN +
+        "?" +
+        (functionToken ? `code=${functionToken}` : "") +
         (queryString ? `&${queryString}` : "");
 
-    console.log('Request to:', url);
+    console.log("Request to:", url);
     return axios({
         method: method,
         url: url,
@@ -84,12 +85,5 @@ export function quizAnswer(quiz_id, user_id, answers) {
 }
 
 export function textToSpeech(text) {
-    return fetchHelper(
-        "/convert_to_speech",
-        "POST",
-        { text },
-        {},
-        {},
-        "arraybuffer"
-    );
+    return fetchHelper("/convert_to_speech", "POST", { text }, {}, {}, "arraybuffer");
 }
