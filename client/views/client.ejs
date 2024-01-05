@@ -16,7 +16,8 @@
             <%- include('components/alert-popup'); -%>
 
             <!-- Login page -->
-            <div v-if="!user"><%- include('stages/login'); -%></div>
+            <div class="login-background"></div> <!-- Background first in the HTML structure -->
+            <div v-if="!user" class="login-content"><%- include('stages/login'); -%></div>
 
             <!-- Main page -->
             <div v-else>

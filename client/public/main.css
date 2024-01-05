@@ -31,6 +31,30 @@ body {
     color: white;
 }
 
+.login-background {
+    background-image: url('/static/Curved Dotted Line.svg'), url('/static/Starburst-white.svg'), url('/static/Starburst-purple.svg');
+    background-repeat: no-repeat, no-repeat;
+    background-position: 50% 40%, 85% 50%, 15% 60%; /* Adjust these positions as needed */
+    background-size: auto 35vh, 20vh 20vh, 10vh 10vh; /* Adjust these sizes as needed */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    width: 100%;
+}
+
+.login-content {
+    position: relative; /* This gives the login content a stacking context */
+    z-index: 1; /* Higher than .login-background */
+    /* ... other styles for login content ... */
+}
+
+.transparent-bg {
+    background-color: transparent;
+}
+
 .overflow-auto {
     background: #33014B 0% 0% no-repeat padding-box; 
 }
@@ -1278,6 +1302,11 @@ body {
 
 /* Smaller screen (e.g., 14-inch laptop) adjustments */
 @media screen and (min-width: 900px) and (max-width: 1440px) {
+    .login-background {
+        background-position: 50% 85%, 85% 80%, 15% 90%; /* Adjust these positions as needed */
+        background-size: auto 45vh, 25vh 25vh, 15vh 15vh; /* Adjust these sizes as needed */
+    }
+
     .navbar {
         padding: 1rem 2.5rem;
         margin-bottom: 1rem;
