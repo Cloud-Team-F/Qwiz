@@ -92,14 +92,27 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
     question_list = group_by_type(answer_body)
 
     listOfResponses = []
-    correctQuestionGroup = ''
+    
 
     for questionGroup in question_list:
+
+        correctQuestionGroup = ''
 
         if questionGroup[0]["type"] == "fill-gaps":
             
             questionGroup = update_question_list(questionGroup)
             message =  'You are a quiz answer-checking bot. Do not decide for yourself if you belive the student is correct/incorrect, use the provided JSON and look at is_correct. For each object, you must provide feedback. You should provide the response in JSON, in a list of objects (with fields question_id, is_correct, correct_answer, feedback).\nFor example:\n[{ "correct_answer": "(given in input)", "is_correct": (given in input, but covert to true or false), "question_id": (given in input), "feedback":"Some feedback about the answer"},{"correct_answer": (given in input), "is_correct": (given in input, but convert to true or false), "question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "(given in input)","is_correct": (given in input, but convert to true or false),"question_id": (given in input), "feedback":"Some feedback about the answer"}]'
+            correctQuestionGroup = alterQuestionGroup(questionGroup,"correct")
+            questionGroup = alterQuestionGroup(questionGroup,"incorrect")
+
+            correctQuestionGroup = (alterCorrectMultis(correctQuestionGroup))
+
+            print("---correct qs---")
+            print(correctQuestionGroup)
+
+            print(type(alterCorrectMultis(correctQuestionGroup)))
+
+            correctQuestionGroup = json.dumps(alterCorrectMultis(correctQuestionGroup))[1:-1] + "," #maybe add a comma
 
         if questionGroup[0]["type"] == "multi-choice":
 
@@ -148,6 +161,9 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
         print("--Incorrect qs--")
         print(type((response.choices[0].message.content)[1:-1]))
         print(((response.choices[0].message.content)[1:-1]))
+
+        print(type(correctQuestionGroup))
+        print(correctQuestionGroup)
 
         combined = correctQuestionGroup + ((response.choices[0].message.content)[1:-1])
 
