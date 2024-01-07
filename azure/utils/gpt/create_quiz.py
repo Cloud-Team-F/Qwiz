@@ -48,13 +48,17 @@ def create_quiz(
     #Convert to a list of dicts. (rn results is a [[dicts]])
     #then randomise the order of the dicts within the list
     #then add ids them
+    
+    # convert "results" from a [[dicts]] to a [dict]
+    results = [question for quiz in results for question in quiz.questions]
+    
+    logging.info(f"Creating quiz - results: {results}")
 
-    '''# Randomize the order of the quiz questions
+    # Randomize the order of the quiz questions
     random.shuffle(results)
 
     # Add Ids to the questions
     results = add_sequential_quiz_id(results)
-    '''
 
     return results
 
