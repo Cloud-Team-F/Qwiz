@@ -2,6 +2,7 @@ import logging
 import random
 import re
 import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from openai import OpenAI
 
@@ -12,6 +13,60 @@ def create_quiz(
     topic: str = "",
     text_content: str = "",
     file_contents: list[str] = [],
+) -> list[dict]:
+
+    questionTypesCount = generateTypesCount(num_questions, question_types)
+    
+    ''' # Grouping the dictionaries by 'type'
+    grouped_by_type = {}
+    for item in myLists:
+        item_type = item['type']
+        if item_type not in grouped_by_type:
+            grouped_by_type[item_type] = []
+        grouped_by_type[item_type].append(item)
+
+    # Converting the grouped dictionary to a list of lists
+    sublists = list(grouped_by_type.values())'''
+    
+
+    func = create_quiz_2
+    results = []
+    with ThreadPoolExecutor() as executor:
+        # Use a future for each sublist
+        #futures = {executor.submit(func, sublist): sublist for sublist in sublists}
+        futures = {executor.submit(func, key, value, question_types, topic, text_content, file_contents): (key, value) 
+           for key, value in questionTypesCount.items()}
+
+
+
+        for future in as_completed(futures):
+            # Get the result of the completed future
+            result = future.result()
+            results.append(result)
+    
+   
+    #Convert to a list of dicts. (rn results is a [[dicts]])
+    #then randomise the order of the dicts within the list
+    #then add ids them
+
+    '''# Randomize the order of the quiz questions
+    random.shuffle(results)
+
+    # Add Ids to the questions
+    results = add_sequential_quiz_id(results)
+    '''
+
+    return results
+
+
+def create_quiz_2(
+    key: str,
+    num_questions: int,
+    question_types: list[str],
+    topic: str = "",
+    text_content: str = "",
+    file_contents: list[str] = [],
+    
 ) -> list[dict]:
     """
     Create a quiz from the given content using gpt.
@@ -47,9 +102,9 @@ def create_quiz(
 
         # Create the quiz for each question type
         # Multiple-choice questions
-        if "multi-choice" in questionTypesCount:
+        if key == "multi-choice":
             completionMulti = messageMultiChoice(
-                questionTypesCount["multi-choice"], text_content
+                num_questions, text_content
             )
 
             print("completion Multi 1")
@@ -75,8 +130,8 @@ def create_quiz(
             logging.info(f"Creating quiz - completionMulti: {completionMulti}")
 
         # Fill in the blanks questions
-        if "fill-gaps" in questionTypesCount:
-            completionBlanks = messageFillBlanks(questionTypesCount["fill-gaps"], text_content)
+        if key == "fill-gaps":
+            completionBlanks = messageFillBlanks(num_questions, text_content)
             quizFill = parse_fill_blanks(completionBlanks.choices[0].message.content)
 
             questions2fingers = []
@@ -100,9 +155,9 @@ def create_quiz(
             logging.info(f"Creating quiz - completionBlanks: {completionBlanks}")
 
         # Short answer questions
-        if "short-answer" in questionTypesCount:
+        if key == "short-answer":
             completionShort = messageShortAnswer(
-                questionTypesCount["short-answer"], text_content
+                num_questions, text_content
             )
 
             completionShort = completionShort.choices[0].message.content
@@ -117,12 +172,7 @@ def create_quiz(
         # Combine the quizzes into one
         finalQuiz = combine_quizzes(quizQuestions)
 
-        # Randomize the order of the quiz questions
-        random.shuffle(finalQuiz.questions)
-
-        # Add Ids to the questions
-        finalQuiz = add_sequential_quiz_id(finalQuiz.questions)
-        logging.info(f"Creating quiz - finalQuiz: {finalQuiz}")
+        
 
         # Return the final quiz list[dict]
         logging.info(f"Creating quiz - finalQuiz: {finalQuiz}")
@@ -179,12 +229,8 @@ def insertBlankOnPhraseUsed(phraseUsed, phrase):
     # Calculate the number of underscores needed
     underscores = '_' * len(phrase)
 
-    # Define the regular expression pattern for a whole word match, with word boundaries
-    pattern = r'\b' + re.escape(phrase) + r'\b'
-
     # Replace the first instance of the phrase with underscores, case-insensitive
-    return re.sub(pattern, underscores, phraseUsed, count=1, flags=re.IGNORECASE)
-
+    return re.sub(re.escape(phrase), underscores, phraseUsed, count=1, flags=re.IGNORECASE)
 
 
 def clean_json_string(json_string):
@@ -369,7 +415,7 @@ def messageFillBlanks2(text):
         messages=[
             {
                 "role": "system",
-                "content": "Using the following fact, create a list of four words suitable for a fill-in-the-blank question. One of the 4 words you pick must come directly from the fact (letter for letter). Format your answer as a single JSON object like this: {\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}",
+                "content": "Using the following fact, create a list of four words suitable for a fill-in-the-blank question. One of the 4 words you pick must come directly from the fact. Format your answer as a single JSON object like this: {\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}",
             },
             {"role": "user", "content": "The fact: " + text},
         ],
