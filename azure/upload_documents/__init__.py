@@ -92,9 +92,7 @@ def main(req: HttpRequest) -> HttpResponse:
     if len(quiz_name) > 50:
         return create_error_response("Quiz name too long (max 50 characters)", 400)
     if content and not (400 <= len(content) <= 2000):
-        return create_error_response(
-            "Content must be between 400 and 2000 characters", 400
-        )
+        return create_error_response("Content must be between 400 and 2000 characters", 400)
     if len(topic) > 100:
         return create_error_response("Topic too long (max 100 characters)", 400)
     if not num_questions.isdigit():
@@ -102,9 +100,7 @@ def main(req: HttpRequest) -> HttpResponse:
 
     num_questions = int(num_questions)
     if num_questions < 3 or num_questions > 30:
-        return create_error_response(
-            "Number of questions must be between 3 and 30", 400
-        )
+        return create_error_response("Number of questions must be between 3 and 30", 400)
     if not (set(question_types) <= set(["multi-choice", "fill-gaps", "short-answer"])):
         return create_error_response(
             "Invalid question types. Must be one of: 'multi-choice', 'fill-gaps', 'short-answer'",
@@ -126,9 +122,7 @@ def main(req: HttpRequest) -> HttpResponse:
             if not file:
                 return create_error_response("No files uploaded", 400)
             if file.mimetype not in supported_filetypes:
-                return create_error_response(
-                    f"Unsupported file type: {file.mimetype}", 415
-                )
+                return create_error_response(f"Unsupported file type: {file.mimetype}", 415)
 
             # Ensure file binary is correct (magic number check)
             try:
@@ -145,9 +139,7 @@ def main(req: HttpRequest) -> HttpResponse:
             # Ensure file size is not too large
             file.seek(0)
             if len(file.read()) > max_file_size:
-                return create_error_response(
-                    f"File '{file.filename}' is too large (max 30MB)", 400
-                )
+                return create_error_response(f"File '{file.filename}' is too large (max 30MB)", 400)
 
             # Add file to file_contents
             file.seek(0)

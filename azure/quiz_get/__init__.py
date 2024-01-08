@@ -31,9 +31,7 @@ def main(req: HttpRequest) -> HttpResponse:
 
     try:
         # Get user from database
-        user = UserContainerProxy.read_item(
-            item=quiz["user_id"], partition_key=quiz["user_id"]
-        )
+        user = UserContainerProxy.read_item(item=quiz["user_id"], partition_key=quiz["user_id"])
     except CosmosHttpResponseError:
         # Owner not found
         user = "Unknown"
@@ -48,9 +46,7 @@ def main(req: HttpRequest) -> HttpResponse:
             )
         )
         shared_with_ids = map(lambda x: x["id"], shared_with_users)
-        shared_with_usernames = map(
-            lambda x: x.get("username", "Unknown"), shared_with_users
-        )
+        shared_with_usernames = map(lambda x: x.get("username", "Unknown"), shared_with_users)
 
         # Check if user_id is in shared_with_users id or user_id is owner
         if (user_id not in shared_with_ids) and user_id != quiz["user_id"]:
@@ -58,7 +54,11 @@ def main(req: HttpRequest) -> HttpResponse:
 
         # Get top sorted scores
         seen_user_ids = set()
-        sorted_scores = [score for score in sorted(quiz.get("scores", []), key=lambda s: s["score"], reverse=True) if not (score["user_id"] in seen_user_ids or seen_user_ids.add(score["user_id"]))]
+        sorted_scores = [
+            score
+            for score in sorted(quiz.get("scores", []), key=lambda s: s["score"], reverse=True)
+            if not (score["user_id"] in seen_user_ids or seen_user_ids.add(score["user_id"]))
+        ]
 
         # if len(sorted_scores) > 5:
         #     sorted_scores = sorted_scores[:5]
@@ -74,9 +74,9 @@ def main(req: HttpRequest) -> HttpResponse:
             {
                 "username": usernames.get(score["user_id"], "Unknown"),
                 "score": score["score"],
-                "date": datetime.strptime(
-                    score["date"], "%Y-%m-%dT%H:%M:%S.%f"
-                ).strftime("%H:%M %d/%m/%Y"),
+                "date": datetime.strptime(score["date"], "%Y-%m-%dT%H:%M:%S.%f").strftime(
+                    "%H:%M %d/%m/%Y"
+                ),  # convert date to string
             }
             for score in sorted_scores
         ]

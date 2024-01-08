@@ -2,9 +2,7 @@ import os
 
 from azure.cosmos import ContainerProxy, CosmosClient
 
-MyCosmos = CosmosClient.from_connection_string(
-    os.environ["AzureCosmosDBConnectionString"]
-)
+MyCosmos = CosmosClient.from_connection_string(os.environ["AzureCosmosDBConnectionString"])
 MainDBProxy = MyCosmos.get_database_client(os.environ["Database"])
 
 

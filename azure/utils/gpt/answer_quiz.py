@@ -144,9 +144,7 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
             combined = correctQuestionGroup[:-1]
         else:
             logging.info("both q types exist")
-            combined = correctQuestionGroup + (
-                (response.choices[0].message.content)[1:-1]
-            )
+            combined = correctQuestionGroup + ((response.choices[0].message.content)[1:-1])
 
         listOfResponses.append(combined)
 

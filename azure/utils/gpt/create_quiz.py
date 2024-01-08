@@ -47,9 +47,10 @@ def create_quiz(
     with ThreadPoolExecutor() as executor:
         # Use a future for each sublist
         futures = {
-            executor.submit(
-                func, key, value, question_types, topic, text_content, file_contents
-            ): (key, value)
+            executor.submit(func, key, value, question_types, topic, text_content, file_contents): (
+                key,
+                value,
+            )
             for key, value in questionTypesCount.items()
         }
 
@@ -192,9 +193,7 @@ def insertBlankOnPhraseUsed(phraseUsed, phrase):
     underscores = "_" * len(phrase)
 
     # Replace the first instance of the phrase with underscores, case-insensitive
-    return re.sub(
-        re.escape(phrase), underscores, phraseUsed, count=1, flags=re.IGNORECASE
-    )
+    return re.sub(re.escape(phrase), underscores, phraseUsed, count=1, flags=re.IGNORECASE)
 
 
 def clean_json_string(json_string):

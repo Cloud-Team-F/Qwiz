@@ -49,9 +49,7 @@ def main(req: HttpRequest) -> HttpResponse:
         logging.info("Quizzes: %s", quizzes)
 
         if len(quizzes) == 0:
-            return create_error_response(
-                f"Quiz with invite code {invite_code} not found.", 404
-            )
+            return create_error_response(f"Quiz with invite code {invite_code} not found.", 404)
 
         # Get invited quiz
         quiz = quizzes[0]

@@ -22,9 +22,7 @@ class User:
         self.password = hashed_pass.decode("utf-8")
 
     def check_password(self, inputPassword):
-        return bcrypt.checkpw(
-            inputPassword.encode("utf-8"), self.password.encode("utf-8")
-        )
+        return bcrypt.checkpw(inputPassword.encode("utf-8"), self.password.encode("utf-8"))
 
     @staticmethod
     def is_valid(username, password):
@@ -36,9 +34,7 @@ class User:
 
         # check username only has alphanumeric characters
         if not username.isalnum():
-            raise InvalidField(
-                "Username must only contain alphabetic and numeric characters"
-            )
+            raise InvalidField("Username must only contain alphabetic and numeric characters")
 
         # check password has no spaces
         if " " in password:

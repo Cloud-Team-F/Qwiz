@@ -14,9 +14,7 @@ def main(req: HttpRequest) -> HttpResponse:
         text = body.get("text")
 
         if not text:
-            return create_error_response(
-                "Please pass text to synthesize in the request body", 400
-            )
+            return create_error_response("Please pass text to synthesize in the request body", 400)
 
         # Initialize the speech synthesizer with Azure credentials
         speech_config = speechsdk.SpeechConfig(
@@ -35,17 +33,17 @@ def main(req: HttpRequest) -> HttpResponse:
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             # Convert the result to a byte array
             audio_data = result.audio_data
-            return HttpResponse(
-                audio_data, status_code=200, headers={"Content-Type": "audio/wav"}
-            )
+            return HttpResponse(audio_data, status_code=200, headers={"Content-Type": "audio/wav"})
+
         elif result.reason == speechsdk.ResultReason.Canceled:
             cancellation_details = result.cancellation_details
             error_message = f"Speech synthesis canceled: {cancellation_details.reason}"
+
+            # Check if there is a cancellation reason
             if cancellation_details.reason == speechsdk.CancellationReason.Error:
                 if cancellation_details.error_details:
-                    error_message += (
-                        f" Error details: {cancellation_details.error_details}"
-                    )
+                    error_message += f" Error details: {cancellation_details.error_details}"
+
             return create_error_response(error_message, 500)
 
     except ValueError as e:

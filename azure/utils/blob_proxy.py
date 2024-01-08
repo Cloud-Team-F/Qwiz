@@ -28,9 +28,7 @@ def get_blob_client(filetype: str = None, blob_name: str = None) -> BlobClient:
     )
 
 
-def get_async_blob_client(
-    filetype: str = None, blob_name: str = None
-) -> AsyncBlobClient:
+def get_async_blob_client(filetype: str = None, blob_name: str = None) -> AsyncBlobClient:
     """
     Returns an instance of AsyncBlobClient for accessing Azure Blob Storage.
 

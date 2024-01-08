@@ -40,9 +40,7 @@ def convert_to_text(file_url: str, mime: str) -> str:
                 return ""
 
         # Create temporary file to store the file
-        with tempfile.NamedTemporaryFile(
-            suffix=f".{file_extension}", delete=False
-        ) as temp_file:
+        with tempfile.NamedTemporaryFile(suffix=f".{file_extension}", delete=False) as temp_file:
             # Write file to temporary file
             temp_file.write(file)
             temp_file.seek(0)
@@ -88,9 +86,7 @@ def text_pdf(file):
 
 def clean_text(raw_text):
     # Remove special characters (except from punctuation), whitespaces, line breaks
-    cleaned_text = re.sub(
-        r"[^a-zA-Z0-9\s" + re.escape(string.punctuation) + "]", "", raw_text
-    )
+    cleaned_text = re.sub(r"[^a-zA-Z0-9\s" + re.escape(string.punctuation) + "]", "", raw_text)
 
     # Remove conseuctive whitespaces
     cleaned_text = re.sub(r"\s+", " ", cleaned_text)
