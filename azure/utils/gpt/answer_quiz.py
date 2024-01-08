@@ -74,7 +74,6 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
 
         # Check what type of question it is
         if questionGroup[0]["type"] == "fill-gaps":
-            temp = "Fill"
             questionGroup = update_question_list(questionGroup)
             message = 'You are a quiz answer-checking bot. Do not decide for yourself if you belive the student is correct/incorrect, use the provided JSON and look at is_correct. For each object, you must provide feedback. You should provide the response in JSON, in a list of objects (with fields question_id, is_correct, correct_answer, feedback).\nFor example:\n[{ "correct_answer": "(given in input)", "is_correct": (given in input, but covert to true or false), "question_id": (given in input), "feedback":"Some feedback about the answer"},{"correct_answer": (given in input), "is_correct": (given in input, but convert to true or false), "question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "(given in input)","is_correct": (given in input, but convert to true or false),"question_id": (given in input), "feedback":"Some feedback about the answer"}]'
             correctQuestionGroup = alterQuestionGroup(questionGroup, "correct")
@@ -92,7 +91,6 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
             )  # maybe add a comma
 
         elif questionGroup[0]["type"] == "multi-choice":
-            temp = "multi"
             questionGroup = update_question_list(questionGroup)
             message = 'You are a quiz answer-checking bot. Check the following list of JSON objects. The student has got all the following questions wrong. For each object, you must provide helpful feedback for the student. You should provide the response in JSON, in a list of objects (with fields question_id, is_correct, correct_answer, feedback).\nFor example:\n[{"correct_answer": "(given in input)","is_correct": (given in input, but put true or false),"question_id": (given in input), "feedback":"Some feedback about the answer"},{"correct_answer": (given in input),"is_correct": (given in input, but put true or false),"question_id": (given in input),"feedback":"Some feedback about the answer"},{"correct_answer": "(given in input)","is_correct": (given in input, but put true or false),"question_id": (given in input),"feedback":"Some feedback about the answer"}]'
             correctQuestionGroup = alterQuestionGroup(questionGroup, "correct")
@@ -110,7 +108,6 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
             )  # maybe add a comma
 
         elif questionGroup[0]["type"] == "short-answer":
-            temp = "short"
             message = "You are a quiz answer-checking bot tasked with evaluating short-answer questions. Your role is to assess the student's responses and decide whether they are correct. Focus on the understanding demonstrated in each response. If a student's answer shows a good understanding of the topic, it should be marked as correct. However, if a part of the answer is distinctly incorrect or demonstrates a significant misunderstanding, that portion should be marked as incorrect. Be generous yet discerning in your assessment, appreciating the student's grasp of the subject matter while also identifying inaccuracies or misconceptions. Feedback is crucial for answers that are incorrect or show significant misunderstandings. Format your response as a list of comma-separated JSON objects, each representing an individual question's evaluation, with fields for question_id, is_correct, correct_answer, and feedback (only for the parts of answers that are incorrect or demonstrate significant misunderstanding)."
 
         if questionGroup != []:
@@ -131,7 +128,6 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
         # Debugging:
         # logging.info(type(correctQuestionGroup))
         logging.info(correctQuestionGroup)
-        logging.info("Temp message: " + temp)
 
         # Check if there are no correct questions or no incorrect questions
         if correctQuestionGroup == "," and questionGroup == []:
