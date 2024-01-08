@@ -19,7 +19,7 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(cookieParser("elkwgkgnelkrh")); //todo
+app.use(cookieParser(env.COOKIE_SECRET));
 
 // Template engine
 app.set("view engine", "ejs");
