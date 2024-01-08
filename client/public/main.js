@@ -1,22 +1,10 @@
 let ws = null;
-// let this.currentAudio = null;
-// let this.currentAudioQuestion = null;
-// let this.cachedAudio = [];
-// let this.isAudioPlaying = false;
 
 const supportedFileTypes = [
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 ];
-
-// STATES = [
-//     'LOGIN',
-//     'MENU',
-//     'CREATE-QUIZ-1',
-//     'CREATE-QUIZ-2',
-//     'VIEW-QUIZ'
-// ]
 
 var app = new Vue({
     el: "#app",
@@ -32,8 +20,6 @@ var app = new Vue({
         cachedAudio: [],
         isAudioPlaying: false,
         isPlayingAudioClicked: false,
-
-        
 
         inputs: {
             username: "",
@@ -56,7 +42,7 @@ var app = new Vue({
         ownQuizzes: [],
         sharedQuizzes: [],
         currentQuiz: null,
-        selectedType: null
+        selectedType: null,
     },
     mounted: function () {
         this.loadingScreen = true;
@@ -72,8 +58,9 @@ var app = new Vue({
     },
     methods: {
         sortQuizzes(quizzes) {
+            // Sort quizzes by month
             let quizzesByMonth = {};
-            quizzes.forEach(quiz => {
+            quizzes.forEach((quiz) => {
                 let monthYear = this.formatDate(quiz.created_at);
                 if (!quizzesByMonth[monthYear]) {
                     quizzesByMonth[monthYear] = [];
@@ -82,102 +69,92 @@ var app = new Vue({
             });
             return Object.entries(quizzesByMonth)
                 .sort((a, b) => new Date(b[0]) - new Date(a[0]))
-                .map(([monthYear, quizzes]) => ({ monthYear, quizzes: quizzes.sort((a, b) => new Date(b.created_at || new Date()) - new Date(a.created_at || new Date())) }));
+                .map(([monthYear, quizzes]) => ({
+                    monthYear,
+                    quizzes: quizzes.sort(
+                        (a, b) =>
+                            new Date(b.created_at || new Date()) -
+                            new Date(a.created_at || new Date())
+                    ),
+                }));
         },
         formatDate(dateStr) {
             let date = new Date(dateStr);
-            return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+            return date.toLocaleString("default", { month: "long", year: "numeric" });
         },
         speakQuestion(question) {
             console.log("speakQuestion called with", question);
             // The URL of backend endpoint that handles speech synthesis
             const speechSynthesisUrl = "/api/tts/convertToSpeech";
 
-
             if (this.isPlayingAudioClicked) {
-                console.log('Audio is already being processed');
+                console.log("Audio is already being processed");
                 return;
-                
             }
             this.isPlayingAudioClicked = true;
-
 
             if (this.currentAudio) {
                 if (this.currentAudioQuestion.question_id === question.question_id) {
                     if (this.isAudioPlaying) {
-                        console.log('Audio Paused!');
+                        console.log("Audio Paused!");
                         this.currentAudio.pause();
                         this.isAudioPlaying = false;
-                        this.isPlayingAudioClicked=false;
-                            
-                    }else{
-                        console.log('Audio resumed to play again');
-                        this.isPlayingAudioClicked = true
+                        this.isPlayingAudioClicked = false;
+                    } else {
+                        console.log("Audio resumed to play again");
+                        this.isPlayingAudioClicked = true;
                         this.playAudio();
                     }
-                    
-                    
-                } else{
-                    this.stopAudio()
-                    this.isPlayingAudioClicked=true
-                    this.loadAudio(question,speechSynthesisUrl)
-                    
-                
+                } else {
+                    this.stopAudio();
+                    this.isPlayingAudioClicked = true;
+                    this.loadAudio(question, speechSynthesisUrl);
                 }
-
-            }else{
-                this.isPlayingAudioClicked=true    
+            } else {
+                this.isPlayingAudioClicked = true;
                 this.loadAudio(question, speechSynthesisUrl);
-
             }
-               
         },
         playAudio() {
             this.currentAudio
                 .play()
                 .then(() => {
-                    this.isAudioPlaying = true
+                    this.isAudioPlaying = true;
                     console.log("Audio started successfully");
                 })
                 .catch((playbackError) => {
-                    console.error(
-                        "Error during playing the playback",
-                        playbackError
-                    );
-                }).finally(() => {
-                    this.isPlayingAudioClicked=false;
+                    console.error("Error during playing the playback", playbackError);
+                })
+                .finally(() => {
+                    this.isPlayingAudioClicked = false;
                 });
 
             this.currentAudio.onended = () => {
                 console.log("Audio finished playing");
-                this.isAudioPlaying = false
-                this.isPlayingAudioClicked=false;
+                this.isAudioPlaying = false;
+                this.isPlayingAudioClicked = false;
             };
-
         },
         stopAudio() {
             if (this.currentAudio) {
-              this.currentAudio.pause();
-              this.currentAudio.currentTime = 0;
-              this.isAudioPlaying = false;
-              console.log('audio stopped successfully');
-              this.currentAudio=null;
-              this.currentAudioQuestion=null;
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+                this.isAudioPlaying = false;
+                console.log("audio stopped successfully");
+                this.currentAudio = null;
+                this.currentAudioQuestion = null;
             }
         },
 
-        loadAudio(question, speechSynthesisUrl){
-             // Check cache for audio
-             let cachedAudioItem = this.cachedAudio.find(
-                (item) => item.question === question
-            );
+        loadAudio(question, speechSynthesisUrl) {
+            // Check cache for audio
+            let cachedAudioItem = this.cachedAudio.find((item) => item.question === question);
             if (cachedAudioItem) {
                 console.log("Found cached audio for question", question);
                 this.currentAudio = cachedAudioItem.audio;
                 this.currentAudioQuestion = question;
                 this.playAudio();
-            }else{
-
+            } else {
                 let fullTextToSpeak = `Question ${question.question_id}: `;
 
                 // Extract the text that needs to be spoken
@@ -196,8 +173,7 @@ var app = new Vue({
                         .join(". ");
                     fullTextToSpeak = `${questionText}. ${optionsText}`;
                 }
-    
-               
+
                 // Send the text to the backend for speech synthesis
                 axios
                     .post(
@@ -207,9 +183,7 @@ var app = new Vue({
                     )
                     .then((response) => {
                         // Assuming the response contains the audio data in a binary format
-                        console.log(
-                            "Received res with data size: " + response.data.size
-                        );
+                        console.log("Received res with data size: " + response.data.size);
                         const audioBlob = new Blob([response.data], {
                             type: "audio/wav",
                         });
@@ -222,24 +196,15 @@ var app = new Vue({
                             question: question,
                             audio: this.currentAudio,
                         });
-    
+
                         this.playAudio(this.currentAudio);
                     })
                     .catch((error) => {
                         console.error("Error synthesizing  the speech:", error);
                         this.isAudioPlaying = false;
                     });
-
-
-
             }
-
-
-
         },
-
-        
-        
 
         advance() {},
         toggleMode(newMode) {
@@ -274,8 +239,8 @@ var app = new Vue({
             }
 
             this.currentQuiz.answers = answers;
-            
-            this.currentState = 'START-QUIZ';
+
+            this.currentState = "START-QUIZ";
         },
         copyInviteCode(inviteCode) {
             navigator.clipboard.writeText(inviteCode);
@@ -325,7 +290,6 @@ var app = new Vue({
             );
         },
         logout() {
-
             this.stopAudio();
             axios;
             sendRequest(
@@ -378,10 +342,7 @@ var app = new Vue({
             }, 3000);
         },
         uploadFile(event) {
-            console.log(
-                "Uploading file, number of current files: ",
-                this.filesUploaded.length
-            );
+            console.log("Uploading file, number of current files: ", this.filesUploaded.length);
             const file = event.target.files[0];
 
             if (file.type && !supportedFileTypes.includes(file.type)) {
@@ -403,13 +364,8 @@ var app = new Vue({
                 this.fail("Prompt text or a file upload is required!");
             } else if (quizName.length > 50) {
                 this.fail("Quiz name must be less than 50 characters!");
-            } else if (
-                quizText &&
-                (quizText.length < 400 || quizText.length > 2000)
-            ) {
-                this.fail(
-                    "Content text must be between 400 and 2000 characters!"
-                );
+            } else if (quizText && (quizText.length < 400 || quizText.length > 2000)) {
+                this.fail("Content text must be between 400 and 2000 characters!");
             } else {
                 this.currentState = "CREATE-QUIZ-2";
             }
@@ -496,9 +452,15 @@ var app = new Vue({
                 (res) => {
                     console.log(res);
 
-                    const userHighScore = res.data.leaderboard.find(entry => entry.username === this.user.username)?.score ?? null;
-                    console.log('personal high score:', userHighScore);
-                    this.currentQuiz = { ...quiz, ...res.data, personal_high_score: userHighScore };
+                    const userHighScore =
+                        res.data.leaderboard.find((entry) => entry.username === this.user.username)
+                            ?.score ?? null;
+                    console.log("personal high score:", userHighScore);
+                    this.currentQuiz = {
+                        ...quiz,
+                        ...res.data,
+                        personal_high_score: userHighScore,
+                    };
                     this.currentState = "VIEW-QUIZ";
                 },
                 (err) => {
@@ -531,9 +493,7 @@ var app = new Vue({
             if (event.target.type !== "radio") {
                 // Toggle the answer
                 this.currentQuiz.answers[questionId] =
-                    this.currentQuiz.answers[questionId] === option
-                        ? ""
-                        : option;
+                    this.currentQuiz.answers[questionId] === option ? "" : option;
             }
             // Ensure Vue updates the radio button state
             this.$nextTick(() => {
@@ -550,9 +510,7 @@ var app = new Vue({
 
                     const errored = res.data.errored;
                     if (errored) {
-                        this.fail(
-                            "This quiz has errored and cannot be started!"
-                        );
+                        this.fail("This quiz has errored and cannot be started!");
                         return;
                     }
 
@@ -610,11 +568,13 @@ var app = new Vue({
             );
         },
         submitAnswers() {
-            console.log('Final Answers:', this.currentQuiz.answers);
-            const allAnswersFilled = Object.values(this.currentQuiz.answers).every(answer => answer.trim() !== '');
+            console.log("Final Answers:", this.currentQuiz.answers);
+            const allAnswersFilled = Object.values(this.currentQuiz.answers).every(
+                (answer) => answer.trim() !== ""
+            );
 
             if (allAnswersFilled) {
-                console.log('Submitting answers...');
+                console.log("Submitting answers...");
                 this.loadingQuizSubmission = true;
                 sendRequest(
                     "POST",
@@ -622,10 +582,10 @@ var app = new Vue({
                     this.currentQuiz.answers,
                     (res) => {
                         this.loadingQuizSubmission = false;
-                        this.currentQuiz.markedAnswers = res.data; 
-        
+                        this.currentQuiz.markedAnswers = res.data;
+
                         this.currentState = "QUIZ-RESULTS";
-                        this.success('Quiz submitted!');
+                        this.success("Quiz submitted!");
                     },
                     (err) => {
                         this.loadingQuizSubmission = false;
@@ -634,9 +594,9 @@ var app = new Vue({
                     false
                 );
             } else {
-                this.fail('You haven\'t answered all the questions.')
+                this.fail("You haven't answered all the questions.");
             }
-        }
+        },
     },
 });
 
@@ -735,14 +695,7 @@ function sendFormData(method, url, formData, callback, callbackError) {
         });
 }
 
-function sendRequest(
-    method,
-    url,
-    data,
-    callback,
-    callbackError,
-    loadingScreen = true
-) {
+function sendRequest(method, url, data, callback, callbackError, loadingScreen = true) {
     app.loading = true;
     app.loadingScreen = loadingScreen;
 
