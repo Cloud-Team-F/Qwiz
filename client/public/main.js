@@ -727,3 +727,5 @@ function sendRequest(method, url, data, callback, callbackError, loadingScreen =
             app.loadingScreen = false;
         });
 }
+
+Vue.directive("tooltip", (el, binding) => new bootstrap.Tooltip(el, { title: binding.value }));
