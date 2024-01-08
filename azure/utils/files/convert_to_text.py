@@ -97,25 +97,3 @@ def clean_text(raw_text):
 
     # Remove leading/trailing white space
     return cleaned_text.strip()
-
-
-# For testing
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    print(
-        convert_to_text(
-            "https://www.africau.edu/images/default/sample.pdf", "application/pdf"
-        )
-    )
-    print(
-        convert_to_text(
-            "https://www.dickinson.edu/download/downloads/id/1076/sample_powerpoint_slides.pptx",
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        )
-    )
-    print(
-        convert_to_text(
-            "https://calibre-ebook.com/downloads/demos/demo.docx",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        )
-    )

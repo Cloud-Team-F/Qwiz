@@ -1,10 +1,15 @@
+import json
 import logging
 import random
 import re
-import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from openai import OpenAI
+
+
+class Quiz:
+    def __init__(self, questions):
+        self.questions = questions
 
 
 def create_quiz(
@@ -13,64 +18,6 @@ def create_quiz(
     topic: str = "",
     text_content: str = "",
     file_contents: list[str] = [],
-) -> list[dict]:
-
-    questionTypesCount = generateTypesCount(num_questions, question_types)
-    
-    ''' # Grouping the dictionaries by 'type'
-    grouped_by_type = {}
-    for item in myLists:
-        item_type = item['type']
-        if item_type not in grouped_by_type:
-            grouped_by_type[item_type] = []
-        grouped_by_type[item_type].append(item)
-
-    # Converting the grouped dictionary to a list of lists
-    sublists = list(grouped_by_type.values())'''
-    
-
-    func = create_quiz_2
-    results = []
-    with ThreadPoolExecutor() as executor:
-        # Use a future for each sublist
-        #futures = {executor.submit(func, sublist): sublist for sublist in sublists}
-        futures = {executor.submit(func, key, value, question_types, topic, text_content, file_contents): (key, value) 
-           for key, value in questionTypesCount.items()}
-
-
-
-        for future in as_completed(futures):
-            # Get the result of the completed future
-            result = future.result()
-            results.append(result)
-    
-   
-    #Convert to a list of dicts. (rn results is a [[dicts]])
-    #then randomise the order of the dicts within the list
-    #then add ids them
-    
-    # convert "results" from a [[dicts]] to a [dict]
-    results = [question for quiz in results for question in quiz.questions]
-    
-    logging.info(f"Creating quiz - results: {results}")
-
-    # Randomize the order of the quiz questions
-    random.shuffle(results)
-
-    # Add Ids to the questions
-    results = add_sequential_quiz_id(results)
-
-    return results
-
-
-def create_quiz_2(
-    key: str,
-    num_questions: int,
-    question_types: list[str],
-    topic: str = "",
-    text_content: str = "",
-    file_contents: list[str] = [],
-    
 ) -> list[dict]:
     """
     Create a quiz from the given content using gpt.
@@ -90,7 +37,65 @@ def create_quiz_2(
             - 'type': The type of question (e.g., 'multi-choice', 'true-false', etc.).
             - 'options': A list of options for the question (applicable for 'multi-choice' type).
     """
-    logging.info(f"Creating quiz")
+    logging.info("create_quiz")
+
+    # Create a list of sublists of question types
+    questionTypesCount = generateTypesCount(num_questions, question_types)
+    func = create_quiz_2
+    results = []
+
+    with ThreadPoolExecutor() as executor:
+        # Use a future for each sublist
+        futures = {
+            executor.submit(
+                func, key, value, question_types, topic, text_content, file_contents
+            ): (key, value)
+            for key, value in questionTypesCount.items()
+        }
+
+        for future in as_completed(futures):
+            # Get the result of the completed future
+            result = future.result()
+            results.append(result)
+
+    # Combine the results into one list
+    results = [question for quiz in results for question in quiz.questions]
+    logging.info(f"Creating quiz - results: {results}")
+
+    # Randomize the order of the quiz questions
+    random.shuffle(results)
+
+    # Add Ids to the questions
+    results = add_sequential_quiz_id(results)
+    return results
+
+
+def create_quiz_2(
+    key: str,
+    num_questions: int,
+    question_types: list[str],
+    topic: str = "",
+    text_content: str = "",
+    file_contents: list[str] = [],
+) -> list[dict]:
+    """
+    Create a quiz based on the specified parameters.
+
+    Args:
+        key (str): The type of quiz to create. Valid options are "multi-choice", "fill-gaps", and "short-answer".
+        num_questions (int): The number of questions to include in the quiz.
+        question_types (list[str]): A list of question types to include in the quiz. Valid options are "multi-choice", "fill-gaps", and "short-answer".
+        topic (str, optional): The topic of the quiz. Defaults to an empty string.
+        text_content (str, optional): The text content to include in the quiz. Defaults to an empty string.
+        file_contents (list[str], optional): A list of file contents to include in the quiz. Defaults to an empty list.
+
+    Returns:
+        list[dict]: A list of dictionaries representing the quiz questions.
+
+    Raises:
+        Exception: If an error occurs while creating the quiz.
+    """
+    logging.info("Creating quiz - helper function")
 
     try:
         # List of quiz questions
@@ -107,30 +112,23 @@ def create_quiz_2(
         # Create the quiz for each question type
         # Multiple-choice questions
         if key == "multi-choice":
-            completionMulti = messageMultiChoice(
-                num_questions, text_content
-            )
-
-            print("completion Multi 1")
-            print(completionMulti)
+            completionMulti = messageMultiChoice(num_questions, text_content)
+            # logging.info("completion Multi 1")
+            # logging.info(completionMulti)
 
             completionMulti = completionMulti.choices[0].message.content
-
-            print("completion Multi 2")
-            print(completionMulti)
+            # logging.info("completion Multi 2")
+            # logging.info(completionMulti)
 
             completionMulti = clean_json_string(completionMulti)
-
-            print("completion Multi 3")
-            print(completionMulti)
+            # logging.info("completion Multi 3")
+            # logging.info(completionMulti)
 
             quizMulti = parse_multi_quiz(completionMulti)
-
-            print("completion Multi 4")
-            print(quizMulti)
+            # logging.info("completion Multi 4")
+            # logging.info(quizMulti)
 
             quizQuestions.append(quizMulti)
-
             logging.info(f"Creating quiz - completionMulti: {completionMulti}")
 
         # Fill in the blanks questions
@@ -138,31 +136,26 @@ def create_quiz_2(
             completionBlanks = messageFillBlanks(num_questions, text_content)
             quizFill = parse_fill_blanks(completionBlanks.choices[0].message.content)
 
+            # Loop through the questions and create a new question for each
             questions2fingers = []
             for question in quizFill.questions:
-
                 newQuestion = messageFillBlanks2(question["question"])
-
                 newQuestion = newQuestion.choices[0].message.content
-
                 newQuestion = clean_json_string(newQuestion)
-
-                newQuestion = parse_fill_blanks2(newQuestion, question["question"])  # returns a question
+                newQuestion = parse_fill_blanks2(
+                    newQuestion, question["question"]
+                )  # returns a question
 
                 questions2fingers.append(newQuestion[0])
 
-            newQuiz2 = Quiz(questions2fingers)    
-
-            #quizFill = Quiz(questions2fingers)
+            newQuiz2 = Quiz(questions2fingers)
             quizQuestions.append(newQuiz2)
 
             logging.info(f"Creating quiz - completionBlanks: {completionBlanks}")
 
         # Short answer questions
         if key == "short-answer":
-            completionShort = messageShortAnswer(
-                num_questions, text_content
-            )
+            completionShort = messageShortAnswer(num_questions, text_content)
 
             completionShort = completionShort.choices[0].message.content
             completionShort = clean_json_string(completionShort)
@@ -172,11 +165,8 @@ def create_quiz_2(
 
             logging.info(f"Creating quiz - completionShort: {completionShort}")
 
-
         # Combine the quizzes into one
         finalQuiz = combine_quizzes(quizQuestions)
-
-        
 
         # Return the final quiz list[dict]
         logging.info(f"Creating quiz - finalQuiz: {finalQuiz}")
@@ -187,57 +177,36 @@ def create_quiz_2(
         raise e
 
 
-"""
-------------------------How to setup the APIkey.------------------------
-    Either make a .env file and paste the line below into it. 
-    OPENAI_API_KEY=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
-
-------------------------------OR------------------------------
-
-    set the key up permanently by changing your env variables:
-    1) Open Command Prompt:
-
-    2) type this command: setx OPENAI_API_KEY "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"
-    This command will set the OPENAI_API_KEY environment variable for the current session.
-
-    Permanent setup: To make the setup permanent, add the variable through the system properties as follows:
-
-    Right-click on 'This PC' or 'My Computer' and select 'Properties'.
-    Click on 'Advanced system settings'.
-    Click the 'Environment Variables' button.
-    In the 'System variables' section, click 'New...' and enter OPENAI_API_KEY as the variable name and your API key as the variable value.
-    Verification: To verify the setup, reopen the command prompt and type the command below. It should display your API key: echo %OPENAI_API_KEY%
-"""
-
-
-class Question:
-    def __init__(self, question, options, correct_answer, type, question_id):
-        self.question = question
-        self.options = options
-        self.correct_answer = correct_answer
-        self.type = type
-        self.question_id = question_id
-
-
-class Quiz:
-    def __init__(self, questions):
-        self.questions = questions
-
-
-class Submission:
-    def __init__(self, mark, feedback):
-        self.mark = mark  # either correct or incorrect
-        self.feedback = feedback
-
 def insertBlankOnPhraseUsed(phraseUsed, phrase):
+    """
+    Replaces the first instance of a given phrase with underscores in a given string.
+
+    Args:
+        phraseUsed (str): The string in which the replacement will be made.
+        phrase (str): The phrase to be replaced.
+
+    Returns:
+        str: The modified string with the first instance of the phrase replaced by underscores.
+    """
     # Calculate the number of underscores needed
-    underscores = '_' * len(phrase)
+    underscores = "_" * len(phrase)
 
     # Replace the first instance of the phrase with underscores, case-insensitive
-    return re.sub(re.escape(phrase), underscores, phraseUsed, count=1, flags=re.IGNORECASE)
+    return re.sub(
+        re.escape(phrase), underscores, phraseUsed, count=1, flags=re.IGNORECASE
+    )
 
 
 def clean_json_string(json_string):
+    """
+    Cleans a JSON string by removing the surrounding triple backticks and 'json' tag.
+
+    Args:
+        json_string (str): The JSON string to be cleaned.
+
+    Returns:
+        str: The cleaned JSON string.
+    """
     # Check if the string starts with '''json and ends with '''
     if json_string.startswith("```json"):
         # Remove '''json from the start and ''' from the end
@@ -246,13 +215,32 @@ def clean_json_string(json_string):
         # If the string does not have these patterns, return it as is
         return json_string
 
+
 def add_sequential_quiz_id(quiz):
+    """
+    Adds a sequential question ID to each question in the quiz.
+
+    Args:
+        quiz (list): The list of questions in the quiz.
+
+    Returns:
+        list: The updated quiz with question IDs.
+    """
     for i, question in enumerate(quiz):
-        question["question_id"] = i + 1  
+        question["question_id"] = i + 1
     return quiz
 
 
 def combine_quizzes(quizzes):
+    """
+    Combines a list of quizzes into a single quiz.
+
+    Args:
+        quizzes (list): A list of Quiz objects.
+
+    Returns:
+        Quiz: A new Quiz object containing all the questions from the input quizzes.
+    """
     combined_questions = []
     for quiz in quizzes:
         combined_questions.extend(quiz.questions)
@@ -260,6 +248,16 @@ def combine_quizzes(quizzes):
 
 
 def generateTypesCount(num_questions, question_types):
+    """
+    Generate a dictionary with the count of each question type.
+
+    Args:
+        num_questions (int): The total number of questions.
+        question_types (list): A list of question types.
+
+    Returns:
+        dict: A dictionary with the count of each question type.
+    """
     # Calculate the base count for each question type
     base_count = num_questions // len(question_types)
 
@@ -277,8 +275,17 @@ def generateTypesCount(num_questions, question_types):
 
 
 def parse_multi_quiz(json_string):
+    """
+    Parses a multi-choice quiz from a JSON string.
+
+    Args:
+        json_string (str): The JSON string containing the quiz data.
+
+    Returns:
+        Quiz: The parsed Quiz object.
+    """
     # Assuming each JSON object is separated by newlines
-    json_objects = json_string.split('\n')
+    json_objects = json_string.split("\n")
 
     python_dicts = []
     for obj in json_objects:
@@ -288,99 +295,117 @@ def parse_multi_quiz(json_string):
             python_dict["question_id"] = 0  # Add the 'question_id' attribute
             python_dicts.append(python_dict)
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON pmq: {e}")
+            logging.info(f"Error decoding JSON pmq: {e}")
             # Handle the error or ignore the faulty JSON object
 
     return Quiz(python_dicts)
 
 
-def parse_short_quiz(json_string):  
+def parse_short_quiz(json_string):
+    """
+    Parses a JSON string containing short quiz questions and returns a Quiz object.
+
+    Args:
+        json_string (str): The JSON string containing the quiz questions.
+
+    Returns:
+        Quiz: A Quiz object containing the parsed quiz questions.
+    """
     # Assuming each JSON object is separated by newlines
-    json_objects = json_string.split('\n')
+    json_objects = json_string.split("\n")
 
     python_dicts = []
     for obj in json_objects:
         try:
             python_dict = json.loads(obj)
             python_dict["options"] = []  # Add the 'options' attribute
-            python_dict["correct_answer"] = ''  # Add the 'correct answer' attribute
+            python_dict["correct_answer"] = ""  # Add the 'correct answer' attribute
             python_dict["type"] = "short-answer"  # Add the 'type' attribute
             python_dict["question_id"] = 0  # Add the 'question_id' attribute
             python_dicts.append(python_dict)
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON psq: {e}")
+            logging.info(f"Error decoding JSON psq: {e}")
             # Handle the error or ignore the faulty JSON object
 
     return Quiz(python_dicts)
 
 
 def parse_fill_blanks(json_string):
+    """
+    Parses a JSON string containing fill-in-the-blanks quiz questions and returns a Quiz object.
+
+    Args:
+        json_string (str): The JSON string containing the quiz questions.
+
+    Returns:
+        Quiz: A Quiz object containing the parsed quiz questions.
+    """
     # Assuming each JSON object is separated by newlines
-    json_objects = json_string.split('\n')
+    json_objects = json_string.split("\n")
 
     python_dicts = []
     for obj in json_objects:
         try:
             python_dict = json.loads(obj)
-            python_dict["question"] = python_dict["fact"] #these 2 lines rename the dictionary to question from fact. the reason it is "fact" in the first place is to encourage better gpt responces
+            python_dict["question"] = python_dict[
+                "fact"
+            ]  # these 2 lines rename the dictionary to question from fact. the reason it is "fact" in the first place is to encourage better gpt responces
             del python_dict["fact"]
             python_dict["options"] = []  # Add the 'options' attribute
-            python_dict["correct_answer"] = ''  # Add the 'correct answer' attribute
+            python_dict["correct_answer"] = ""  # Add the 'correct answer' attribute
             python_dict["type"] = "fill-gaps"  # Add the 'type' attribute
             python_dict["question_id"] = 0  # Add the 'question_id' attribute
             python_dicts.append(python_dict)
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON pfb: {e}")
+            logging.info(f"Error decoding JSON pfb: {e}")
             # Handle the error or ignore the faulty JSON object
 
     return Quiz(python_dicts)
 
 
 def parse_fill_blanks2(quiz_text, phraseUsed):
+    """
+    Parses the quiz text and creates a list of dictionaries representing fill-gaps questions.
 
+    Args:
+        quiz_text (str): The quiz text in JSON format.
+        phraseUsed (str): The phrase used in the question.
+
+    Returns:
+        list: A list of dictionaries representing fill-gaps questions.
+    """
     python_dicts = []
     try:
         python_dict = json.loads(quiz_text)
-        phraseUsed = insertBlankOnPhraseUsed(phraseUsed,python_dict["correct_answer"])
+        phraseUsed = insertBlankOnPhraseUsed(phraseUsed, python_dict["correct_answer"])
         python_dict["question"] = phraseUsed
         python_dict["type"] = "fill-gaps"  # Add the 'type' attribute
         python_dict["question_id"] = 0  # Add the 'question_id' attribute
         python_dicts.append(python_dict)
     except json.JSONDecodeError as e:
-        print(f"Error decoding JSON in pfb2: {e}")
+        logging.info(f"Error decoding JSON in pfb2: {e}")
         # Handle the error or ignore the faulty JSON object
-
 
     return python_dicts
 
 
-def messageMultiChoice(count, text):  # asks chatGPT to make a multichoce quiz of length "count" based off of the "text"
+def messageMultiChoice(count, text):
+    """
+    Asks chatGPT to make a multiple-choice quiz based on the provided text.
+
+    Args:
+        count (int): The length of the quiz, i.e., the number of questions.
+        text (str): The text to base the quiz questions on.
+
+    Returns:
+        completion: The completion object returned by the OpenAI API.
+    """
     client = OpenAI()
     myMessageSystem = (
         "Generate a "
         + str(count)
-        + "-question long multiple-choice quiz based on the provided text. Make it so each question has 4 possible options. Format each question as a JSON object like so {\"question\":\"\",\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}. Each JSON object should be separated by only a newLine."
+        + '-question long multiple-choice quiz based on the provided text. Make it so each question has 4 possible options. Format each question as a JSON object like so {"question":"","options":["option1","option2","option3","option4"],"correct_answer":"the correct answer"}. Each JSON object should be separated by only a newLine.'
     )
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": myMessageSystem},
-            {"role": "user", "content": text},
-        ],
-    )
-    
-
-    return completion
-
-
-def messageShortAnswer(count, text):  # asks chatGPT to make a short answer quiz of length "count" based off of the "text"
-    client = OpenAI()
-    myMessageSystem = (
-        "Generate a "
-        + str(count)
-        + "-question short answer quiz based on the provided text. Format each question as a JSON object like so {\"question\":\"\"}"
-    )
-
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -392,12 +417,51 @@ def messageShortAnswer(count, text):  # asks chatGPT to make a short answer quiz
     return completion
 
 
-def messageFillBlanks(count, text): 
+def messageShortAnswer(count, text):
+    """
+    Asks chatGPT to make a short answer quiz of length "count" based on the provided "text".
+
+    Args:
+        count (int): The number of questions to generate for the quiz.
+        text (str): The text used as the basis for generating the quiz.
+
+    Returns:
+        completion: The completion object returned by the OpenAI API.
+    """
+    client = OpenAI()
+    myMessageSystem = (
+        "Generate a "
+        + str(count)
+        + '-question short answer quiz based on the provided text. Format each question as a JSON object like so {"question":""}'
+    )
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": myMessageSystem},
+            {"role": "user", "content": text},
+        ],
+    )
+
+    return completion
+
+
+def messageFillBlanks(count, text):
+    """
+    Sends a message to the OpenAI chat API to fill in the blanks in a given text.
+
+    Args:
+        count (int): The number of facts to be filled in.
+        text (str): The text containing the blanks to be filled.
+
+    Returns:
+        completion (object): The completion object returned by the OpenAI chat API.
+    """
     client = OpenAI()
     myMessageSystem = (
         "Give me exactly "
         + str(count)
-        + " facts about the topic below. Format each fact as a JSON object like so {\"fact\":\"\"}. Do not use the ``` symbol to format your answer. Each JSON should be separated only by a newLine"
+        + ' facts about the topic below. Format each fact as a JSON object like so {"fact":""}. Do not use the ``` symbol to format your answer. Each JSON should be separated only by a newLine'
     )
 
     completion = client.chat.completions.create(
@@ -411,15 +475,23 @@ def messageFillBlanks(count, text):
     return completion
 
 
-def messageFillBlanks2(text): 
+def messageFillBlanks2(text):
+    """
+    Generates a fill-in-the-blanks question based on the given text.
+
+    Args:
+        text (str): The fact to be used in the question.
+
+    Returns:
+        completion: The completion object generated by the OpenAI chat API.
+    """
     client = OpenAI()
-    # myMessageSystem = ""
     completion = client.chat.completions.create(
         model="gpt-4-1106-preview",
         messages=[
             {
                 "role": "system",
-                "content": "Using the following fact, create a list of four words suitable for a fill-in-the-blank question. One of the 4 words you pick must come directly from the fact. Format your answer as a single JSON object like this: {\"options\":[\"option1\",\"option2\",\"option3\",\"option4\"],\"correct_answer\":\"the correct answer\"}",
+                "content": 'Using the following fact, create a list of four words suitable for a fill-in-the-blank question. One of the 4 words you pick must come directly from the fact. Format your answer as a single JSON object like this: {"options":["option1","option2","option3","option4"],"correct_answer":"the correct answer"}',
             },
             {"role": "user", "content": "The fact: " + text},
         ],
