@@ -112,7 +112,7 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
 
         if questionGroup != []:
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4-1106-preview",
                 messages=[
                     {"role": "system", "content": message},
                     {"role": "user", "content": json.dumps(questionGroup)},
