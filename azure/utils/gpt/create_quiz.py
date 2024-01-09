@@ -68,6 +68,8 @@ def create_quiz(
 
     # Add Ids to the questions
     results = add_sequential_quiz_id(results)
+
+    results = filter_questions(results,num_questions)
     return results
 
 
@@ -177,6 +179,15 @@ def create_quiz_2(
         logging.error("Error creating quiz: %s", e, exc_info=True)
         raise e
 
+def filter_questions(questions, max_id):
+    """
+    Removes entries from the list where the question_id is greater than max_id.
+
+    :param questions: List of dictionaries containing question details.
+    :param max_id: The maximum allowed question_id.
+    :return: Filtered list of dictionaries.
+    """
+    return [question for question in questions if question.get('question_id', 0) < max_id]
 
 def insertBlankOnPhraseUsed(phraseUsed, phrase):
     """
