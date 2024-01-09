@@ -187,7 +187,7 @@ def filter_questions(questions, max_id):
     :param max_id: The maximum allowed question_id.
     :return: Filtered list of dictionaries.
     """
-    return [question for question in questions if question.get('question_id', 0) < max_id]
+    return [question for question in questions if question.get('question_id', 0) <= max_id]
 
 def insertBlankOnPhraseUsed(phraseUsed, phrase):
     """
