@@ -110,6 +110,7 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
         elif questionGroup[0]["type"] == "short-answer":
             message = "You are a quiz answer-checking bot tasked with evaluating short-answer questions. Your role is to assess the student's responses and decide whether they are correct. Focus on the understanding demonstrated in each response. If a student's answer shows a good understanding of the topic, it should be marked as correct. However, if a part of the answer is distinctly incorrect or demonstrates a significant misunderstanding, that portion should be marked as incorrect. Be generous yet discerning in your assessment, appreciating the student's grasp of the subject matter while also identifying inaccuracies or misconceptions. Feedback is crucial for answers that are incorrect or show significant misunderstandings. Format your response as a list of comma-separated JSON objects, each representing an individual question's evaluation, with fields for question_id, is_correct, correct_answer, and feedback (only for the parts of answers that are incorrect or demonstrate significant misunderstanding). You may not use the internet to search for the answer."
 
+        response = ""
         if questionGroup != []:
             response = client.chat.completions.create(
                 model="gpt-4-1106-preview",
@@ -118,6 +119,7 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
                     {"role": "user", "content": json.dumps(questionGroup)},
                 ],
             )
+            response = clean_json_string(response.choices[0].message.content)
 
             # Debugging:
             # logging.info(response.choices[0].message.content)
@@ -128,8 +130,6 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
         # Debugging:
         # logging.info(type(correctQuestionGroup))
         logging.info(correctQuestionGroup)
-
-        response = clean_json_string(response.choices[0].message.content)
 
         # Check if there are no correct questions or no incorrect questions
         if correctQuestionGroup == "," and questionGroup == []:
