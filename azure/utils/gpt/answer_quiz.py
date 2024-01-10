@@ -108,11 +108,11 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
             )  # maybe add a comma
 
         elif questionGroup[0]["type"] == "short-answer":
-            message = "You are a quiz answer-checking bot tasked with evaluating short-answer questions. Your role is to assess the student's responses and decide whether they are correct. Focus on the understanding demonstrated in each response. If a student's answer shows a good understanding of the topic, it should be marked as correct. However, if a part of the answer is distinctly incorrect or demonstrates a significant misunderstanding, that portion should be marked as incorrect. Be generous yet discerning in your assessment, appreciating the student's grasp of the subject matter while also identifying inaccuracies or misconceptions. Feedback is crucial for answers that are incorrect or show significant misunderstandings. Format your response as a list of comma-separated JSON objects, each representing an individual question's evaluation, with fields for question_id, is_correct, correct_answer, and feedback (only for the parts of answers that are incorrect or demonstrate significant misunderstanding)."
+            message = "You are a quiz answer-checking bot tasked with evaluating short-answer questions. Your role is to assess the student's responses and decide whether they are correct. Focus on the understanding demonstrated in each response. If a student's answer shows a good understanding of the topic, it should be marked as correct. However, if a part of the answer is distinctly incorrect or demonstrates a significant misunderstanding, that portion should be marked as incorrect. Be generous yet discerning in your assessment, appreciating the student's grasp of the subject matter while also identifying inaccuracies or misconceptions. Feedback is crucial for answers that are incorrect or show significant misunderstandings. Format your response as a list of comma-separated JSON objects, each representing an individual question's evaluation, with fields for question_id, is_correct, correct_answer, and feedback (only for the parts of answers that are incorrect or demonstrate significant misunderstanding). You may not use the internet to search for the answer."
 
         if questionGroup != []:
             response = client.chat.completions.create(
-                model="gpt-4-1106-preview",
+                model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": message},
                     {"role": "user", "content": json.dumps(questionGroup)},
@@ -148,17 +148,7 @@ def answer_quiz_2(answer_body: list[dict]) -> list[dict]:
 
     return listOfResponses
 
-
 def clean_json_string(json_string):
-    """
-    Cleans a JSON string by removing the surrounding triple backticks and 'json' tag.
-
-    Args:
-        json_string (str): The JSON string to be cleaned.
-
-    Returns:
-        str: The cleaned JSON string.
-    """
     # Check if the string starts with '''json and ends with '''
     if json_string.startswith("```json"):
         # Remove '''json from the start and ''' from the end
@@ -293,3 +283,5 @@ def sort_by_question_id(question_list):
     """
     sorted_list = sorted(question_list, key=lambda x: x["question_id"])
     return sorted_list
+
+
