@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img src="/etc/public/banner.png" alt="Project logo"></a>
+  <img src="/etc/public/banner.png" alt="Project logo"></a>
 </p>
 <h3 align="center">Qwiz</h3>
 
@@ -13,6 +13,7 @@
 
 - [📝 Table of Contents](#-table-of-contents)
 - [💡 Idea ](#-idea-)
+- [📃 Design](#-design)
 - [🏁 Getting Started ](#-getting-started-)
   - [Prerequisites](#prerequisites)
   - [Manual Setup](#manual-setup)
@@ -31,6 +32,9 @@
   - Multiple choice
   - Fill in the blank
   - Short answer
+
+## 📃 Design
+<img src="/etc/public/sysarch.png" alt="System Archiecture Design"></a>
 
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
@@ -113,6 +117,9 @@ Features:
 - Answer quiz
 - View result
 - Delete/leave quiz
+
+Demo:
+<img src="/etc/public/demo.gif" alt="Project Demo GIF"></a>
 
 ## 🚀 Future Scope <a name = "future_scope"></a>
 
